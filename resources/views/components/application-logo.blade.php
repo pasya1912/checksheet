@@ -1,0 +1,1 @@
+<img src="https://1.bp.blogspot.com/-JRbhp32JXWg/XmBv63u0bmI/AAAAAAAACVk/huBvH5uY9nowSriYRDmPsZ5uxeYBNZKHwCLcBGAsYHQ/s1600/PT%2BAisin%2BIndonesia%2BAutomotive.png" {{$attributes}}>
