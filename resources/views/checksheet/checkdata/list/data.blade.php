@@ -1,20 +1,6 @@
 @extends('checksheet.checkdata.layout')
 @section('content')
 
-                <div class="flex justify-between">
-                    <div class="text-sm">
-                        Model : {{ $checksheetarea->code }}
-                    </div>
-                    <div class="text-sm">
-                        {{ $checksheetarea->nama_checksheet }}
-                    </div>
-                    <div class="text-sm">
-                        Line : {{ $checksheetarea->line }}
-                    </div>
-                </div>
-                <div class="text-center text-xl m-5">
-                    <h2>{{ $checksheetarea->nama }}</h2>
-                </div>
                 <div class="w-1/2 md:w-1/3  my-5">
                     <form action="{{ url()->current() }}" method="GET">
                         <label for="default-search"

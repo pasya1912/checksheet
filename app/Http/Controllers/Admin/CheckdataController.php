@@ -9,6 +9,6 @@ class CheckdataController extends Controller
 {
     public function list(Request $request,\App\Service\Admin\ListCheckData $listCheckData)
     {
-        return "test";
+        return $listCheckData->getList($request);
     }
 }
