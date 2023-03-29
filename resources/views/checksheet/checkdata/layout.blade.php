@@ -62,16 +62,36 @@
                         <tbody class="border border-red-200 ">
                             @foreach ($checkdata['data'] as $data)
                                 @if ($data->status == 'good')
-                                    <tr
-                                        class="hover:bg-green-500 bg-green-300">
+                                    <tr class="hover:bg-green-500 bg-green-300">
                                     @elseif($data->status == 'notgood')
-                                    <tr
-                                            class="hover:bg-red-500 bg-red-300">
+                                    <tr class="hover:bg-red-500 bg-red-300">
                                 @endif
                                 <td class="py-5">{{ $data->nama }}</td>
                                 <td class="py-5">{{ $data->barang }}</td>
-                                <td class="py-5">{{ $data->tanggal }}</td>
-                                <td class="py-5">{{ $data->value }}</td>
+
+                                <td class="py-5">{{ $data->tanggal }}
+
+                                    @if($data->approval == 'approved')
+                                    <span
+                                        class="inline-block ml-2 px-2 py-1 text-sm font-semibold text-gray-800 bg-green-200 rounded-md">
+                                        Approved
+                                    </span>
+                                    @elseif($data->approval == 'rejected')
+                                    <span
+                                        class="inline-block ml-2 px-2 py-1 text-sm font-semibold text-gray-800 bg-red-200 rounded-md">
+                                        Rejected
+                                    </span>
+                                    @else
+                                    <span
+                                        class="inline-block ml-2 px-2 py-1 text-sm font-semibold text-gray-800 bg-yellow-200 rounded-md">
+                                        Waiting
+                                    </span>
+                                    @endif
+                                </td>
+                                <td class="py-5">{{ $data->value }}                                     <span
+                                    class="inline-block ml-2 px-2 py-1 text-sm font-semibold text-gray-800 bg-gray-200 rounded-md">
+                                    {{ $data->status }}
+                                </span></td>
                                 <td class="py-5">{{ $data->user }}</td>
                                 <td class="py-5">TEST</td>
                                 </tr>
