@@ -29,6 +29,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/',[ChecksheetController::class,'list'])->name('checksheet.list');
         Route::get('/{id}',[CheckareaController::class,'list'])->where('id', '[0-9]+')->name('checksheet.area');
         Route::get('/{idchecksheet}/checkarea/{idcheckarea}/form',[CheckdataController::class,'form'])->where('id', '[0-9]+')->where('idcheckarea', '[0-9]+')->name('checksheet.data');
+        Route::post('/{idchecksheet}/checkarea/{idcheckarea}/form',[CheckdataController::class,'store'])->where('id', '[0-9]+')->where('idcheckarea', '[0-9]+')->name('checksheet.data.store');
+        Route::get('/{idchecksheet}/checkarea/{idcheckarea}',[CheckdataController::class,'list'])->where('id', '[0-9]+')->where('idcheckarea', '[0-9]+')->name('checksheet.data.list');
+
     });
 
 

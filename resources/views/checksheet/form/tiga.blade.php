@@ -1,9 +1,5 @@
 @extends('checksheet.form.layout')
 @section('content')
-<div class="text-center">
-    <h3>Standar</h3>
-    <p>Min:{{$data->min ?? "Tidak ada minimal"}} - Max: {{$data->max ?? "Tidak ada maximal"}}</p>
-</div>
 <form method="POST" action="{{ url()->current() }}" class="bg-gray-100 p-6 rounded-lg shadow-md">
     @csrf
     <div class="mb-4">
@@ -13,7 +9,7 @@
     </div>
     <div class="mb-4">
         <label for="value" class="block text-gray-700 font-semibold mb-2">Value:</label>
-        <input id="value" type="number" step="any" name="value"
+        <input id="value" type="text" step="any" name="value"
             class="w-full border-gray-400 p-2 rounded-lg" required>
     </div>
     <div class="mb-4">

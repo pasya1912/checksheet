@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Check Area List') }}
+            {{ __('Form Entry') }}
         </h2>
     </x-slot>
 
@@ -9,17 +9,22 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             <div class="p-6 bg-white shadow-sm sm:rounded-lg w-full ">
+
                 <div class="flex justify-between">
-                    <div>
-                        Model : {{ $checksheet->code }}
+                    <div class="text-sm">
+                        Model : {{ $checksheetarea->code }}
                     </div>
-                    <div>
-                        Line : {{ $checksheet->line }}
+                    <div class="text-sm">
+                        {{ $checksheetarea->nama_checksheet }}
+                    </div>
+                    <div class="text-sm">
+                        Line : {{ $checksheetarea->line }}
                     </div>
                 </div>
-                <div class="text-center text-xl">
-                    <h2>{{ $checksheet->nama }}</h2>
+                <div class="text-center text-xl m-5">
+                    <h2>{{ $checksheetarea->nama }}</h2>
                 </div>
+                @yield('content')
                 <div class="w-1/2 md:w-1/3  my-5">
                     <form action="{{ url()->current() }}" method="GET">
                         <label for="default-search"
@@ -46,20 +51,29 @@
                     <table class="table-auto w-full  border border-red-500 text-center">
                         <thead class="border border-red-400">
                             <tr>
-                                <th>Nama Area</th>
+                                <th>Nama</th>
+                                <th>Urutan</th>
+                                <th>Tanggal</th>
+                                <th>Value</th>
+                                <th>PIC</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="border border-red-200 ">
-                            @foreach ($areaList['data'] as $area)
-                                <tr class="hover:bg-gray-500 transition duration-300 ease-in-out">
-                                    <td class="py-5">{{ $area->nama }}</td>
-                                    <td class="py-5">
-                                        <a href="{{ route('checksheet.data.list', ['idchecksheet'=>$checksheet->id,'idcheckarea' => $area->id]) }}"
-                                            class="text-white bg-violet-500 hover:bg-violet-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1 ">Entry List</a>
-                                            <a href="{{ route('checksheet.data', ['idchecksheet'=>$checksheet->id,'idcheckarea' => $area->id]) }}"
-                                                class="text-white bg-blue-500 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Entry</a>
-                                    </td>
+                            @foreach ($checkdata['data'] as $data)
+                                @if ($data->status == 'good')
+                                    <tr
+                                        class="hover:bg-green-500 bg-green-300">
+                                    @elseif($data->status == 'notgood')
+                                    <tr
+                                            class="hover:bg-red-500 bg-red-300">
+                                @endif
+                                <td class="py-5">{{ $data->nama }}</td>
+                                <td class="py-5">{{ $data->barang }}</td>
+                                <td class="py-5">{{ $data->tanggal }}</td>
+                                <td class="py-5">{{ $data->value }}</td>
+                                <td class="py-5">{{ $data->user }}</td>
+                                <td class="py-5">TEST</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -67,7 +81,7 @@
                 </div>
 
                 <div class="flex items-center justify-center space-x-4">
-                    @foreach ($areaList['links'] as $link)
+                    @foreach ($checkdata['links'] as $link)
                         @if ($link['url'] == null)
                             @continue
                         @endif
@@ -77,12 +91,7 @@
                         </a>
                     @endforeach
                 </div>
-
-
-
             </div>
         </div>
     </div>
 </x-app-layout>
-
-
