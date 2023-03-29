@@ -34,7 +34,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/{idchecksheet}/checkarea/{idcheckarea}',[CheckdataController::class,'list'])->where('id', '[0-9]+')->where('idcheckarea', '[0-9]+')->name('checksheet.data.list');
 
         Route::middleware('admin')->group(function(){
-            Route::get('/data',[ChecksheetController::class,'list'])->name('checksheet.data');
+            Route::get('/data',[AdminChecksheetController::class,'list'])->name('checksheet.data');
         });
     });
 

@@ -20,7 +20,7 @@
                         {{ __('Checksheet List') }}
 
                     </x-nav-link>
-                    <x-nav-link :href="route('checksheet.list')" :active="request()->routeIs('checksheet.list')">
+                    <x-nav-link :href="route('checksheet.data')" :active="request()->routeIs('checksheet.data')">
                         {{ __('Checksheet Data') }}
 
                     </x-nav-link>
