@@ -56,7 +56,7 @@
                                 <th>Tanggal</th>
                                 <th>Value</th>
                                 <th>PIC</th>
-                                <th>Aksissssssssss</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="border border-red-200 ">
