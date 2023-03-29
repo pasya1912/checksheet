@@ -69,7 +69,7 @@
                                     {{ $data->status }}
                                 </span></td>
                                 <td class="py-5">{{ $data->user }}</td>
-                                <td class="py-5">TEST</td>
+                                <td class="py-5">Detail</td>
                                 </tr>
                             @endforeach
                         </tbody>
