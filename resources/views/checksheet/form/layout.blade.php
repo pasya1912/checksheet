@@ -9,7 +9,9 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             <div class="p-6 bg-white shadow-sm sm:rounded-lg w-full ">
-
+                <div class="py-5 text-lg">
+                <span class="hover:bg-blue-200 border border-blue-400 px-3 py-2"><a href="{{route('checksheet.area',['id'=>$data->id_checksheet])}}">&laquo; Back</a></span>
+                </div>
                 <div class="flex justify-between">
                     <div class="text-sm">
                         Model : {{$data->code}}
