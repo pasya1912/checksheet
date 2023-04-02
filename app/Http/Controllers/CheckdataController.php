@@ -8,25 +8,12 @@ use Illuminate\Support\Facades\DB;
 
 class CheckdataController extends Controller
 {
-    public function form($idchecksheet, $idcheckarea, Request $request, \App\Service\FormCheckData $formCheckData)
-    {
-        //get type checkarea
-        try {
-            $checkarea = $this->getCheckArea($idchecksheet, $idcheckarea, '*', DB::raw('COALESCE(tm_checkarea.nama,"Area") as nama'));
-            if (!$checkarea) {
-                throw new \Exception('Checksheet not found');
-            }
-
-            return $formCheckData->getForm($checkarea);
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', $e->getMessage());
-        }
-    }
 
     public function store($idchecksheet, $idcheckarea, Request $request, \App\Service\StoreCheckData $storeCheckData)
     {
 
-
+        dd($request);
+        dd();
 
         try {
             $checkarea = $this->getCheckArea($idchecksheet, $idcheckarea, '*');

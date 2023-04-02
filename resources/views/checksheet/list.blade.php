@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Checksheet List') }}
+            {{ __('Checksheet Input Data') }}
         </h2>
     </x-slot>
 
@@ -9,25 +9,48 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             <div class="p-6 bg-white shadow-sm sm:rounded-lg w-full ">
-                <div class="w-1/2 md:w-1/3  my-5">
+                <div class="w-full  my-5">
 
-                    <form action="{{ route('checksheet.list') }}" method="GET">
-                        <label for="default-search"
-                            class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                <svg aria-hidden="true" class="w-3 h-3 text-white fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                </svg>
-                            </div>
-                            <input type="search" id="default-search"
-                                class="block w-full p-3 pl-10 text-sm bg-gray-400 rounded-xl placeholder-gray-900"
-                                name="search" value="{{ request()->query('search') }}" placeholder="Cari...">
-                            <input type="submit"
-                                class="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                value="Cari">
+                    <form action="{{ route('checksheet.list') }}" method="GET" id="search-checksheet" class="flex gap-3 w-full">
+                        <div class="w-full">
+                            <label for="line">Line</label>
+                            <select id="line" name="line" class=" w-full border-gray-400 p-2 rounded-lg" required>
+                                <option value="" selected disabled>Line</option>
+                                @foreach($lineList as $line)
+                                <option value="{{$line->line}}" {{request()->get('line') == $line->line ? 'selected':''}}>{{$line->line}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="w-full">
+                            <label for="code">Model</label>
+                            <select id="code" name="code" class="w-full border-gray-400 p-2 rounded-lg" required>
+                                <option value="" selected disabled>Model</option>
+                                @foreach($codeList as $code)
+                                <option value="{{$code->code}}" {{request()->get('code') == $code->code ? 'selected':''}}>{{$code->code}}</option>
+                                @endforeach
+
+                            </select>
+                        </div>
+                        <div class="w-full">
+                            <label for="shell">Shell</label>
+                            <select id="shell" name="shell" class="w-full border-gray-400 p-2 rounded-lg" required>
+                                <option value="m1" {{request()->get('shell') == 'm1' ? 'selected':''}}>m1</option>
+                                <option value="m2" {{request()->get('shell') == 'm2' ? 'selected':''}}>m2</option>
+                            </select>
+                        </div>
+                        <div class="w-full">
+                            <label for="shift">Shift</label>
+                            <select id="shift" name="shift" class="w-full border-gray-400 p-2 rounded-lg" required>
+                                <option value="1" {{request()->get('shift') == '1' ? 'selected':''}}>1</option>
+                                <option value="3" {{request()->get('shift') == '3' ? 'selected':''}}>3</option>
+                            </select>
+                        </div>
+                        <div class="w-full">
+                            <label for="barang">First/last</label>
+                            <select id="barang" name="barang" class="w-full border-gray-400 p-2 rounded-lg" required>
+                                <option value="first" {{request()->get('barang') == 'first' ? 'selected':''}}>first</option>
+                                <option value="last" {{request()->get('barang') == 'last' ? 'selected':''}}>last</option>
+                            </select>
                         </div>
                     </form>
 
@@ -39,38 +62,54 @@
                                 <th>Line</th>
                                 <th>Code</th>
                                 <th>Nama</th>
-                                <th>Jenis</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody class="border border-red-200 ">
+                            @if(!empty($checkList['data']))
                             @foreach ($checkList['data'] as $check)
-                                <tr class="hover:bg-gray-500 transition duration-300 ease-in-out py-5">
+                            <tr class="hover:bg-gray-500 transition duration-300 ease-in-out py-5">
 
-                                    <td class="py-5">{{ $check->line }}</td>
-                                    <td class="py-5">{{ $check->code }}</td>
-                                    <td class="py-5">
-                                        <a
-                                            class="hover:text-white"href="{{ route('checksheet.area', $check->id) }}">{{ $check->nama }}</a>
-                                    </td>
-                                    <td class="py-5">{{ $check->jenis }}</td>
+                                <td class="py-5">{{ $check->line }}</td>
+                                <td class="py-5">{{ $check->code }}</td>
+                                <td class="py-5">
+                                    <a onload="changeid(this)" class="hover:text-white" href="{{ route('checksheet.area', $check->id) }}?{{ request()->getQueryString() }}  ">{{ $check->nama }}</a>
+                                </td>
+                                <td class="py-5 flex justify-evenly">
+                                    <div class="mx-5 w-1/4 bg-green-300 text-black">OK</div>
+                                    <div class="mx-5 w-1/2 bg-green-300 text-gray-500">Approved</div>
+                                </td>
 
-                                </tr>
+                            </tr>
                             @endforeach
+                            @elseif($checkList == '500')
+                            <tr>
+                                <td colspan="4" class="py-5">Isi Line Terlebih Dahulu</td>
+                            </tr>
+                            @elseif($checkList == '400')
+                            <tr>
+                                <td colspan="4" class="py-5">Isi Code Terlebih Dahulu</td>
+                            </tr>
+                            @else
+                            <tr>
+                                <td colspan="4" class="py-5">Data Kosong</td>
+                            </tr>
+                            @endif
                         </tbody>
                     </table>
                 </div>
                 <div class="flex items-center justify-center space-x-4">
 
-
+                    @if($checkList != '500' && $checkList != '400')
                     @foreach ($checkList['links'] as $link)
-                        @if($link['url'] == null)
-                            @continue
-                        @endif
-                        <a href="{{ $link['url'] }}"
-                            class="px-3 py-2 text-gray-700 hover:text-white hover:bg-gray-700 rounded {{ $link['active'] ? 'bg-orange-400' : '' }}">
-                            <?= $link['label'] ?>
-                        </a>
+                    @if($link['url'] == null)
+                    @continue
+                    @endif
+                    <a href="{{ $link['url'] }}" class="px-3 py-2 text-gray-700 hover:text-white hover:bg-gray-700 rounded {{ $link['active'] ? 'bg-orange-400' : '' }}">
+                        <?= $link['label'] ?>
+                    </a>
                     @endforeach
+                    @endif
                 </div>
 
 
@@ -78,4 +117,22 @@
             </div>
         </div>
     </div>
+@section('script')
+<script>
+
+var formes = document.getElementById('search-checksheet');
+//get selected value from selected option form then build a query string
+var line = document.getElementById('line');
+var code = document.getElementById('code');
+var shell = document.getElementById('shell');
+var shift = document.getElementById('shift');
+var barang = document.getElementById('barang');
+
+
+formes.addEventListener('change', function() {
+    formes.submit();
+});
+</script>
+@endsection
 </x-app-layout>
+
