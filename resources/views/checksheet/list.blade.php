@@ -32,10 +32,10 @@
                             </select>
                         </div>
                         <div class="w-full">
-                            <label for="shell">Shell</label>
-                            <select id="shell" name="shell" class="w-full border-gray-400 p-2 rounded-lg" required>
-                                <option value="m1" {{request()->get('shell') == 'm1' ? 'selected':''}}>m1</option>
-                                <option value="m2" {{request()->get('shell') == 'm2' ? 'selected':''}}>m2</option>
+                            <label for="cell">Cell</label>
+                            <select id="cell" name="cell" class="w-full border-gray-400 p-2 rounded-lg" required>
+                                <option value="m1" {{request()->get('cell') == 'm1' ? 'selected':''}}>m1</option>
+                                <option value="m2" {{request()->get('cell') == 'm2' ? 'selected':''}}>m2</option>
                             </select>
                         </div>
                         <div class="w-full">
@@ -128,7 +128,7 @@ var formes = document.getElementById('search-checksheet');
 //get selected value from selected option form then build a query string
 var line = document.getElementById('line');
 var code = document.getElementById('code');
-var shell = document.getElementById('shell');
+var cell = document.getElementById('cell');
 var shift = document.getElementById('shift');
 var barang = document.getElementById('barang');
 

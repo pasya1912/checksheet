@@ -5,7 +5,7 @@ namespace App\Rules;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 
-class ValidateShell implements Rule
+class ValidateCell implements Rule
 {
 
 
@@ -19,6 +19,6 @@ class ValidateShell implements Rule
 
     public function message()
     {
-        return "Shell tidak valid.";
+        return "Cell tidak valid.";
     }
 }

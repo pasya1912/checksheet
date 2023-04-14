@@ -10,7 +10,7 @@ use Illuminate\Validation\ValidationException;
 use App\Rules\ValidateLine;
 use App\Rules\ValidateCode;
 use App\Rules\ValidateBarang;
-use App\Rules\ValidateShell;
+use App\Rules\ValidateCell;
 use App\Rules\ValidateShift;
 use App\Rules\ValidateValue;
 
@@ -26,7 +26,7 @@ class CheckdataController extends Controller
                 'barang' => ['required', new ValidateBarang],
                 'code' => ['required', new ValidateCode($request->line)],
                 'line' => ['required', new ValidateLine],
-                'shell' => ['required', new ValidateShell],
+                'cell' => ['required', new ValidateCell],
                 'shift' => ['required', new ValidateShift],
             ]);
         } catch (ValidationException $e) {
@@ -42,7 +42,7 @@ class CheckdataController extends Controller
             ->where('tm_checksheet.code', $request->code)
             ->where('tm_checksheet.line', $request->line)
             ->where('tt_checkdata.shift', $request->shift)
-            ->where('tt_checkdata.nama', $request->shell)
+            ->where('tt_checkdata.nama', $request->cell)
             ->whereDate('tt_checkdata.tanggal', date('Y-m-d'))
             ->where('tt_checkdata.barang', $request->barang);
 
@@ -59,7 +59,7 @@ class CheckdataController extends Controller
         $db = DB::table('tt_checkdata')->insert(
             [
                 'id_checkarea' => $idcheckarea,
-                'nama' => $request->shell,
+                'nama' => $request->cell,
                 'barang' => $request->barang,
                 'tanggal' => date('Y-m-d H:i:s'),
                 'user' => $request->user()->npk,
