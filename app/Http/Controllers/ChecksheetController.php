@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class ChecksheetController extends Controller
 {
-    public function list(Request $request)
+    public function list(Request $request, \App\Service\ChecksheetData $checksheet)
     {
         $line = !$request->get('line') ? '': $request->get('line');
         $code = !$request->get('code') ? '' : $request->get('code');
@@ -32,8 +32,8 @@ class ChecksheetController extends Controller
             })
             ->paginate(20)->appends(request()->query())->toArray();
         }
-        $lineList = $this->getLine();
-        $codeList = $this->getCode($request->get('line'));
+        $lineList = $checksheet->getLine();
+        $codeList = $checksheet->getCode($request->get('line'));
 
 
 
@@ -42,15 +42,5 @@ class ChecksheetController extends Controller
 
         //return view checklist with checklist
         return view('checksheet.list', compact('checkList','lineList','codeList'));
-    }
-    public function getLine()
-    {
-        $line = DB::table('tm_checksheet')->select('line')->distinct()->orderBy('line','ASC')->get();
-        return $line;
-    }
-    public function getCode($line)
-    {
-        $line = DB::table('tm_checksheet')->select('code')->distinct()->where('line',$line)->orderBy('code','ASC')->get();
-        return $line;
     }
 }

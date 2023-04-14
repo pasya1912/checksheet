@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\DB;
 
 class ListCheckData {
 
-    public   function getList($request)
+    public   function get($request)
     {
 
 
@@ -37,9 +37,9 @@ class ListCheckData {
                     }
                 }
             })
-            ->orderBy('tt_checkdata.nama','ASC')
+            ->orderBy('tt_checkdata.tanggal','DESC')
             ->paginate(20)->appends(request()->query())->toArray();
-            return view('checksheet.checkdata.list.data',compact('checkdata'));
+            return $checkdata;
 
     }
 }

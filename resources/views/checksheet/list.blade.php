@@ -15,7 +15,7 @@
                         <div class="w-full">
                             <label for="line">Line</label>
                             <select id="line" name="line" class=" w-full border-gray-400 p-2 rounded-lg" required>
-                                <option value="" selected disabled>Line</option>
+                                <option value="" selected>Line</option>
                                 @foreach($lineList as $line)
                                 <option value="{{$line->line}}" {{request()->get('line') == $line->line ? 'selected':''}}>{{$line->line}}</option>
                                 @endforeach
@@ -24,7 +24,7 @@
                         <div class="w-full">
                             <label for="code">Model</label>
                             <select id="code" name="code" class="w-full border-gray-400 p-2 rounded-lg" required>
-                                <option value="" selected disabled>Model</option>
+                                <option value="" selected>Model</option>
                                 @foreach($codeList as $code)
                                 <option value="{{$code->code}}" {{request()->get('code') == $code->code ? 'selected':''}}>{{$code->code}}</option>
                                 @endforeach
