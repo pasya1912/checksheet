@@ -42,7 +42,11 @@
                             <label for="shift">Shift</label>
                             <select id="shift" name="shift" class="w-full border-gray-400 p-2 rounded-lg" required>
                                 <option value="1" {{request()->get('shift') == '1' ? 'selected':''}}>1</option>
+                                <option value="2" {{request()->get('shift') == '2' ? 'selected':''}}>2</option>
                                 <option value="3" {{request()->get('shift') == '3' ? 'selected':''}}>3</option>
+                                <option value="1-long" {{request()->get('shift') == '1-long' ? 'selected':''}}>1-long</option>
+                                <option value="3-long" {{request()->get('shift') == '3-long' ? 'selected':''}}>3-long</option>
+
                             </select>
                         </div>
                         <div class="w-full">
@@ -76,7 +80,7 @@
                                     <a onload="changeid(this)" class="hover:text-white" href="{{ route('checksheet.area', $check->id) }}?{{ request()->getQueryString() }}  ">{{ $check->nama }}</a>
                                 </td>
                                 <td class="py-5 flex justify-evenly">
-                                    <div class="mx-5 w-1/4 bg-green-300 text-black">OK</div>
+                                    <div class="mx-5 w-1/4 bg-green-300 text-black"></div>
                                     <div class="mx-5 w-1/2 bg-green-300 text-gray-500">Approved</div>
                                 </td>
 

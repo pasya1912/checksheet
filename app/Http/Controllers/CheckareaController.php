@@ -38,7 +38,7 @@ class CheckareaController extends Controller
             ->orderBy('tm_checkarea.nama','ASC')
             ->paginate(100)->appends(request()->query())->toArray();
 
-            foreach($areaList['data'] as $area){
+            foreach($areaList['data'] as $key=>$area){
                 $area->checkdata = DB::table('tt_checkdata')
                 ->select('*')
                 ->where('tt_checkdata.id_checkarea', $area->id)
@@ -47,10 +47,10 @@ class CheckareaController extends Controller
                 //where day today
                 ->whereDate('tanggal', $request->query('tanggal') ?? date('Y-m-d'))
                 ->first();
-                
+                if($area->checkdata){
+                    $area->checkdata->is_good = $area->checkdata->value >= $area->min && $area->checkdata->value <= $area->max;
+                }
             }
-
-
 
             return view('checksheet.area', compact('areaList','checksheet'));
         }

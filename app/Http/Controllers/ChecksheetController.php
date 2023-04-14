@@ -21,17 +21,19 @@ class ChecksheetController extends Controller
 
         //get checksheet from db based on search parameter if exist with like paginate every 10
         $checkList = DB::table('tm_checksheet')
-            //search in all columns
+            //cek apakah terdapat tt_checkdata yang tidak sesuai min max
+            ->select('tm_checksheet.*')
+
             ->where(function ($query) use ($request,$line,$code) {
 
                     $query->where('line', 'LIKE', '%' . $line . '%')
                         ->where('code', 'LIKE', '%' . $code . '%');
+
             })
             ->paginate(20)->appends(request()->query())->toArray();
         }
-
-        $lineList = $this->getOne('line');
-        $codeList = $this->getOne('code');
+        $lineList = $this->getLine();
+        $codeList = $this->getCode($request->get('line'));
 
 
 
@@ -41,9 +43,14 @@ class ChecksheetController extends Controller
         //return view checklist with checklist
         return view('checksheet.list', compact('checkList','lineList','codeList'));
     }
-    public function getOne($column)
+    public function getLine()
     {
-        $line = DB::table('tm_checksheet')->select($column)->distinct()->get();
+        $line = DB::table('tm_checksheet')->select('line')->distinct()->orderBy('line','ASC')->get();
+        return $line;
+    }
+    public function getCode($line)
+    {
+        $line = DB::table('tm_checksheet')->select('code')->distinct()->where('line',$line)->orderBy('code','ASC')->get();
         return $line;
     }
 }

@@ -82,6 +82,11 @@
         }, 3000);
     </script>
     @yield('script')
+    @if ($errors->any())
+        <script>
+            alert("{{ $errors->first() }}");
+        </script>
+    @endif
 </body>
 
 </html>

@@ -25,9 +25,10 @@ class ListCheckData {
         END) as status');
 
         $checkdata = DB::table('tt_checkdata')
-            ->select('tt_checkdata.*','tm_checkarea.min','tm_checkarea.max','tm_checkarea.tipe','tm_checksheet.nama as nama_checksheet','tm_checkarea.nama as nama_checkarea','tm_checksheet.line','tm_checksheet.code','tm_checksheet.jenis',$isStandar)
+            ->select('tt_checkdata.*','tm_checkarea.min','tm_checkarea.max','tm_checkarea.tipe','tm_checksheet.nama as nama_checksheet','tm_checkarea.nama as nama_checkarea','tm_checksheet.line','tm_checksheet.code','tm_checksheet.jenis','users.name as name','users.npk',$isStandar)
             ->leftJoin('tm_checkarea', 'tt_checkdata.id_checkarea', '=', 'tm_checkarea.id')
             ->leftJoin('tm_checksheet', 'tm_checkarea.id_checksheet', '=', 'tm_checksheet.id')
+            ->leftJoin('users', 'tt_checkdata.user', '=', 'users.npk')
             //search in all columns
             ->where(function ($query) use ($request,$columns) {
                 if (($term = $request->get('search'))) {

@@ -11,4 +11,5 @@ class CheckdataController extends Controller
     {
         return $listCheckData->getList($request);
     }
+
 }
