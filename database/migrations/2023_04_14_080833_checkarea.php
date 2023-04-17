@@ -17,9 +17,9 @@ return new class extends Migration
             $table->integer('id',11)->autoIncrement();
             $table->integer('id_checksheet',11)->autoIncrement(false)->default('1');
             //column nama type text
-            $table->string('nama',110)->nullable();
+            $table->text('nama')->nullable();
             //column deskrpsi type tinytext
-            $table->string('deskripsi',110)->nullable();
+            $table->text('deskripsi')->nullable();
             //float min max
             $table->float('min')->nullable();
             $table->float('max')->nullable();
