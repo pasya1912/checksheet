@@ -6,13 +6,15 @@
     <form action="{{ route('checksheet.data') }}" method="GET" id="search-checksheet"
         class="text-center">
 
-        <div class="flex flex-wrap gap-2 w-full  justify-end text-end  my-5">
+        <div class="flex flex-wrap gap-2 w-full  justify-end text-start my-5">
             <div class="w-full md:w-5/12 lg:w-2/12">
-                <label for="tanggal">Tanggal</label>
-                <input type="date" id="tanggal" name="tanggal" class="form-input block w-full"value="{{request()->get('tanggal')}}">
+                <label for="min_tanggal">From</label>
+                <input type="date" id="min_tanggal" name="min_tanggal" class="form-input block w-full" max="{{request()->get('max_tanggal')}}" value="{{request()->get('min_tanggal')}}">
             </div>
-
-
+            <div class="w-full md:w-5/12 lg:w-2/12">
+                <label for="max_tanggal">To</label>
+                <input type="date" id="max_tanggal" name="max_tanggal" class="form-input block w-full" min="{{request()->get('min_tanggal')}}" value="{{request()->get('max_tanggal')}}">
+            </div>
         </div>
         <div class="flex flex-wrap gap-2 w-full  justify-center  my-5">
             <div class="w-full md:w-5/12 lg:w-1/12">
@@ -60,6 +62,7 @@
             <div class="w-full md:w-5/12 lg:w-1/12">
                 <label for="cell">Cell</label>
                 <select id="cell" name="cell" class="w-full border-gray-400 p-2 rounded-lg" required>
+                    <option value="" selected>Cell</option>
                     <option value="m1" {{ request()->get('cell') == 'm1' ? 'selected' : '' }}>m1</option>
                     <option value="m2" {{ request()->get('cell') == 'm2' ? 'selected' : '' }}>m2</option>
                 </select>
@@ -67,6 +70,7 @@
             <div class="w-full md:w-5/12 lg:w-36">
                 <label for="shift">Shift</label>
                 <select id="shift" name="shift" class="w-full border-gray-400 p-2 rounded-lg" required>
+                    <option value="" selected>Shift</option>
                     <option value="1" {{ request()->get('shift') == '1' ? 'selected' : '' }}>1</option>
                     <option value="2" {{ request()->get('shift') == '2' ? 'selected' : '' }}>2</option>
                     <option value="3" {{ request()->get('shift') == '3' ? 'selected' : '' }}>3</option>
@@ -78,6 +82,7 @@
             <div class="w-full md:w-5/12 lg:w-1/12">
                 <label for="barang">First/last</label>
                 <select id="barang" name="barang" class="w-full border-gray-400 p-2 rounded-lg" required>
+                    <option value="" selected>First/last</option>
                     <option value="first" {{ request()->get('barang') == 'first' ? 'selected' : '' }}>first</option>
                     <option value="last" {{ request()->get('barang') == 'last' ? 'selected' : '' }}>last</option>
                 </select>
@@ -179,6 +184,11 @@
 
 
         formes.addEventListener('change', function() {
+            formes.submit();
+        });
+
+        var min = document.querySelector('#min_tanggal');
+        min.addEventListener('change', function() {
             formes.submit();
         });
     </script>

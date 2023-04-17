@@ -9,6 +9,7 @@ class CheckdataController extends Controller
 {
     public function list(Request $request,\App\Service\Admin\ListCheckData $listCheckData, \App\Service\ChecksheetData $checksheetData)
     {
+
         $checkdata = $listCheckData->get($request);
         $lineList = $checksheetData->getLine();
         $codeList = $checksheetData->getCode($request->get('line'));
