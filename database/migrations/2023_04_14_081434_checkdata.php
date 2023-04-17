@@ -14,12 +14,12 @@ return new class extends Migration
     public function up()
     {
         Schema::create('tt_checkdata', function (Blueprint $table) {
-            $table->integer('id',11)->primary();
-            $table->integer('id_checkarea',11)->unsigned();
+            $table->integer('id',11)->autoIncrement();
+            $table->integer('id_checkarea',11)->autoIncrement(false)->default('1');
             //column nama type text
             $table->string('nama',50)->default('m1');
             //column deskrpsi type tinytext
-            $table->enum('barang',['first','last']);
+            $table->enum('barang',['first','last'])->default('first');
             //datetime tanggal default current_timestamp
             $table->dateTime('tanggal')->default(DB::raw('current_timestamp()'));
 

@@ -14,8 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('tm_checkarea', function (Blueprint $table) {
-            $table->integer('id',11)->primary();
-            $table->integer('id_checksheet',11)->unsigned();
+            $table->integer('id',11)->autoIncrement();
+            $table->integer('id_checksheet',11)->autoIncrement(false)->default('1');
             //column nama type text
             $table->string('nama',110)->nullable();
             //column deskrpsi type tinytext
