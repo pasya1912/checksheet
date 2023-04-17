@@ -72,15 +72,15 @@
                         <tbody class="border border-red-200 ">
                             @if(!empty($checkList['data']))
                             @foreach ($checkList['data'] as $check)
-                            <tr class="hover:bg-gray-500 transition duration-300 ease-in-out py-5">
+                            <tr class="{{(int)$check->notgood ? ($check->notgood > 0 ? 'hover:bg-red-200   ':'hover:bg-green-200'):'hover:bg-green-200' }}  transition duration-300 ease-in-out py-5">
 
-                                <td class="py-5">{{ $check->line }}</td>
-                                <td class="py-5">{{ $check->code }}</td>
+                                <td class="py-5"><a onload="changeid(this)" href="{{ route('checksheet.area', $check->id) }}?{{ request()->getQueryString() }}  ">{{ $check->line }}</a></td>
+                                <td class="py-5"><a onload="changeid(this)" href="{{ route('checksheet.area', $check->id) }}?{{ request()->getQueryString() }}  ">{{ $check->code }}</a></td>
                                 <td class="py-5">
-                                    <a onload="changeid(this)" class="hover:text-white" href="{{ route('checksheet.area', $check->id) }}?{{ request()->getQueryString() }}  ">{{ $check->nama }}</a>
+                                    <a onload="changeid(this)" href="{{ route('checksheet.area', $check->id) }}?{{ request()->getQueryString() }}  ">{{ $check->nama }}</a>
                                 </td>
                                 <td class="py-5 flex justify-evenly">
-                                    <div class="mx-5 w-1/4 bg-green-300 text-black"></div>
+                                    <div class="mx-5 w-1/4 {{(int)$check->notgood ? ($check->notgood > 0 ? 'bg-red-400':'bg-green-400'):'bg-green-400' }} text-gray-800"><a href="{{route('checksheet.data')}}?min_tanggal={{date('Y-m-d')}}&max_tanggal={{date('Y-m-d')}}&line={{ $check->line }}&code={{ $check->code }}&checksheet={{ $check->id }}">{{(int)$check->notgood ? ($check->notgood > 0 ? $check->notgood.' NG!':'NO NG'):'NO NG' }}</a></div>
                                     <div class="mx-5 w-1/2 bg-green-300 text-gray-500">Approved</div>
                                 </td>
 
