@@ -16,10 +16,12 @@ use App\Http\Controllers\Admin\CheckdataController as AdminCheckdataController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
 Route::get('/', function () {
-    return view('welcome');
+    if(!auth()->check()){
+        return redirect()->route('login');
+    }
 });
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');
