@@ -80,8 +80,8 @@
                                     <a onload="changeid(this)" href="{{ route('checksheet.area', $check->id) }}?{{ request()->getQueryString() }}  ">{{ $check->nama }}</a>
                                 </td>
                                 <td class="py-5 flex justify-evenly">
-                                    <div class="mx-5 w-1/4 {{(int)$check->notgood ? ($check->notgood > 0 ? 'bg-red-400':'bg-green-400'):'bg-green-400' }} text-gray-800"><a href="{{route('checksheet.data')}}?min_tanggal={{date('Y-m-d')}}&max_tanggal={{date('Y-m-d')}}&line={{ $check->line }}&code={{ $check->code }}&checksheet={{ $check->id }}">{{(int)$check->notgood ? ($check->notgood > 0 ? $check->notgood.' NG!':'NO NG'):'NO NG' }}</a></div>
-                                    <div class="mx-5 w-1/2 bg-green-300 text-gray-500">Approved</div>
+                                    <div class="mx-5 w-1/2 md:w-1/3 {{(int)$check->notgood ? ($check->notgood > 0 ? 'bg-red-400':'bg-green-400'):'bg-green-400' }} text-gray-800"><a href="{{route('checksheet.data')}}?min_tanggal={{date('Y-m-d')}}&max_tanggal={{date('Y-m-d')}}&line={{ $check->line }}&code={{ $check->code }}&checksheet={{ $check->id }}">{{(int)$check->notgood ? ($check->notgood > 0 ? $check->notgood.' NG!':'NO NG'):'NO NG' }}</a></div>
+                                    <div class="mx-5 w-1/2 md:w-2/5 bg-green-300 text-gray-500">Approved</div>
                                 </td>
 
                             </tr>
