@@ -24,7 +24,7 @@
                         <div class="w-full">
                             <label for="code">Model</label>
                             <select id="code" name="code" class="w-full border-gray-400 p-2 rounded-lg" required>
-                                <option value="" selected>Model</option>
+                                <option value="" selected >Model</option>
                                 @foreach($codeList as $code)
                                 <option value="{{$code->code}}" {{request()->get('code') == $code->code ? 'selected':''}}>{{$code->code}}</option>
                                 @endforeach

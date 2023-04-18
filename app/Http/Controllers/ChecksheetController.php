@@ -21,34 +21,44 @@ class ChecksheetController extends Controller
 
 
         //get checksheet from db based on search parameter if exist with like paginate every 10
-        $checkList = DB::table('tm_checksheet')
-            //cek apakah terdapat tt_checkdata yang tidak sesuai min max
-            ->select('tm_checksheet.*',DB::raw('sum((CASE WHEN tm_checkarea.tipe = "1" THEN
-            (CASE WHEN tt_checkdata.value = "ok" THEN 0
-            WHEN tt_checkdata.value = "ng" THEN 1
-            ELSE 0 END)
-        WHEN tm_checkarea.tipe = "2" THEN
-            (CASE WHEN tt_checkdata.value BETWEEN IFNULL(tm_checkarea.min,-99999999) AND IFNULL(tm_checkarea.max,99999999) THEN 0 ELSE 1 END)
-        ELSE 0 END)) as notgood'))
-            ->leftJoin('tm_checkarea', 'tm_checksheet.id', '=', 'tm_checkarea.id_checksheet')
-            ->leftJoin('tt_checkdata', 'tm_checkarea.id', '=', 'tt_checkdata.id_checkarea')
-            ->whereDate('tt_checkdata.tanggal', '=', date('Y-m-d'))
-            //search in all columns
+            $checkList = DB::table('tm_checksheet')
+                ->select('tm_checksheet.*')
 
 
-
-            ->where(function ($query) use ($request,$line,$code) {
+            ->where(function ($query) use ($line,$code) {
 
                     $query->where('line', 'LIKE', '%' . $line . '%')
                         ->where('code', 'LIKE', '%' . $code . '%');
 
             })
-            ->groupBy('tm_checksheet.id')
+
             ->paginate(20)->appends(request()->query())->toArray();
+            foreach($checkList['data'] as $key => $value){
+                $checkList['data'][$key]->notgood = DB::table('tt_checkdata')
+                ->select('tt_checkdata.*','tm_checkarea.min','tm_checkarea.max')
+                ->leftJoin('tm_checkarea', 'tt_checkdata.id_checkarea', '=', 'tm_checkarea.id')
+                ->leftJoin('tm_checksheet', 'tm_checkarea.id_checksheet', '=', 'tm_checksheet.id')
+                ->where('tm_checksheet.id',$value->id)
+                ->whereDate('tanggal',date('Y-m-d'))
+                ->where('tt_checkdata.value',DB::raw('tt_checkdata.value'))
+                ->whereRaw('
+                (CASE
+                    WHEN tm_checkarea.tipe = "1" THEN tt_checkdata.value = "ng"
+                    WHEN tm_checkarea.tipe = "2" THEN tt_checkdata.value NOT BETWEEN IFNULL(tm_checkarea.min,-99999999) AND IFNULL(tm_checkarea.max,99999999)
+                    WHEN tm_checkarea.tipe = "3" THEN tt_checkdata.value = "xxxxxx"
+                    END
+                    )')
+
+
+                ->count();
+            }
+
         }
+
 
         $lineList = $checksheet->getLine();
         $codeList = $checksheet->getCode($request->get('line'));
+
 
 
 
