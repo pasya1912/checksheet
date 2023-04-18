@@ -65,6 +65,7 @@
             </div>
         </div>
     @endif
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/datepicker.min.js"></script>
     <script>
         setTimeout(function() {
             var element = document?.getElementById("notification");
@@ -82,6 +83,12 @@
         }, 3000);
     </script>
     @yield('script')
+    @if ($errors->any())
+        <script>
+            alert("{{ $errors->first() }}");
+        </script>
+    @endif
+
 </body>
 
 </html>

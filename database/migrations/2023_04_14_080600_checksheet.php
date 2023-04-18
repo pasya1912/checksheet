@@ -13,10 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('password_resets', function (Blueprint $table) {
-            $table->string('npk')->primary();
-            $table->string('token');
-            $table->timestamp('created_at')->nullable();
+        Schema::create('tm_checksheet', function (Blueprint $table) {
+            $table->integer('id',11)->autoIncrement();
+            $table->string('line',50);
+            $table->string('code',11);
+            $table->string('nama',110)->nullable();
+            $table->enum('jenis',['OIL PAN','TCC'])->default('OIL PAN');
         });
     }
 
@@ -27,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('password_resets');
+        Schema::dropIfExists('tm_checksheet');
     }
 };

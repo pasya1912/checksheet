@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Check Area List') }}
+            {{ __('Check Area Input') }}
         </h2>
     </x-slot>
 
@@ -10,8 +10,10 @@
 
             <div class="p-6 bg-white shadow-sm sm:rounded-lg w-full ">
                 <div class="py-5 text-lg">
-                    <span class="hover:bg-blue-200 border border-blue-400 px-3 py-2"><a href="{{route('checksheet.list')}}">&laquo; Back</a></span>
-                    </div>
+                    <span class="hover:bg-blue-200 border border-blue-400 px-3 py-2"><a
+                            href="{{ route('checksheet.list') }}?{{ request()->getQueryString() }}">&laquo;
+                            Back</a></span>
+                </div>
                 <div class="flex justify-between">
                     <div>
                         Model : {{ $checksheet->code }}
@@ -23,28 +25,6 @@
                 <div class="text-center text-xl">
                     <h2>{{ $checksheet->nama }}</h2>
                 </div>
-                <div class="w-1/2 md:w-1/3  my-5">
-                    <form action="{{ url()->current() }}" method="GET">
-                        <label for="default-search"
-                            class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                <svg aria-hidden="true" class="w-3 h-3 text-white fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                </svg>
-                            </div>
-                            <input type="search" id="default-search"
-                                class="block w-full p-3 pl-10 text-sm bg-gray-400 rounded-xl placeholder-gray-900"
-                                name="search" value="{{ request()->query('search') }}" placeholder="Cari...">
-                            <input type="submit"
-                                class="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                value="Cari">
-                        </div>
-                    </form>
-
-                </div>
                 <div class="w-full sm:overflow-x-scroll">
                     <table class="table-auto w-full  border border-red-500 text-center">
                         <thead class="border border-red-400">
@@ -53,15 +33,23 @@
                                 <th>Aksi</th>
                             </tr>
                         </thead>
-                        <tbody class="border border-red-200 ">
+                        <tbody class="border border-red-400 ">
                             @foreach ($areaList['data'] as $area)
-                                <tr class="hover:bg-gray-500 transition duration-300 ease-in-out">
-                                    <td class="py-5">{{ $area->nama }}</td>
-                                    <td class="py-5">
-                                        <a href="{{ route('checksheet.data.list', ['idchecksheet'=>$checksheet->id,'idcheckarea' => $area->id]) }}"
-                                            class="text-white bg-violet-500 hover:bg-violet-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1 ">Entry List</a>
-                                            <a href="{{ route('checksheet.data.form', ['idchecksheet'=>$checksheet->id,'idcheckarea' => $area->id]) }}"
-                                                class="text-white bg-blue-500 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Entry</a>
+                                <tr class="border border-y-gray-200 border-x-red-300">
+                                    @if ($area->tipe == 2)
+                                        <td class="py-5 w-8/12">{{ $area->min ? 'Min: ' . $area->min : '' }} <span
+                                                class="bg-gray-200 p-5 text-black">{{ $area->nama }}</span>
+                                            {{ $area->max ? 'Max: ' . $area->max : '' }} </td>
+                                    @else
+                                        <td class="py-5 w-8/12"><span
+                                                class="bg-gray-200 p-5 text-black">{{ $area->nama }}</span> </td>
+                                    @endif
+                                    <td class="py-5 w-4/12">
+
+                                        <div class="w-full flex gap-3">
+                                            @csrf
+                                            @include('checksheet.checkdata.input')
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
@@ -86,6 +74,66 @@
             </div>
         </div>
     </div>
+
+    @section('script')
+        <script>
+            function inputData(checksheetid, areaid, element) {
+                //get all query string
+                var value = document.getElementById("value-" + areaid).value;
+                //get root url
+                var root = window.location.origin;
+                var url = new URL(window.location.href);
+                var params = new URLSearchParams(url.search);
+                //call route checksheet.data.store using xhr
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', root + '/checksheet/' + checksheetid + '/checkarea/' + areaid);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                //csrf
+                xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+                xhr.onload = function() {
+                    var res = JSON.parse(xhr.responseText);
+                    if (xhr.status === 200) {
+                        element.disabled = true;
+
+                        //change border to red
+                        element.classList.remove('bg-gray-300');
+
+                        //change text to "success"
+                        //change ring to green
+
+                        if(res.is_good)
+                        {
+                        document.getElementById("value-" + areaid).classList.add('ring-green-200');
+                        element.innerHTML = "Good";
+                        element.classList.add('bg-green-300');
+                        document.getElementById("value-" + areaid).disabled = true;
+
+                        }
+                        else
+                        {
+                        document.getElementById("value-" + areaid).classList.add('ring-red-200');
+                        element.innerHTML = "NG!";
+                        element.classList.add('bg-red-300');
+                        document.getElementById("value-" + areaid).disabled = true;
+
+                        }
+                    } else {
+                        element.enabled = false;
+
+                        element.classList.remove('border-gray-300');
+                        element.classList.add('border-red-300');
+                        element.innerHTML = "Failed";
+
+                        //if existd, remove green ring
+                        if (document.getElementById("value-" + areaid).classList.contains('ring-green-200')) {
+                            document.getElementById("value-" + areaid).classList.remove('ring-green-200');
+                        }
+                        document.getElementById("value-" + areaid).classList.add('ring-red-300');
+                    }
+
+                };
+                xhr.send('value=' + value + "&" + params.toString());
+            }
+        </script>
+    @endsection
 </x-app-layout>
-
-
