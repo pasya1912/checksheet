@@ -21,6 +21,15 @@
                     <div>
                         Line : {{ $checksheet->line }}
                     </div>
+                    <div>
+                        Cell : {{ request()->get('cell') }}
+                    </div>
+                    <div>
+                        Shift : {{ request()->get('shift') }}
+                    </div>
+                    <div>
+                        Barang : {{ request()->get('barang') }}
+                    </div>
                 </div>
                 <div class="text-center text-xl">
                     <h2>{{ $checksheet->nama }}</h2>
@@ -37,12 +46,14 @@
                             @foreach ($areaList['data'] as $area)
                                 <tr class="border border-y-gray-200 border-x-red-300">
                                     @if ($area->tipe == 2)
-                                        <td class="py-5 w-8/12">{{ $area->min ? 'Min: ' . $area->min : '' }} <span
-                                                class="bg-gray-200 p-5 text-black">{{ $area->nama }}</span>
-                                            {{ $area->max ? 'Max: ' . $area->max : '' }} </td>
+                                        <td class="py-5 w-8/12">
+                                            <div>{{ $area->max ? 'Max: ' . $area->max : '' }}</div>
+                                            <span
+                                                class="w-10/12 md:w-11/12 bg-gray-200 p-5 text-black inline-block text-sm md:text-base">{{ $area->nama }}</span>
+                                            <div>{{ $area->min ? 'Min: ' . $area->min : '' }}</div></td>
                                     @else
                                         <td class="py-5 w-8/12"><span
-                                                class="bg-gray-200 p-5 text-black">{{ $area->nama }}</span> </td>
+                                                class="w-10/12 md:w-11/12 bg-gray-200 p-5 text-black inline-block text-sm md:text-base">{{ $area->nama }}</span> </td>
                                     @endif
                                     <td class="py-5 w-4/12">
 

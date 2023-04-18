@@ -6,7 +6,7 @@
     <form action="{{ route('checksheet.data') }}" method="GET" id="search-checksheet"
         class="text-center">
 
-        <div class="flex flex-wrap gap-2 w-full  justify-end text-start my-5">
+        <div class="flex flex-wrap gap-2 w-full  justify-center md:justify-end text-start my-5">
             <div class="w-full md:w-5/12 lg:w-2/12">
                 <label for="min_tanggal">From</label>
                 <input type="date" id="min_tanggal" name="min_tanggal" class="form-input block w-full" max="{{request()->get('max_tanggal')}}" value="{{request()->get('min_tanggal')}}">
@@ -116,53 +116,52 @@
                         @elseif($data->status == 'notgood')
                         <tr class="hover:bg-red-500 bg-red-300 border border-gray-300">
                     @endif
-                    <td class="py-5"><span class="text text-sm">
+                    <td class="py-5 border border-gray-300"><span class="text text-sm">
                             <div>{{ $data->line }}|{{ $data->code }}</div>
                             <div>{{ $data->nama_checksheet }}|{{ $data->nama_checkarea }}</div>
                             <div>{{ $data->nama }}</div>
                         </span></td>
-                    <td class="py-5">{{ $data->shift }} ({{ $data->barang }})</td>
+                    <td class="py-5 border border-gray-300">{{ $data->shift }} ({{ $data->barang }})</td>
 
-                    <td class="py-5  ">
+                    <td class="py-5 border border-gray-300 ">
                         {{ $data->tanggal }}
                     </td>
-                    <td class="py-5">
-                        <div class=" flex justify-start ">
-                            <div class="w-1/2 text-end px-2 py-1">{{ $data->value }}</div>
-                            <div class="w-1/2 text-start flex items-center  ">
+                    <td class="py-5 border border-gray-300">
+                        <div class="flex flex-col">
+                            <div class="w-full px-2 py-1">{{ $data->value }}</div>
+                            <div class="w-3/4 md:w-1/2 m-auto  flex items-center  ">
                                 <span
-                                    class=" inline-block ml-1 px-2 w-11/12 text-center py-1 text-sm font-semibold text-gray-800 bg-gray-200 rounded-md">
+                                    class=" ml-1 px-2 w-11/12 text-center py-1 text-sm font-semibold text-gray-800 bg-gray-200 rounded-md">
                                     {{ $data->status }}</span>
                             </div>
                         </div>
 
                     </td>
-                    <td class="py-5">
-                        <div class=" flex justify-start ">
-                            <div class="w-1/2 text-end px-2 py-1">
-                                <div class="">
+                    <td class="py-5 border border-gray-300">
+                        <div class=" flex flex-col ">
+                            <div class="w-full px-2 py-1">
+
                                     <span class="text-sm">{{ $data->name }}</span><span class="text-xs">
                                         ({{ $data->npk }})
                                     </span>
-                                </div>
                             </div>
 
                             @if ($data->approval == 'approved')
-                                <div class="w-1/2 text-start flex items-center">
+                                <div class="w-3/4 md:w-1/2m-auto flex items-center">
                                     <span
                                         class="inline-block ml-1 px-2 py-1 w-11/12 text-center text-sm font-semibold text-gray-800 bg-green-200 rounded-md">
                                         Approved
                                     </span>
                                 </div>
                             @elseif($data->approval == 'rejected')
-                                <div class="w-1/2 text-start flex items-center">
+                                <div class="w-3/4 md:w-1/2 m-auto flex items-center">
                                     <span
                                         class="inline-block ml-1 px-2 py-1 w-11/12 text-center text-sm font-semibold text-gray-800 bg-red-200 rounded-md">
                                         Rejected
                                     </span>
                                 </div>
                             @else
-                                <div class="w-1/2 text-start flex items-center ">
+                                <div class="w-3/4 md:w-1/2 m-auto flex items-center ">
                                     <span
                                         class="inline-block ml-1 px-2 w-11/12 text-center py-1 text-sm font-semibold text-gray-800 bg-yellow-200 rounded-md">
                                         Waiting
