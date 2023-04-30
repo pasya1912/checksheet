@@ -51,9 +51,14 @@
                                             <span
                                                 class="w-10/12 md:w-11/12 bg-gray-200 p-5 text-black inline-block text-sm md:text-base">{{ $area->nama }}</span>
                                             <div>{{ $area->min ? 'Min: ' . $area->min : '' }}</div></td>
-                                    @else
+                                    @elseif($area->tipe == 1)
                                         <td class="py-5 w-8/12"><span
                                                 class="w-10/12 md:w-11/12 bg-gray-200 p-5 text-black inline-block text-sm md:text-base">{{ $area->nama }}</span> </td>
+                                    @else
+                                        <td class="py-5 w-8/12"><div
+                                                class="w-10/12 md:w-11/12 bg-gray-200 p-5 text-black inline-block text-sm md:text-base">{{ $area->nama }}</div><div class="text-xs">
+                                                    {{$area->deskripsi}}
+                                                </div></td>
                                     @endif
                                     <td class="py-5 w-4/12">
 
