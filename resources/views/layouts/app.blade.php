@@ -13,6 +13,9 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
     <!-- Scripts -->
+
+    {{-- <script type="module" src="http://172.18.11.238:5173/{{'@'}}vite/client"></script><link rel="stylesheet" href="http://172.18.11.238:5173/resources/css/app.css" /><script type="module" src="http://172.18.11.238:5173/resources/js/app.js"></script></head>
+ --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 

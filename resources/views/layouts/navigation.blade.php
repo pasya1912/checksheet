@@ -20,10 +20,12 @@
                         {{ __('Checksheet List') }}
 
                     </x-nav-link>
+                    @if(auth()->user()->role == "admin")
                     <x-nav-link :href="route('checksheet.data')" :active="request()->routeIs('checksheet.data')">
                         {{ __('Checksheet Data') }}
 
                     </x-nav-link>
+                    @endif
 
                 </div>
             </div>
@@ -88,10 +90,12 @@
                 {{ __('Checksheet List') }}
 
             </x-responsive-nav-link>
+            @if(auth()->user()->role == "admin")
             <x-responsive-nav-link :href="route('checksheet.data')" :active="request()->routeIs('checksheet.data')">
                 {{ __('Checksheet Data') }}
 
             </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->

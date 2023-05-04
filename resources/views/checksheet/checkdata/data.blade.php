@@ -1,19 +1,20 @@
 @extends('checksheet.checkdata.layout')
 @section('header')
-{{ __('Checksheet Data List') }}
+    {{ __('Checksheet Data List') }}
 @endsection
 @section('content')
-    <form action="{{ route('checksheet.data') }}" method="GET" id="search-checksheet"
-        class="text-center">
+    <form action="{{ route('checksheet.data') }}" method="GET" id="search-checksheet" class="text-center">
 
-        <div class="flex flex-wrap gap-2 w-full  justify-center md:justify-end text-start my-5">
-            <div class="w-full md:w-5/12 lg:w-2/12">
+        <div class="flex flex-wrap gap-2 w-full  justify-center lg:justify-end text-start my-5">
+            <div class="w-full md:w-5/12 lg:w-2/12 ">
                 <label for="min_tanggal">From</label>
-                <input type="date" id="min_tanggal" name="min_tanggal" class="form-input block w-full" max="{{request()->get('max_tanggal')}}" value="{{request()->get('min_tanggal')}}">
+                <input type="date" id="min_tanggal" name="min_tanggal" class="form-input block w-full"
+                    max="{{ request()->get('max_tanggal') }}" value="{{ request()->get('min_tanggal') }}">
             </div>
             <div class="w-full md:w-5/12 lg:w-2/12">
                 <label for="max_tanggal">To</label>
-                <input type="date" id="max_tanggal" name="max_tanggal" class="form-input block w-full" min="{{request()->get('min_tanggal')}}" value="{{request()->get('max_tanggal')}}">
+                <input type="date" id="max_tanggal" name="max_tanggal" class="form-input block w-full"
+                    min="{{ request()->get('min_tanggal') }}" value="{{ request()->get('max_tanggal') }}">
             </div>
         </div>
         <div class="flex flex-wrap gap-2 w-full  justify-center  my-5">
@@ -128,10 +129,10 @@
                     </td>
                     <td class="py-5 border border-gray-300">
                         <div class="flex flex-col">
-                            <div class="w-full px-2 py-1">{{ $data->value }}</div>
+                            <div class="w-3/4 md:w-1/2 m-auto"><span
+                                    class="w-11/12 px-5 py-1 text-gray-800 bg-gray-200">{{ $data->value }}</span></div>
                             <div class="w-3/4 md:w-1/2 m-auto  flex items-center  ">
-                                <span
-                                    class=" ml-1 px-2 w-11/12 text-center py-1 text-sm font-semibold text-gray-800 bg-gray-200 rounded-md">
+                                <span class=" ml-1 px-2 w-11/12 text-center py-1 text-xs font-semibold rounded-md">
                                     {{ $data->status }}</span>
                             </div>
                         </div>
@@ -139,35 +140,48 @@
                     </td>
                     <td class="py-5 border border-gray-300">
                         <div class=" flex flex-col ">
-                            <div class="w-full px-2 py-1">
+                            <div class="w-10/12 m-auto px-2 py-1">
 
-                                    <span class="text-sm">{{ $data->name }}</span><span class="text-xs">
+                                <div class=" b-slate-500 text-gray-200 rounded-md bg-gray-400">
+                                    <div class="text-xs md:text-sm block mb-1">{{ $data->name }}
+                                    </div>
+                                    <div class="text-xs md:text-sm block mt-1">
                                         ({{ $data->npk }})
-                                    </span>
-                            </div>
-
-                            @if ($data->approval == 'approved')
-                                <div class="w-3/4 md:w-1/2m-auto flex items-center">
-                                    <span
-                                        class="inline-block ml-1 px-2 py-1 w-11/12 text-center text-sm font-semibold text-gray-800 bg-green-200 rounded-md">
-                                        Approved
-                                    </span>
+                                    </div>
                                 </div>
-                            @elseif($data->approval == 'rejected')
-                                <div class="w-3/4 md:w-1/2 m-auto flex items-center">
-                                    <span
-                                        class="inline-block ml-1 px-2 py-1 w-11/12 text-center text-sm font-semibold text-gray-800 bg-red-200 rounded-md">
-                                        Rejected
-                                    </span>
+
+
+
+                            </div>
+                            @if (auth()->user()->role == 'admin')
+                                <div class="w-3/4 md:w-3/4 m-auto flex items-center  ">
+                                    @include('checksheet.checkdata.changeStatus')
                                 </div>
                             @else
-                                <div class="w-3/4 md:w-1/2 m-auto flex items-center ">
-                                    <span
-                                        class="inline-block ml-1 px-2 w-11/12 text-center py-1 text-sm font-semibold text-gray-800 bg-yellow-200 rounded-md">
-                                        Waiting
-                                    </span>
-                                </div>
+                                @if ($data->approval == 'approved')
+                                    <div class="w-3/4 md:w-1/2m-auto flex items-center">
+                                        <span
+                                            class="inline-block ml-1 px-2 py-1 w-11/12 text-center text-sm font-semibold text-gray-800 bg-green-200 rounded-md">
+                                            Approved
+                                        </span>
+                                    </div>
+                                @elseif($data->approval == 'rejected')
+                                    <div class="w-3/4 md:w-1/2 m-auto flex items-center">
+                                        <span
+                                            class="inline-block ml-1 px-2 py-1 w-11/12 text-center text-sm font-semibold text-gray-800 bg-red-200 rounded-md">
+                                            Rejected
+                                        </span>
+                                    </div>
+                                @else
+                                    <div class="w-3/4 md:w-1/2 m-auto flex items-center ">
+                                        <span
+                                            class="inline-block ml-1 px-2 w-11/12 text-center py-1 text-sm font-semibold text-gray-800 bg-yellow-200 rounded-md">
+                                            Waiting
+                                        </span>
+                                    </div>
+                                @endif
                             @endif
+
                         </div>
                     </td>
                     </tr>
@@ -175,6 +189,7 @@
             </tbody>
         </table>
     </div>
+
 @endsection
 @section('script')
     <script>
@@ -190,5 +205,44 @@
         min.addEventListener('change', function() {
             formes.submit();
         });
+        //================================================
+        @if (auth()->user()->role == 'admin')
+
+
+            function changeStatus(element){
+                var id = element.getAttribute('data-id');
+                var status = element.value;
+                var url = "{{ route('checksheet.data.changeStatus', ':id') }}";
+                url = url.replace(':id', id);
+                var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                var data = {
+                    status: status,
+                    _token: token
+                };
+                fetch(url, {
+                        method: 'POST',
+                        body: JSON.stringify(data),
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': token,
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        if (data.status == 'success') {
+                            alert('Status berhasil diubah');
+                            location.reload();
+                        } else {
+                            alert('Status gagal diubah');
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+                }
+
+        @endif
     </script>
 @endsection

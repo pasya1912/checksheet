@@ -17,10 +17,13 @@ class adminMiddleware
     public function handle(Request $request, Closure $next)
     {
 
-        //check if user is admin
-        if (!auth()->user()->role == 'admin') {
-            return redirect()->back()->with('error', 'You are not admin');
+
+        if (auth()->check() && auth()->user()->role == "admin") {
+            return $next($request);
+        }else{
+            return redirect()->route('checksheet.list')->with('error', 'You are not admin');
         }
-        return $next($request);
+
+
     }
 }
