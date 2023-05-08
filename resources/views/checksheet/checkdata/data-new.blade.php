@@ -93,52 +93,36 @@
         </div>
     </form>
     <div class="w-full overflow-x-scroll">
-        <table class="table-auto w-full table-layout-fixed border border-red-500 text-center">
-            <colgroup>
-                <col class="w-2/6">
-                <col class="w-1/12">
-                <col class="w-1/5">
-                <col class="w-2/12">
-                <col class="w-2/12">
-            </colgroup>
-            <thead class="border border-gray-400">
-                <tr>
-                    <th>Location</th>
-                    <th>Shift</th>
-                    <th>Tanggal</th>
-                    <th>Value</th>
-                    <th>Checker</th>
-                </tr>
-            </thead>
-            <tbody class="border border-gray-200 ">
+        <table class="table-auto w-full table-layout-fixed border border-red-500 text-gray-200">
+            <tbody class="border-gray-200 border-solid">
                 @foreach ($checkdata['data'] as $data)
                     @if ($data->status == 'good')
                         <tr class="hover:bg-green-500 bg-green-300 border border-gray-300">
                         @elseif($data->status == 'notgood')
                         <tr class="hover:bg-red-500 bg-red-300 border border-gray-300">
                     @endif
-                    <td class="py-5 border border-gray-300"><span class="text text-sm">
+                    <td class="block py-3"><span class="text text-sm">
                             <div>{{ $data->line }}|{{ $data->code }}</div>
                             <div>{{ $data->nama_checksheet }}|{{ $data->nama_checkarea }}</div>
                             <div>{{ $data->nama }}</div>
                         </span></td>
-                    <td class="py-5 border border-gray-300">{{ $data->shift }} ({{ $data->barang }})</td>
+                    <td class="block py-3">{{ $data->shift }} ({{ $data->barang }})</td>
 
-                    <td class="py-5 border border-gray-300 ">
+                    <td class="block py-3 ">
                         {{ $data->tanggal }}
                     </td>
-                    <td class="py-5 border border-gray-300">
+                    <td class="block py-3">
                         <div class="flex flex-col">
-                            <div class="w-11/12 md:w-1/2 m-auto "><span
-                                    class="w-full px-5 py-1 text-gray-800 bg-gray-200 rounded-xl inline-block">{{ $data->value }}</span></div>
-                            <div class="w-11/12 md:w-1/2 m-auto  flex items-center  ">
+                            <div class="w-3/4 md:w-1/2 m-auto "><span
+                                    class="w-11/12 px-5 py-1 text-gray-800 bg-gray-200 rounded-xl inline-block">{{ $data->value }}</span></div>
+                            <div class="w-3/4 md:w-1/2 m-auto  flex items-center  ">
                                 <span class=" ml-1 px-2 w-11/12 text-center py-1 text-xs font-semibold rounded-md">
                                     {{ $data->status }}</span>
                             </div>
                         </div>
 
                     </td>
-                    <td class="py-5 border border-gray-300">
+                    <td class="block py-3">
                         <div class=" flex flex-col ">
                             <div class="w-10/12 m-auto px-2 py-1">
 

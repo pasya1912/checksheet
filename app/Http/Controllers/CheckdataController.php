@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\DB;
+use App\Models\Checkdata;
 use Illuminate\Validation\ValidationException;
 
 use App\Rules\ValidateLine;
@@ -22,7 +23,8 @@ class CheckdataController extends Controller
     {
         try {
             $request->validate([
-                'value' => 'required', new ValidateValue($idcheckarea),
+                'value' => 'required',
+                new ValidateValue($idcheckarea),
                 'barang' => ['required', new ValidateBarang],
                 'code' => ['required', new ValidateCode($request->line)],
                 'line' => ['required', new ValidateLine],
@@ -105,6 +107,57 @@ class CheckdataController extends Controller
             default:
                 return false;
                 break;
+        }
+    }
+    public function updateNotes($idchecksheet, $idcheckarea, Request $request)
+    {
+        $request->validate([
+            'id_checkdata' => 'required|numeric',
+            'notes' => 'required'
+        ]);
+        $request->notes = htmlspecialchars($request->notes);
+
+        $find = Checkdata::where('id', $request->id_checkdata);
+        if (auth()->user()->role != 'admin') {
+            $find->where('user', auth()->user()->npk);
+
+        }
+        $find = $find->first();
+        $notes = $request->notes . "<br>- " . auth()->user()->name . " (" . date('d-m-Y H:i:s') . ")";
+
+        if ($find && $find->mark != 1) {
+            $find->notes = $notes;
+            if($request->marked == "1"){
+                $find->mark = "1";
+
+            }
+            if ($find->save()) {
+                return redirect()->back()->with('success', 'Notes berhasil ditambahkan');
+
+            } else {
+                return redirect()->back()->with('error', 'Notes gagal ditambahkan');
+            }
+        } else {
+            return redirect()->back()->with('error', 'Notes gagal ditambahkan');
+        }
+    }
+
+    public function get($idchecksheet, $idcheckarea, Request $request)
+    {
+        try {
+            $request->validate([
+                'id' => 'required|numeric'
+            ]);
+
+            $find = Checkdata::where('id', $request->id)->first();
+
+            if ($find) {
+                return response()->json(['status' => 'success', 'message' => 'Data berhasil ditemukan', 'data' => $find], 200);
+            } else {
+                return response()->json(['status' => 'error', 'message' => 'Data gagal ditemukan'], 500);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => 'Data gagal ditemukan'], 500);
         }
     }
 }

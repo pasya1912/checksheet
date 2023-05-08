@@ -24,9 +24,12 @@ class ListCheckData {
             WHEN tt_checkdata.value = "ng" THEN "notgood"
              END)
         WHEN tm_checkarea.tipe = "2" THEN
-            (CASE WHEN tt_checkdata.value BETWEEN IFNULL(tm_checkarea.min,-99999999) AND IFNULL(tm_checkarea.max,99999999) THEN "good" ELSE "notgood" END)
+            (CASE
+            WHEN (CAST(tt_checkdata.value AS DECIMAL(10,4)) < IFNULL(CAST(tm_checkarea.min AS DECIMAL(10,4)), CAST("-Infinity" AS DECIMAL(10,4)))) OR (CAST(tt_checkdata.value AS DECIMAL(10,4)) > IFNULL(CAST(tm_checkarea.max AS DECIMAL(10,4)), CAST("Infinity" AS DECIMAL(10,4)))) THEN "notgood"
+            ELSE "good"
+            END)
         WHEN tm_checkarea.tipe = "3" THEN
-            "netral"
+            "general"
         END) as status');
 
         $checkdata = DB::table('tt_checkdata')
@@ -43,7 +46,7 @@ class ListCheckData {
                     }
                 }
             })
-            ->orderBy('tt_checkdata.nama','ASC')
+            ->orderBy('tt_checkdata.id','DESC')
             ->paginate(20)->appends(request()->query())->toArray();
             switch($checksheetarea->tipe){
                 case 1:

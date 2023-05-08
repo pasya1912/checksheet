@@ -40,8 +40,9 @@ class CheckareaController extends Controller
 
             foreach ($areaList['data'] as $key => $area) {
                 $area->checkdata = DB::table('tt_checkdata')
-                    ->join('tm_checkarea', 'tt_checkdata.id_checkarea', '=', 'tm_checkarea.id')
-                    ->select('*')
+                    ->leftJoin('tm_checkarea', 'tt_checkdata.id_checkarea', '=', 'tm_checkarea.id')
+
+                    ->select('tt_checkdata.*','tm_checkarea.id as area_id','tm_checkarea.tipe','tt_checkdata.notes')
                     ->where('tt_checkdata.id_checkarea', $area->id)
                     ->where('tt_checkdata.nama', $request->query('cell'))
                     ->where('tt_checkdata.shift', $request->query('shift'))
@@ -61,13 +62,11 @@ class CheckareaController extends Controller
                     }
                 }
             }
-
             return view('checksheet.area', compact('areaList', 'checksheet'));
         } catch (\Exception $e) {
-            return redirect()->route('checksheet.list')->with('error', $e->getMessage());
+            return redirect()->back()->with('error', $e->getMessage());
         }
 
-        //return view checklist with checklist
 
     }
 }

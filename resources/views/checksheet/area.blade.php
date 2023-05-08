@@ -98,8 +98,8 @@
     </div>
     <!-- Main modal -->
     <div id="staticModal"
-        class="fixed top-14 z-50 w-full  hidden p-4 overflow-x-hidden overflow-y-hidden md:inset-0 h-[calc(100%-1rem)] max-h-full">
-        <div class="relative w-full max-w-2xl max-h-full m-auto">
+        class="fixed top-14 z-50 w-full hidden p-4 overflow-x-hidden overflow-y-hidden md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative w-full  max-w-2xl max-h-full m-auto">
             <!-- Modal content -->
             <div class="relative bg-gray-300 rounded-lg shadow dark:bg-gray-700">
                 <!-- Modal header -->
@@ -118,31 +118,42 @@
                     </button>
                 </div>
                 <!-- Modal body -->
-                <div class="p-6 space-y-6">
-                    <form>
-                        <input type="hidden" id="id_checkarea" name="id_checkarea">
+                <form
+                    action="{{ route('checksheet.data.updateNotes', ['idchecksheet' => ':idchecksheet', 'idcheckarea' => ':idcheckarea']) }}"
+                    method="POST" id="form_notes">
+
+                    <div class="p-6 space-y-6">
+                        <input type="hidden" id="id_checkdata" name="id_checkdata">
                         <div class="mb-4">
                             <label for="notes"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Notes</label>
-                            <textarea name="notes" id="form_notes"
+                            <textarea name="notes" id="textarea_notes" cols="30" rows="5" max="144"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                placeholder="Tambahkan notes.." ></textarea>
+                                placeholder="Tambahkan notes.."></textarea>
                         </div>
-                        <div class="flex items-center mb-4">
-                            <input id="default-checkbox" type="checkbox" value=""
+                        <div class=" mb-4">
+                            <div class="flex items-center">
+                            <input id="default-checkbox" name="marked" type="checkbox" value="1"
                                 class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                             <label for="default-checkbox"
-                                class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Solved / Sudah Dihandle</label>
+                                class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Solved / Sudah
+                                Dihandle</label>
+                            </div>
+                            <div class=" text-sm font-sm text-gray-600   dark:text-gray-300">
+                                <p>Notes tidak dapat diedit jika sudah dihandle</p>
+                            </div>
                         </div>
-                    </form>
 
-                </div>
-                <!-- Modal footer -->
-                <div class="flex justify-end items-center p-6 space-x-2 border-t border-gray-200 rounded-b dark:border-gray-600">
-                    <button type="submit" data-modal-hide="staticModal" type="button"
-                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">I
-                        Submit</button>
-                </div>
+
+                    </div>
+                    <!-- Modal footer -->
+                    <div
+                        class="flex justify-end items-center p-6 space-x-2 border-t border-gray-200 rounded-b dark:border-gray-600">
+                        <button type="submit" data-modal-hide="staticModal" type="button"
+                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">I
+                            Submit</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -184,6 +195,8 @@
                             element.innerHTML = "NG!";
                             element.classList.add('bg-red-300');
                             document.getElementById("value-" + areaid).disabled = true;
+                            //refresh
+                            location.reload();
 
                         }
                     } else {
@@ -207,15 +220,65 @@
         <script>
             var modal = document.getElementById("staticModal");
             var closeBtn = document.getElementById("closeStaticModal");
+            var form_notes = document.getElementById("form_notes");
 
-            function openModal(btn){
+            function getData(areaid, dataid) {
+                return new Promise((resolve, reject) => {
+                    var xhr = new XMLHttpRequest();
+                    var url =
+                        "{{ route('checksheet.data.get', ['idchecksheet' => $checksheet->id, 'idcheckarea' => ':idcheckarea']) }}";
+                    url = url.replace(':idcheckarea', areaid);
+
+                    console.log(url);
+                    xhr.open('GET', url + "?id=" + dataid);
+                    xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="csrf-token"]').getAttribute(
+                        'content'));
+                    xhr.onload = function() {
+                        if (xhr.status === 200) {
+                            try {
+                                var res = JSON.parse(xhr.responseText);
+                                if (res && res.data) {
+                                    resolve(res.data);
+                                } else {
+                                    reject(new Error("Invalid response data"));
+                                }
+                            } catch (err) {
+                                reject(err);
+                            }
+                        } else {
+                            reject(new Error("Request failed with status " + xhr.status));
+                        }
+                    };
+                    xhr.onerror = function() {
+                        reject(new Error("Network error"));
+                    };
+                    xhr.send();
+                });
+
+            }
+
+            async function openModal(btn, id_checksheet, id_checkarea) {
                 //get attribute area-id value
-                var areaid = btn.getAttribute("data-id");
-                console.log(areaid);
+                var dataid = btn.getAttribute("data-id");
+                var data = await getData(id_checkarea, dataid);
+                //regex replace data.notes
+                if(data.notes == null){
+                    data.notes = "";
+                }
+                data.notes = data.notes.replace(/<br>(.*?)\)/,'');
+
+                var notes = form_notes.getAttribute("action");
+                //change textarea_notes value with data
+                document.getElementById("textarea_notes").value = data.notes;
+                //replace :id_checksheet with id_checksheet and :id_checkdata with id_checkdata
+                var url = notes.replace(':idchecksheet', id_checksheet).replace(':idcheckarea', id_checkarea);
+                //assign to form_notes action
+                form_notes.setAttribute("action", url);
                 //assign to form_notes input
-                document.getElementById("id_checkarea").value = areaid;
+                document.getElementById("id_checkdata").value = dataid;
                 modal.classList.remove("hidden");
             }
+
             closeBtn.addEventListener("click", function() {
                 modal.classList.add("hidden");
             });

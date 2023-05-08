@@ -11,5 +11,7 @@ class Checkdata extends Model
     protected $table = 'tt_checkdata';
     //updated_at false
     public $timestamps = false;
+    //set fillable
+    protected $fillable=['id_checkarea','tanggal','shift','nama','barang','value','approval','mark','user','notesss'];
 
 }
