@@ -1,19 +1,19 @@
 
 
-@if($data->approval == "approved")
+@if($data->approval == "4")
 <?php $approved = true;?>
 <?php $color = "bg-green-500";?>
-@elseif($data->approval == "rejected")
-<?php $rejected = true;?>
-<?php $color = "bg-red-500";?>
-@elseif($data->approval == "wait")
+@elseif($data->approval == "0")
 <?php $wait = true;?>
-<?php $color = "bg-yellow-400";?>
+<?php $color = "bg-gray-400";?>
+@else
+<?php $rejected = true;?>
+<?php $color = "bg-yellow-500";?>
 @endif
 
 <select onchange="changeStatus(this)" data-id="{{$data->id}}" name="changeStatus" class="w-full border-gray-400 p-2 rounded-lg text-start appearance-none md:text-center text-xs md:text-base" required>
-    <option value="approved" {{isset($approved) ? 'selected':''}}>approved</option>
-    <option value="rejected" {{isset($rejected) ? 'selected':''}}>rejected</option>
-    <option value="wait" {{isset($wait) ? 'selected':''}}>wait</option>
+    <option value="approved" >approved</option>
+    <option value="rejected">rejected</option>
+    <option value="wait">wait</option>
 </select>
 

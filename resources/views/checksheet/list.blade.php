@@ -97,7 +97,7 @@
                             @if (!empty($checkList['data']))
                                 @foreach ($checkList['data'] as $check)
                                     <tr
-                                        class="{{ $check->status == 'DONE-OK' ? 'bg-green-100' : ($check->status == 'DONE-NG' || $check->status=='PROGRESS-NG' ? 'bg-red-100' : ($check->status == 'PROGRESS-OK'?'bg-yellow-100':'')) }}  transition duration-300 ease-in-out py-5 border border-gray-700">
+                                        class="{{ $check->status == 'DONE-OK' ? 'bg-green-100' : ($check->status == 'DONE-NG' || $check->status == 'PROGRESS-NG' ? 'bg-red-100' : ($check->status == 'PROGRESS-OK' ? 'bg-yellow-100' : '')) }}  transition duration-300 ease-in-out py-5 border border-gray-700">
 
                                         <td class="py-5"><a onload="changeid(this)"
                                                 href="{{ route('checksheet.area', $check->id) }}?{{ request()->getQueryString() }}  ">{{ $check->line }}</a>
@@ -112,7 +112,8 @@
                                             </div>
                                             <div class="w-full">
                                                 <span
-                                                    class="bg-gray-200 rounded-md px-3 py-1 shadow-gray-50 shadow-sm">{{$check->all}} area</span>
+                                                    class="bg-gray-200 rounded-md px-3 py-1 shadow-gray-50 shadow-sm">{{ $check->all }}
+                                                    area</span>
                                             </div>
                                         </td>
                                         <td class="py-5">
@@ -120,56 +121,64 @@
                                                 <div class="w-full md:w-1/3">
                                                     <div>Check Status</div>
                                                     <div
-                                                        class="px-1 {{ $check->status == 'DONE-OK' ? 'bg-green-300' : ($check->status == 'DONE-NG' ? 'bg-red-300' : ($check->status == 'PROGRESS-NG' ? 'bg-red-300' : ($check->status == "NOT-STARTED" ? 'bg-white':'bg-yellow-300'))) }} text-gray-800 rounded-sm shadow-sm shadow-black">
-                                                        <a
-                                                            href="{{ route('checksheet.data') }}?min_tanggal={{ date('Y-m-d') }}&max_tanggal={{ date('Y-m-d') }}&line={{ $check->line }}&code={{ $check->code }}&checksheet={{ $check->id }}&cell={{$query->cell}}&shift={{$query->shift}}&barang={{$query->barang}}">{{ $check->status == 'DONE-OK' ? 'OK' : ($check->status == 'DONE-NG' || $check->status == 'PROGRESS-NG' ? $check->notgood . ' NG!' : ($check->status == "PROGRESS-OK" ? "Proses":"Belum Mulai")) }}</a>
+                                                        class="px-1 {{ $check->status == 'DONE-OK' ? 'bg-green-300' : ($check->status == 'DONE-NG' ? 'bg-red-300' : ($check->status == 'PROGRESS-NG' ? 'bg-red-300' : ($check->status == 'NOT-STARTED' ? 'bg-white' : 'bg-yellow-300'))) }} text-gray-800 rounded-sm shadow-sm shadow-black">
+                                                        @if (auth()->user()->role =="admin")
+                                                            <a
+                                                                href="{{ route('checksheet.data') }}?min_tanggal={{ date('Y-m-d') }}&max_tanggal={{ date('Y-m-d') }}&line={{ $check->line }}&code={{ $check->code }}&checksheet={{ $check->id }}&cell={{ $query->cell }}&shift={{ $query->shift }}&barang={{ $query->barang }}">{{ $check->status == 'DONE-OK' ? 'OK' : ($check->status == 'DONE-NG' || $check->status == 'PROGRESS-NG' ? $check->notgood . ' NG!' : ($check->status == 'PROGRESS-OK' ? 'Proses' : 'Belum Mulai')) }}</a>
+                                                        @else
+                                                            {{ $check->status == 'DONE-OK' ? 'OK' : ($check->status == 'DONE-NG' || $check->status == 'PROGRESS-NG' ? $check->notgood . ' NG!' : ($check->status == 'PROGRESS-OK' ? 'Proses' : 'Belum Mulai')) }}
+
+                                                        @endif
                                                     </div>
+
                                                 </div>
                                                 <div class="w-full md:w-1/3">
                                                     <div>Approval</div>
-                                                    <div class="w-full px-1 mr-1 text-gray-500 rounded-sm shadow-sm shadow-black {{$check->approval > 0 ? "bg-green-200":"bg-gray-200"}}">{{$check->approval > 0 ? "Approved":"Not Yet"}}</div>
-                                                    </div>
+                                                    <div
+                                                        class="w-full px-1 mr-1 text-gray-500 rounded-sm shadow-sm shadow-black {{ $check->approval > 0 ? 'bg-green-200' : 'bg-gray-200' }}">
+                                                        {{ $check->approval > 0 ? 'Approved' : 'Not Yet' }}</div>
                                                 </div>
                                             </div>
-                                        </td>
-
-                                    </tr>
-                                @endforeach
-                            @elseif($checkList == '500')
-                                <tr>
-                                    <td colspan="4" class="py-5">Isi Line Terlebih Dahulu</td>
-                                </tr>
-                            @elseif($checkList == '400')
-                                <tr>
-                                    <td colspan="4" class="py-5">Isi Code Terlebih Dahulu</td>
-                                </tr>
-                            @else
-                                <tr>
-                                    <td colspan="4" class="py-5">Data Kosong</td>
-                                </tr>
-                            @endif
-                        </tbody>
-                    </table>
                 </div>
-                <div class="flex items-center justify-center space-x-4">
+                </td>
 
-                    @if ($checkList != '500' && $checkList != '400')
-                        @foreach ($checkList['links'] as $link)
-                            @if ($link['url'] == null)
-                                @continue
-                            @endif
-                            <a href="{{ $link['url'] }}"
-                                class="px-3 py-2 text-gray-700 hover:text-white hover:bg-gray-700 rounded {{ $link['active'] ? 'bg-orange-400' : '' }}">
-                                <?= $link['label'] ?>
-                            </a>
-                        @endforeach
-                    @endif
-                </div>
-
-
-
+                </tr>
+                @endforeach
+            @elseif($checkList == '500')
+                <tr>
+                    <td colspan="4" class="py-5">Isi Line Terlebih Dahulu</td>
+                </tr>
+            @elseif($checkList == '400')
+                <tr>
+                    <td colspan="4" class="py-5">Isi Code Terlebih Dahulu</td>
+                </tr>
+            @else
+                <tr>
+                    <td colspan="4" class="py-5">Data Kosong</td>
+                </tr>
+                @endif
+                </tbody>
+                </table>
             </div>
+            <div class="flex items-center justify-center space-x-4">
+
+                @if ($checkList != '500' && $checkList != '400')
+                    @foreach ($checkList['links'] as $link)
+                        @if ($link['url'] == null)
+                            @continue
+                        @endif
+                        <a href="{{ $link['url'] }}"
+                            class="px-3 py-2 text-gray-700 hover:text-white hover:bg-gray-700 rounded {{ $link['active'] ? 'bg-orange-400' : '' }}">
+                            <?= $link['label'] ?>
+                        </a>
+                    @endforeach
+                @endif
+            </div>
+
+
+
         </div>
+    </div>
     </div>
     @section('script')
         <script>

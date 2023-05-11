@@ -26,7 +26,7 @@ return new class extends Migration
 
             $table->string('user',16);
             $table->string('value',50);
-            $table->enum('approval',['approved','wait','rejected'])->default('wait');
+            $table->enum('approval',['0','1','2','3','4'])->default('wait');
             $table->enum('mark',['0','1'])->default('0');
             $table->enum('shift',['1','2','3','1-long','3-long'])->default('1');
             $table->foreign('id_checkarea')->references('id')->on('tm_checkarea');

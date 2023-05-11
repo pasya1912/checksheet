@@ -158,14 +158,14 @@
                                     @include('checksheet.checkdata.changeStatus')
                                 </div>
                             @else
-                                @if ($data->approval == 'approved')
+                                @if ($data->approval == '4')
                                     <div class="w-3/4 md:w-1/2m-auto flex items-center">
                                         <span
                                             class="inline-block ml-1 px-2 py-1 w-11/12 text-center text-sm font-semibold text-gray-800 bg-green-200 rounded-md">
                                             Approved
                                         </span>
                                     </div>
-                                @elseif($data->approval == 'rejected')
+                                @elseif($data->approval < 1 && $data->approval > 4)
                                     <div class="w-3/4 md:w-1/2 m-auto flex items-center">
                                         <span
                                             class="inline-block ml-1 px-2 py-1 w-11/12 text-center text-sm font-semibold text-gray-800 bg-red-200 rounded-md">

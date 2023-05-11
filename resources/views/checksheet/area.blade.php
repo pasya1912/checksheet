@@ -132,17 +132,31 @@
                                 placeholder="Tambahkan notes.."></textarea>
                         </div>
                         <div class=" mb-4">
-                            <div class="flex items-center">
-                            <input id="default-checkbox" name="marked" type="checkbox" value="1"
-                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                            <label for="default-checkbox"
-                                class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Solved / Sudah
-                                Dihandle</label>
+                            <div class="">
+                                <div class="flex items-center"  >
+                                    <input id="mark_checkbox" name="marked" type="checkbox" value="1"
+                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    <label for="default-checkbox"
+                                        class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Solved / Sudah
+                                        Dihandle</label>
+                                </div>
+                                <div class="mt-2">
+                                    <input type="text" name="revised_value" id="revised_value"
+                                        class="bg-gray-50 hidden border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        placeholder="Revised Value">
+                                    <label for="revised_value"
+                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Revised
+                                        Value</label>
+                                </div>
+
                             </div>
+
                             <div class=" text-sm font-sm text-gray-600   dark:text-gray-300">
                                 <p>Notes tidak dapat diedit jika sudah dihandle</p>
                             </div>
+
                         </div>
+
 
 
                     </div>
@@ -160,8 +174,20 @@
 
     @section('script')
         <script>
+            document.querySelector('#mark_checkbox').addEventListener('change', function() {
+                if (this.checked) {
+                    document.querySelector('#revised_value').classList.remove('hidden');
+                    document.querySelector('#revised_value').classList.add('block');
+                } else {
+                    document.querySelector('#revised_value').classList.add('hidden');
+
+                    document.querySelector('#revised_value').value = null;
+
+                }
+            });
             function inputData(checksheetid, areaid, element) {
                 //get all query string
+
                 var value = document.getElementById("value-" + areaid).value;
                 //get root url
                 var root = window.location.origin;
@@ -262,10 +288,10 @@
                 var dataid = btn.getAttribute("data-id");
                 var data = await getData(id_checkarea, dataid);
                 //regex replace data.notes
-                if(data.notes == null){
+                if (data.notes == null) {
                     data.notes = "";
                 }
-                data.notes = data.notes.replace(/<br>(.*?)\)/,'');
+                data.notes = data.notes.replace(/<br>(.*?)\)/, '');
 
                 var notes = form_notes.getAttribute("action");
                 //change textarea_notes value with data

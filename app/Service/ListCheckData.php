@@ -16,7 +16,7 @@ class ListCheckData {
         $checksheetarea = (object) array_merge((array) $checksheet, (array) $checkarea);
 
         //get corresponding checkdata with id_checkarea from $checkarea
-        $columns = ['tm_checkarea.nama','tm_checksheet.nama','tt_checkdata.nama','tt_checkdata.barang','tt_checkdata.tanggal','tt_checkdata.user','tt_checkdata.value'];
+        $columns = ['tm_checkarea.nama','tm_checksheet.nama','tt_checkdata.nama','tt_checkdata.barang','tt_checkdata.tanggal','tt_checkdata.user','tt_checkdata.value','tt_checkdata.revised_value'];
         $isStandar = DB::raw('
         (CASE WHEN tm_checkarea.tipe = "1" THEN
             (CASE
@@ -31,9 +31,23 @@ class ListCheckData {
         WHEN tm_checkarea.tipe = "3" THEN
             "general"
         END) as status');
+        $revisedStatus = DB::raw('
+        (CASE WHEN tm_checkarea.tipe = "1" THEN
+            (CASE
+            WHEN tt_checkdata.revised_value = "ok" THEN "good"
+            WHEN tt_checkdata.revised_value = "ng" THEN "notgood"
+             END)
+        WHEN tm_checkarea.tipe = "2" THEN
+            (CASE
+            WHEN (CAST(tt_checkdata.revised_value AS DECIMAL(10,4)) < IFNULL(CAST(tm_checkarea.min AS DECIMAL(10,4)), CAST("-Infinity" AS DECIMAL(10,4)))) OR (CAST(tt_checkdata.revised_value AS DECIMAL(10,4)) > IFNULL(CAST(tm_checkarea.max AS DECIMAL(10,4)), CAST("Infinity" AS DECIMAL(10,4)))) THEN "notgood"
+            ELSE "good"
+            END)
+        WHEN tm_checkarea.tipe = "3" THEN
+            "general"
+        END) as revised_status');
 
         $checkdata = DB::table('tt_checkdata')
-            ->select('tt_checkdata.*','tm_checkarea.min','tm_checkarea.max','tm_checkarea.tipe',$isStandar)
+            ->select('tt_checkdata.*','tm_checkarea.min','tm_checkarea.max','tm_checkarea.tipe',$isStandar,$revisedStatus)
             ->leftJoin('tm_checkarea', 'tt_checkdata.id_checkarea', '=', 'tm_checkarea.id')
             ->leftJoin('tm_checksheet', 'tm_checkarea.id_checksheet', '=', 'tm_checksheet.id')
             ->where('tm_checkarea.id_checksheet', $checkarea->id_checksheet)

@@ -128,6 +128,9 @@ class CheckdataController extends Controller
         if ($find && $find->mark != 1) {
             $find->notes = $notes;
             if($request->marked == "1"){
+                if($request->revised_value != null && $request->revised_value != ""){
+                    $find->revised_value = $request->revised_value;
+                }
                 $find->mark = "1";
 
             }
