@@ -9,6 +9,7 @@ class ListCheckData
 
     public function get($request)
     {
+        $filter = ($request->get('filter') == null || $request->get('filter') == '') ? '' : $request->get('filter');
         $min_tanggal = ($request->get('min_tanggal') == null || $request->get('min_tanggal') == '') ? '' : $request->get('min_tanggal');
         $max_tanggal = ($request->get('max_tanggal') == null || $request->get('max_tanggal') == '') ? '' : $request->get('max_tanggal');
         $barang = ($request->get('barang') == null || $request->get('barang') == '') ? '' : $request->get('barang');
@@ -23,7 +24,7 @@ class ListCheckData
 
 
         //get corresponding checkdata with id_checkarea from $checkarea
-        $isStandar = DB::raw('
+        $statusCheck ='
         (CASE WHEN tm_checkarea.tipe = "1" THEN
             (CASE
             WHEN tt_checkdata.value = "ok" THEN "good"
@@ -36,8 +37,9 @@ class ListCheckData
         END)
         WHEN tm_checkarea.tipe = "3" THEN
             "general"
-        END) as status');
-        $revisedStatus = DB::raw('
+        END)';
+        $isStandar = DB::raw($statusCheck.' as status');
+        $revisedCheck = '
         (CASE WHEN tm_checkarea.tipe = "1" THEN
             (CASE
             WHEN tt_checkdata.revised_value = "ok" THEN "good"
@@ -50,7 +52,8 @@ class ListCheckData
             END)
         WHEN tm_checkarea.tipe = "3" THEN
             "general"
-        END) as revised_status');
+        END)';
+        $revisedStatus = DB::raw($revisedCheck.' as revised_status');
 
         $checkdata = DB::table('tt_checkdata')
             ->select('tt_checkdata.*', 'tm_checkarea.min', 'tm_checkarea.max', 'tm_checkarea.tipe', 'tm_checksheet.nama as nama_checksheet', 'tm_checkarea.nama as nama_checkarea', 'tm_checksheet.line', 'tm_checksheet.code', 'tm_checksheet.jenis', 'users.name as name', 'users.npk', $isStandar,$revisedStatus)
@@ -58,7 +61,35 @@ class ListCheckData
             ->leftJoin('tm_checksheet', 'tm_checkarea.id_checksheet', '=', 'tm_checksheet.id')
             ->leftJoin('users', 'tt_checkdata.user', '=', 'users.npk')
 
-            ->where(function ($query) use ($min_tanggal, $max_tanggal, $barang, $shift, $cell, $area, $checksheet, $code, $line) {
+            ->where(function ($query) use ($statusCheck, $revisedCheck, $min_tanggal, $max_tanggal, $barang, $shift, $cell, $area, $checksheet, $code, $line,$filter) {
+                if(auth()->user()->role != 'admin')
+                {
+                    $query->where('tt_checkdata.user', '=', auth()->user()->npk);
+                }
+                if($filter != '')
+                {
+                    if($filter == 'good')
+                    {
+                        $query->whereRaw($statusCheck." in ('good','general')");
+                    }
+                    else if($filter == 'notgood')
+                    {
+                        $query->whereRaw($statusCheck." = 'notgood'");
+                    }
+                    else if($filter == 'need_check')
+                    {
+                        $query->whereRaw($statusCheck." in ('good','general')")
+                        ->orWhere(function ($query) use ($revisedCheck) {
+                            $query->whereRaw($revisedCheck." in ('good','general')")->where('mark', '=', '1');
+                        });
+                    }
+                    else if($filter = 'revised')
+                    {
+                        $query->where('mark', '=', '1')
+                        //where revised_value not null
+                        ->whereNotNull('revised_value');
+                    }
+                }
                 if ($min_tanggal != '') {
                     $query->whereDate('tt_checkdata.tanggal', '>=', $min_tanggal);
                 }

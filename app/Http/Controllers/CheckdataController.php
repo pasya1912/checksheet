@@ -14,11 +14,23 @@ use App\Rules\ValidateBarang;
 use App\Rules\ValidateCell;
 use App\Rules\ValidateShift;
 use App\Rules\ValidateValue;
+use App\Rules\ValidateRevised;
 
 
 class CheckdataController extends Controller
 {
+    public function list(Request $request,\App\Service\Admin\ListCheckData $listCheckData, \App\Service\ChecksheetData $checksheetData)
+    {
 
+        $checkdata = $listCheckData->get($request);
+        $lineList = $checksheetData->getLine();
+        $codeList = $checksheetData->getCode($request->get('line'));
+        $checkList = $checksheetData->getChecksheet($request->get('line'),$request->get('code'));
+        $areaList = $checksheetData->getArea($request->get('line'),$request->get('code'),$request->get('checksheet'));
+
+
+        return view('checksheet.checkdata.data',compact('checkdata','lineList','codeList','checkList','areaList'));
+    }
     public function store($idchecksheet, $idcheckarea, Request $request, \App\Service\StoreCheckData $storeCheckData)
     {
         try {
@@ -58,6 +70,7 @@ class CheckdataController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Data sudah ada'], 422);
         }
 
+
         $db = DB::table('tt_checkdata')->insert(
             [
                 'id_checkarea' => $idcheckarea,
@@ -66,11 +79,13 @@ class CheckdataController extends Controller
                 'tanggal' => date('Y-m-d H:i:s'),
                 'user' => $request->user()->npk,
                 'value' => $request->value,
-                'approval' => 'wait',
+                'approval' => '0',
                 'mark' => '0',
                 'shift' => $request->shift
             ]
         );
+
+
         //get tipe of $db
         $tipe = DB::table('tm_checkarea')
             ->where('id', $idcheckarea)
@@ -111,9 +126,12 @@ class CheckdataController extends Controller
     }
     public function updateNotes($idchecksheet, $idcheckarea, Request $request)
     {
+
         $request->validate([
             'id_checkdata' => 'required|numeric',
-            'notes' => 'required'
+            'notes' => 'required',
+            'marked' => 'sometimes|numeric',
+            'revised_value' => [ 'sometimes',new  ValidateRevised($idcheckarea,$request->marked ?? "")]
         ]);
         $request->notes = htmlspecialchars($request->notes);
 

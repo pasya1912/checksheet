@@ -186,6 +186,8 @@
                 }
             });
             function inputData(checksheetid, areaid, element) {
+                element.disabled = true;
+
                 //get all query string
 
                 var value = document.getElementById("value-" + areaid).value;
@@ -202,8 +204,6 @@
                 xhr.onload = function() {
                     var res = JSON.parse(xhr.responseText);
                     if (xhr.status === 200) {
-                        element.disabled = true;
-
                         //change border to red
                         element.classList.remove('bg-gray-300');
 

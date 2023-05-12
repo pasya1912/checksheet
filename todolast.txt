@@ -1,9 +1,12 @@
-1. Value Setelah solve / ubah /revisi 3 hari
-2. Approval sequensial. 5-7
-3. Export checkdata 2 
-4. Lock approval saaat NG 2
+1. Value Setelah solve / ubah /revisi 3 hari ( DONE )
+2. Value Revisi harus OK baru bisa disave, jika masih NG tidak akan bisa "problem solved" ( DONE )
+
+3. Approval sequensial. 5-7 ( 50 % )
+4. Export checkdata 2
+5. Lock approval saaat NG 2
 
 ==============================================
+After Deployment
 
-
-5. Dashboard
+6. Dashboard
+7. Jika NG diperbaiki hijau dengan note
