@@ -23,7 +23,7 @@
                                     ?
                                 @elseif(request()->input('checksheet') == null && auth()->user()->jabatan < 3)
                                     ?
-                                @elseif(request()->input('area') == null && (auth()->user()->jabatan < 2 && auth()->user()->jabatan > 0))
+                                @elseif(request()->input('area') == null && request()->input('shift') == null && (auth()->user()->jabatan < 2 && auth()->user()->jabatan > 0))
                                     ?
                                 @else
                                     {{ $good }}
@@ -46,7 +46,7 @@
                                     ?
                                 @elseif(request()->input('checksheet') == null && auth()->user()->jabatan < 3)
                                     ?
-                                @elseif(request()->input('area') == null && (auth()->user()->jabatan < 2 && auth()->user()->jabatan > 0))
+                                @elseif(request()->input('area') == null && request()->input('shift') == null  && (auth()->user()->jabatan < 2 && auth()->user()->jabatan > 0))
                                     ?
                                 @else
                                     {{ $revised }}
@@ -109,7 +109,7 @@
                             </select>
                         </div>
                     @endif
-                    @if (auth()->user()->jabatan < 2 && auth()->user()->jabatan > 0)
+                    @if (auth()->user()->jabatan < 3 && auth()->user()->jabatan > 0)
                         <div class="w-full md:w-5/12 lg:w-4/12">
                             <label for="area">Area</label>
                             <select id="area" name="area" class="w-full border-gray-400 p-2 rounded-lg" required>
@@ -119,6 +119,18 @@
                                         {{ request()->get('area') == $area->id ? 'selected' : '' }}>
                                         {{ $area->nama }}</option>
                                 @endforeach
+                            </select>
+                        </div>
+                        <div class="w-full md:w-5/12 lg:w-4/12">
+                            <label for="shift">Shift</label>
+                            <select id="shift" name="shift" class="w-full border-gray-400 p-2 rounded-lg" required>
+                                <option value="" selected>Shift</option>
+                                <option value="1" {{ request()->get('shift') == '1' ? 'selected' : '' }}>1</option>
+                                <option value="2" {{ request()->get('shift') == '2' ? 'selected' : '' }}>2</option>
+                                <option value="3" {{ request()->get('shift') == '3' ? 'selected' : '' }}>3</option>
+                                <option value="1-long" {{ request()->get('shift') == '1-long' ? 'selected' : '' }}>1-long</option>
+                                <option value="3-long" {{ request()->get('shift') == '3-long' ? 'selected' : '' }}>3-long</option>
+
                             </select>
                         </div>
                     @endif
@@ -150,10 +162,16 @@
                     <tr>
                         <td colspan="4" class="py-5 text-center">Isi Checksheet Terlebih Dahulu</td>
                     </tr>
-                @elseif(request()->input('area') == null && (auth()->user()->jabatan < 2 && auth()->user()->jabatan > 0))
+                @elseif(request()->input('area') == null && (auth()->user()->jabatan < 3 && auth()->user()->jabatan > 0))
                     <tr>
                         <td colspan="4" class="py-5 text-center">Isi Area Terlebih Dahulu</td>
                     </tr>
+                @elseif(request()->input('shift') == null &&  (auth()->user()->jabatan < 3 && auth()->user()->jabatan > 0))
+
+                    <tr>
+                        <td colspan="4" class="py-5 text-center">Isi Shift Terlebih Dahulu</td>
+                    </tr>
+
                 @elseif($checkdata['total'] > 0)
                     @foreach ($checkdata['data'] as $data)
                         <tr class="relative border border-gray-300">
@@ -324,7 +342,7 @@
 
         @elseif(request()->input('checksheet') == null && auth()->user()->jabatan < 3)
 
-        @elseif(request()->input('area') == null && (auth()->user()->jabatan < 2 && auth()->user()->jabatan > 0))
+        @elseif(request()->input('area') == null && request()->input('shift') == null && (auth()->user()->jabatan < 3 && auth()->user()->jabatan > 0))
         @else
             <div class="flex justify-end">
                 <form class="my-3" action="{{ url()->full() }}" method="POST">
@@ -395,10 +413,7 @@
         //set to first day of the week
         date.setDate(date.getDate() - date.getDay() + 1);
         monthInput.value = date.toISOString().slice(0, 10);
-        @elseif(auth()->user()->jabatan == 2)
-        //set to today
-        monthInput.value = date.toISOString().slice(0, 10);
-        @elseif(auth()->user()->jabatan == 1)
+        @elseif(auth()->user()->jabatan <= 2 && auth()->user()->jabatan > 0)
         //set to today
         monthInput.value = date.toISOString().slice(0, 10);
         @endif
