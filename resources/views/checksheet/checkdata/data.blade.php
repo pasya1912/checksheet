@@ -91,7 +91,10 @@
 
 
         </div>
-        <div class="flex flex-wrap gap-2 w-full  justify-end  my-5">
+        <div class="flex flex-wrap gap-2 w-full    justify-between  my-5">
+            <div class="w-full md:w-4/12    items-end flex justify-center">
+                <a class="w-1/3  p-2 bg-gray-400 text-green-300 shadow-md shadow-black" href="{{route('checksheet.data.export')}}">Export</a>
+            </div>
             <div class="w-full md:w-4/12    ">
                 <label for="max_tanggal">Filter</label>
                 <select id="filter" name="filter" class=" w-full border-gray-400 p-2 rounded-lg" required>
@@ -169,8 +172,10 @@
                                 </div>
                             </div>
                         </td>
-                        @if ($data->notes != null || $data->notes != '')
+                        @if($data->mark == 1)
                             <?php
+                            //if $data->notes not exist then explode will assign ""
+                            $data->notes = $data->notes ?? "";
                             $data->notes = explode('<br>', $data->notes)[0];
                             $data->notes = htmlspecialchars($data->notes);
 
@@ -234,7 +239,7 @@
                                 </div>
                                 <div class=" w-full flex flex-wrap justify-between border border-gray-300 py-2 px-5">
                                     <div class="max-h-screen flex flex-col gap-5  items-center text-center">
-                                        <div class="font-bold text-lg">GP</div>
+                                        <div class="font-bold text-lg">JP</div>
                                         @if ($data->approval >= 1)
                                             <div class="rounded-full w-5 h-5 bg-green-300"></div>
                                         @else

@@ -1,9 +1,21 @@
 1. Value Setelah solve / ubah /revisi 3 hari ( DONE )
 2. Value Revisi harus OK baru bisa disave, jika masih NG tidak akan bisa "problem solved" ( DONE )
 
-3. Approval sequensial. 5-7 ( 50 % )
+
+3. Approval sequensial. 5-7 ( Done )
+Manager = approve sebulan sekali perline.
+SPV = approve seminggu sekali model.
+leader = approve sehari sekali per checksheet (semua area)
+jp = approve sehari sekali per checkarea (semua area)
+
+
+Approval bisa pilih tanggal, leader itu pershift beda orang. [doneeeeee]
+
+
+
 4. Export checkdata 2
-5. Lock approval saaat NG 2
+
+5. Lock approval saaat NG 2 hari ( DONE )
 
 ==============================================
 After Deployment

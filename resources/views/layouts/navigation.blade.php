@@ -24,6 +24,10 @@
                         {{ __('Checksheet Data') }}
 
                     </x-nav-link>
+                    <x-nav-link :href="route('checksheet.data.approval')" :active="request()->routeIs('checksheet.data.approval')">
+                        {{ __('Approve  Checksheet') }}
+
+                    </x-nav-link>
 
                 </div>
             </div>
@@ -90,6 +94,10 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('checksheet.data')" :active="request()->routeIs('checksheet.data')">
                 {{ __('Checksheet Data') }}
+
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('checksheet.data.approval')" :active="request()->routeIs('checksheet.data.approval')">
+                {{ __('Approve Checksheet') }}
 
             </x-responsive-nav-link>
         </div>

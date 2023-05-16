@@ -151,8 +151,8 @@
 
                             </div>
 
-                            <div class=" text-sm font-sm text-gray-600   dark:text-gray-300">
-                                <p>Notes tidak dapat diedit jika sudah dihandle</p>
+                            <div class=" text-sm font-sm text-gray-800   dark:text-gray-300">
+                                <p class="text-red-700 dark:text-yellow-300">Notes tidak dapat diedit jika sudah dihandle</p>
                                 <p>Jangan dicentang bila belum belum diselesaikan / dihandle</p>
                             </div>
 
