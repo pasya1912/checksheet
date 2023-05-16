@@ -405,18 +405,6 @@
         var monthInput = document.getElementById('tanggal');
         //set value to this month
         var date = new Date();
-        //set to first day of the month
-        @if(auth()->user()->jabatan == 4)
-        date.setDate(1);
-        monthInput.value = date.toISOString().slice(0, 10);
-        @elseif(auth()->user()->jabatan == 3)
-        //set to first day of the week
-        date.setDate(date.getDate() - date.getDay() + 1);
-        monthInput.value = date.toISOString().slice(0, 10);
-        @elseif(auth()->user()->jabatan <= 2 && auth()->user()->jabatan > 0)
-        //set to today
-        monthInput.value = date.toISOString().slice(0, 10);
-        @endif
         //initiate flatpickr
 
         flatpickr(monthInput, {
@@ -424,12 +412,7 @@
             dateFormat: 'Y-m-d',
             showMonths: 1,
             @if(auth()->user()->jabatan == 1 || auth()->user()->jabatan == 2)
-            enable: [
-                function(date) {
-                    // Enable only the first day of each month
-                    return date.getDate() === 1;
-                }
-            ],
+
             @elseif(auth()->user()->jabatan == 3)
             enable: [
                 function(date) {
