@@ -11,7 +11,7 @@ class="w-4/12 border {{$area->checkdata ? ($area->checkdata->is_good ? 'bg-green
         <span class="text-xs text-start ">{!!$area->checkdata->notes!!}</span>
     </div>
     @endif
-    @if(auth()->user()->npk == $area->checkdata?->user || auth()->user()->role == 'admin')
+    @if(auth()->user()->npk == $area->checkdata?->user)
     <button data-modal-target="staticModal" data-modal-toggle="staticModal" onclick="openModal(this,{{$checksheet->id}},{{$area->id}})" data-id="{{$area->checkdata->id}}" class="w-50 ml-auto mr-3 block text-gray-700 bg-orange-300 hover:bg-orange-400 font-light rounded-lg text-sm px-2 py-0.5 text-center " type="button">
     {{(!$area->checkdata->notes) ? "Add notes":"Edit notes"}}
     </button>

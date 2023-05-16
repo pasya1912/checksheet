@@ -93,36 +93,52 @@
         </div>
     </form>
     <div class="w-full overflow-x-scroll">
-        <table class="table-auto w-full table-layout-fixed border border-red-500 text-gray-200">
-            <tbody class="border-gray-200 border-solid">
+        <table class="table-auto w-full table-layout-fixed border border-red-500 text-center">
+            <colgroup>
+                <col class="w-2/6">
+                <col class="w-1/12">
+                <col class="w-1/5">
+                <col class="w-2/12">
+                <col class="w-2/12">
+            </colgroup>
+            <thead class="border border-gray-400">
+                <tr>
+                    <th>Location</th>
+                    <th>Shift</th>
+                    <th>Tanggal</th>
+                    <th>Value</th>
+                    <th>Checker</th>
+                </tr>
+            </thead>
+            <tbody class="border border-gray-200 ">
                 @foreach ($checkdata['data'] as $data)
                     @if ($data->status == 'good')
                         <tr class="hover:bg-green-500 bg-green-300 border border-gray-300">
                         @elseif($data->status == 'notgood')
                         <tr class="hover:bg-red-500 bg-red-300 border border-gray-300">
                     @endif
-                    <td class="block py-3"><span class="text text-sm">
+                    <td class="py-5 border border-gray-300"><span class="text text-sm">
                             <div>{{ $data->line }}|{{ $data->code }}</div>
                             <div>{{ $data->nama_checksheet }}|{{ $data->nama_checkarea }}</div>
                             <div>{{ $data->nama }}</div>
                         </span></td>
-                    <td class="block py-3">{{ $data->shift }} ({{ $data->barang }})</td>
+                    <td class="py-5 border border-gray-300">{{ $data->shift }} ({{ $data->barang }})</td>
 
-                    <td class="block py-3 ">
+                    <td class="py-5 border border-gray-300 ">
                         {{ $data->tanggal }}
                     </td>
-                    <td class="block py-3">
+                    <td class="py-5 border border-gray-300">
                         <div class="flex flex-col">
-                            <div class="w-3/4 md:w-1/2 m-auto "><span
-                                    class="w-11/12 px-5 py-1 text-gray-800 bg-gray-200 rounded-xl inline-block">{{ $data->value }}</span></div>
-                            <div class="w-3/4 md:w-1/2 m-auto  flex items-center  ">
+                            <div class="w-11/12 md:w-1/2 m-auto "><span
+                                    class="w-full px-5 py-1 text-gray-800 bg-gray-200 rounded-xl inline-block">{{ $data->value }}</span></div>
+                            <div class="w-11/12 md:w-1/2 m-auto  flex items-center  ">
                                 <span class=" ml-1 px-2 w-11/12 text-center py-1 text-xs font-semibold rounded-md">
                                     {{ $data->status }}</span>
                             </div>
                         </div>
 
                     </td>
-                    <td class="block py-3">
+                    <td class="py-5 border border-gray-300">
                         <div class=" flex flex-col ">
                             <div class="w-10/12 m-auto px-2 py-1">
 
@@ -142,14 +158,14 @@
                                     @include('checksheet.checkdata.changeStatus')
                                 </div>
                             @else
-                                @if ($data->approval == 'approved')
+                                @if ($data->approval == '4')
                                     <div class="w-3/4 md:w-1/2m-auto flex items-center">
                                         <span
                                             class="inline-block ml-1 px-2 py-1 w-11/12 text-center text-sm font-semibold text-gray-800 bg-green-200 rounded-md">
                                             Approved
                                         </span>
                                     </div>
-                                @elseif($data->approval == 'rejected')
+                                @elseif($data->approval < 1 && $data->approval > 4)
                                     <div class="w-3/4 md:w-1/2 m-auto flex items-center">
                                         <span
                                             class="inline-block ml-1 px-2 py-1 w-11/12 text-center text-sm font-semibold text-gray-800 bg-red-200 rounded-md">
@@ -190,43 +206,5 @@
             formes.submit();
         });
         //================================================
-        @if (auth()->user()->role == 'admin')
-
-
-            function changeStatus(element){
-                var id = element.getAttribute('data-id');
-                var status = element.value;
-                var url = "{{ route('checksheet.data.changeStatus', ':id') }}";
-                url = url.replace(':id', id);
-                var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                var data = {
-                    status: status,
-                    _token: token
-                };
-                fetch(url, {
-                        method: 'POST',
-                        body: JSON.stringify(data),
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                            'X-CSRF-TOKEN': token,
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log(data);
-                        if (data.status == 'success') {
-                            alert('Status berhasil diubah');
-                            location.reload();
-                        } else {
-                            alert('Status gagal diubah');
-                        }
-                    })
-                    .catch((error) => {
-                        console.error('Error:', error);
-                    });
-                }
-
-        @endif
     </script>
 @endsection

@@ -14,9 +14,9 @@
 
     <!-- Scripts -->
 
-    {{-- <script type="module" src="http://172.18.11.238:5173/{{'@'}}vite/client"></script><link rel="stylesheet" href="http://172.18.11.238:5173/resources/css/app.css" /><script type="module" src="http://172.18.11.238:5173/resources/js/app.js"></script></head>
- --}}
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+  {{-- <script type="module" src="http://172.18.11.238:5173/{{'@'}}vite/client"></script><link rel="stylesheet" href="http://172.18.11.238:5173/resources/css/app.css" /><script type="module" src="http://172.18.11.238:5173/resources/js/app.js"></script></head> --}}
+     @vite(['resources/css/app.css', 'resources/js/app.js'])
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
 </head>
 
 <body class="font-sans antialiased">
@@ -68,29 +68,31 @@
             </div>
         </div>
     @endif
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/datepicker.min.js"></script>
     <script>
         setTimeout(function() {
             var element = document?.getElementById("notification");
             if (element) {
-            var opacity = 1;
-            var intervalID = setInterval(function() {
-                opacity -= 0.1;
-                element.style.opacity = opacity;
-                if (opacity <= 0) {
-                    clearInterval(intervalID);
-                    element.parentNode.removeChild(element);
-                }
-            }, 100);
-        }
+                var opacity = 1;
+                var intervalID = setInterval(function() {
+                    opacity -= 0.1;
+                    element.style.opacity = opacity;
+                    if (opacity <= 0) {
+                        clearInterval(intervalID);
+                        element.parentNode.removeChild(element);
+                    }
+                }, 100);
+            }
         }, 3000);
     </script>
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
+
     @yield('script')
     @if ($errors->any())
         <script>
             alert("{{ $errors->first() }}");
         </script>
     @endif
+
 
 </body>
 

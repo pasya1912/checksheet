@@ -14,11 +14,26 @@ use App\Rules\ValidateBarang;
 use App\Rules\ValidateCell;
 use App\Rules\ValidateShift;
 use App\Rules\ValidateValue;
+use App\Rules\ValidateRevised;
+
+use App\Exports\DataExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 
 class CheckdataController extends Controller
 {
+    public function list(Request $request,\App\Service\Admin\ListCheckData $listCheckData, \App\Service\ChecksheetData $checksheetData)
+    {
 
+        $checkdata = $listCheckData->get($request);
+        $lineList = $checksheetData->getLine();
+        $codeList = $checksheetData->getCode($request->get('line'));
+        $checkList = $checksheetData->getChecksheet($request->get('line'),$request->get('code'));
+        $areaList = $checksheetData->getArea($request->get('line'),$request->get('code'),$request->get('checksheet'));
+
+
+        return view('checksheet.checkdata.data',compact('checkdata','lineList','codeList','checkList','areaList'));
+    }
     public function store($idchecksheet, $idcheckarea, Request $request, \App\Service\StoreCheckData $storeCheckData)
     {
         try {
@@ -58,6 +73,7 @@ class CheckdataController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Data sudah ada'], 422);
         }
 
+
         $db = DB::table('tt_checkdata')->insert(
             [
                 'id_checkarea' => $idcheckarea,
@@ -66,11 +82,13 @@ class CheckdataController extends Controller
                 'tanggal' => date('Y-m-d H:i:s'),
                 'user' => $request->user()->npk,
                 'value' => $request->value,
-                'approval' => 'wait',
+                'approval' => '0',
                 'mark' => '0',
                 'shift' => $request->shift
             ]
         );
+
+
         //get tipe of $db
         $tipe = DB::table('tm_checkarea')
             ->where('id', $idcheckarea)
@@ -111,9 +129,12 @@ class CheckdataController extends Controller
     }
     public function updateNotes($idchecksheet, $idcheckarea, Request $request)
     {
+
         $request->validate([
             'id_checkdata' => 'required|numeric',
-            'notes' => 'required'
+            'notes' => 'required',
+            'marked' => 'sometimes|numeric',
+            'revised_value' => [ 'sometimes',new  ValidateRevised($idcheckarea,$request->marked ?? "")]
         ]);
         $request->notes = htmlspecialchars($request->notes);
 
@@ -128,6 +149,9 @@ class CheckdataController extends Controller
         if ($find && $find->mark != 1) {
             $find->notes = $notes;
             if($request->marked == "1"){
+                if($request->revised_value != null && $request->revised_value != ""){
+                    $find->revised_value = $request->revised_value;
+                }
                 $find->mark = "1";
 
             }
@@ -159,5 +183,85 @@ class CheckdataController extends Controller
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Data gagal ditemukan'], 500);
         }
+    }
+    public function export(Request $request,\App\Service\Admin\ListCheckData $listCheckData)
+    {
+            $checkdata = $listCheckData->getData($request)->get();
+
+            foreach($checkdata as $key => $value){
+
+
+                $approvalHistory = Checkdata::with('approvalHistory.owner')
+                ->find($value->id)->approvalHistory;
+                $checkdata[$key]->jp = false;
+                $checkdata[$key]->leader = false;
+                $checkdata[$key]->spv = false;
+                $checkdata[$key]->manager = false;
+                foreach($approvalHistory as $approval){
+
+                    if($approval->approval == 1){
+
+                        $checkdata[$key]->jp = $approval->owner->name;
+                    }
+                    if($approval->approval == 2){
+                        $checkdata[$key]->jp = $approval->owner->name;
+                        $checkdata[$key]->leader = $approval->owner->name;
+                    }
+                    if($approval->approval == 3){
+                        $checkdata[$key]->jp = $approval->owner->name;
+                        $checkdata[$key]->leader = $approval->owner->name;
+                        $checkdata[$key]->spv = $approval->owner->name;
+
+                    }
+                    if($approval->approval == 4){
+                        $checkdata[$key]->jp = $approval->owner->name;
+                        $checkdata[$key]->leader = $approval->owner->name;
+                        $checkdata[$key]->spv = $approval->owner->name;
+                        $checkdata[$key]->manager = $approval->owner->name;
+                    }
+
+                }
+
+            }
+
+            //map the data collection to array only id and nama
+            $checkdata = $checkdata->map(function ($item, $key) {
+                $replaceNotes = $item->notes ? preg_replace("/<br>(.*?)\)/","",$item->notes) : null;
+                if($item->revised_status == 'good'){
+                    $status = "OK (Revised)";
+                }
+                if($item->revised_status == 'notgood'){
+                    $status = "NG (Revised)";
+                }
+                if($item->status == "good"){
+                    $status =  "OK";
+                }
+
+                return [
+                    'checker' => $item->name,
+                    'value' => $item->value,
+                    'status' => $status,
+                    'revised_value' => $item->revised_value,
+                    'urutan' => $item->barang,
+                    'cell'=> $item->nama,
+                    'shift' => $item->shift,
+                    'nama_checkarea' => $item->nama_checkarea,
+                    'nama_checksheet' => $item->nama_checksheet,
+                    'model' => $item->code,
+                    'line' => $item->line,
+                    'jenis'=> $item->jenis,
+                    'tanggal'=> $item->tanggal,
+                    'jp_approve' => $item->jp,
+                    'leader_approve' => $item->leader,
+                    'spv_approve' => $item->spv,
+                    'manager_approve' => $item->manager,
+                    'notes' => $replaceNotes,
+
+                ];
+            });
+
+            //return Checkdata::find(27)->approvalHistory;
+
+            return Excel::download(new DataExport($checkdata), 'users.xlsx');
     }
 }

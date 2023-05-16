@@ -87,7 +87,7 @@ class ChecksheetController extends Controller
                     ->where('tt_checkdata.nama', $cell)
                     ->where('tt_checkdata.shift', $shift)
                     ->whereDate('tt_checkdata.tanggal', date('Y-m-d'))
-                    ->where('tt_checkdata.approval', 'approved')
+                    ->where('tt_checkdata.approval', '4')
                     ->count();
 
                 $checkList['data'][$key]->status =
