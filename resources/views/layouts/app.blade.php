@@ -14,8 +14,9 @@
 
     <!-- Scripts -->
 
-  {{-- <script type="module" src="http://172.18.11.238:5173/{{'@'}}vite/client"></script><link rel="stylesheet" href="http://172.18.11.238:5173/resources/css/app.css" /><script type="module" src="http://172.18.11.238:5173/resources/js/app.js"></script></head> --}}
-     @vite(['resources/css/app.css', 'resources/js/app.js'])
+<!--   <script type="module" src="http://172.18.11.238:5173/{{'@'}}vite/client"></script><link rel="stylesheet" href="http://172.18.11.238:5173/resources/css/app.css" /><script type="module" src="http://172.18.11.238:5173/resources/js/app.js"></script>
+ -->    
+  @vite(['resources/css/app.css', 'resources/js/app.js'])
  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
 </head>
 
