@@ -50,6 +50,7 @@ class CheckdataController extends Controller
             return response()->json(['status' => 'error', 'message' => $e->errors()], 422);
         }
 
+
         //check if data already exist
         $check = DB::table('tt_checkdata')
             ->leftJoin('tm_checkarea', 'tt_checkdata.id_checkarea', '=', 'tm_checkarea.id')
@@ -90,13 +91,16 @@ class CheckdataController extends Controller
 
 
         //get tipe of $db
-        $tipe = DB::table('tm_checkarea')
-            ->where('id', $idcheckarea)
-            ->first();
+
 
         //if success return status success
         if ($db) {
+
+            $tipe = DB::table('tm_checkarea')
+            ->where('id', $idcheckarea)
+            ->first();
             $isStandar = $this->cekStandar($tipe, $request->value);
+
             return response()->json(['status' => 'success', 'message' => 'Data berhasil disimpan', 'is_good' => $isStandar], 200);
         } else {
             return response()->json(['status' => 'error', 'message' => 'Data gagal disimpan'], 500);
@@ -106,7 +110,7 @@ class CheckdataController extends Controller
     {
         switch ($checkData->tipe) {
             case 1:
-                if ($value == "good") {
+                if ($value == "ok") {
                     return true;
                 } else {
                     return false;
