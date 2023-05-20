@@ -124,10 +124,8 @@
                                     <label for="default-checkbox" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Solved / Sudah
                                         Dihandle</label>
                                 </div>
-                                <div class="mt-2">
-                                    <input type="text" name="revised_value" id="revised_value" class="bg-gray-50 hidden border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Revised Value">
-                                    <label for="revised_value" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Revised
-                                        Value</label>
+                                <div class="mt-2 hidden" id="inputRevisi">
+
                                 </div>
 
                             </div>
@@ -156,25 +154,27 @@
     <script>
         document.querySelector('#mark_checkbox').addEventListener('change', function() {
             if (this.checked) {
-                document.querySelector('#revised_value').classList.remove('hidden');
-                document.querySelector('#revised_value').classList.add('block');
+                document.querySelector('#inputRevisi').classList.remove('hidden');
+                document.querySelector('#inputRevisi').classList.add('block');
             } else {
-                document.querySelector('#revised_value').classList.add('hidden');
+                document.querySelector('#inputRevisi').classList.add('hidden');
 
-                document.querySelector('#revised_value').value = null;
+                document.querySelector('#inputRevisi').value = null;
 
             }
         });
 
         function inputData(checksheetid, areaid, tipe, element) {
             element.disabled = true;
-
+            var value;
             //get element value attribute
-            var value = element.getAttribute('value');
-            console.log(value);
-            //set value to input
-            document.getElementById("value-" + areaid).value = value;
+            if (tipe == 1) {
 
+                value = element.getAttribute('value');
+                console.log(value);
+                //set value to input
+                document.getElementById("value-" + areaid).value = value;
+            }
             value = document.getElementById("value-" + areaid).value;
 
             //get root url
@@ -202,8 +202,7 @@
                             element.innerHTML = "Good";
                             element.classList.add('bg-green-300');
                             document.getElementById("value-" + areaid).disabled = true;
-                        }
-                        else{
+                        } else {
                             element.innerHTML = "OK";
                             element.classList.add('bg-green-300');
                             document.getElementById("ngbutton-" + areaid).remove();
@@ -217,7 +216,7 @@
                             document.getElementById("value-" + areaid).disabled = true;
                             //refresh
 
-                        }else{
+                        } else {
                             //remove ngbutton
                             element.innerHTML = "NG!";
                             element.classList.add('bg-red-300');
@@ -285,7 +284,7 @@
 
         }
 
-        async function openModal(btn, id_checksheet, id_checkarea) {
+        async function openModal(btn, id_checksheet, id_checkarea, tipe) {
             //get attribute area-id value
             var dataid = btn.getAttribute("data-id");
             var data = await getData(id_checkarea, dataid);
@@ -293,6 +292,7 @@
             if (data.notes == null) {
                 data.notes = "";
             }
+
             data.notes = data.notes.replace(/<br>(.*?)\)/, '');
 
             var notes = form_notes.getAttribute("action");
@@ -305,8 +305,56 @@
             //assign to form_notes input
             document.getElementById("id_checkdata").value = dataid;
             modal.classList.remove("hidden");
-        }
 
+            var inputRevised = document.getElementById("inputRevisi");
+
+                            //add child input type number append
+            var labelInput = document.createElement("label");
+            labelInput.setAttribute("for", "revised_value");
+            labelInput.setAttribute("class", "block mb-2 text-sm font-medium text-gray-900 dark:text-white");
+            labelInput.innerHTML = "Revised Value";
+            inputRevised.appendChild(labelInput);
+            if (tipe == 2 || tipe == 3) {
+                var input = document.createElement("input");
+                input.setAttribute("type", "text");
+                input.setAttribute("name", "revised_value");
+                input.setAttribute("id", "revised_value");
+                input.setAttribute("class", "bg-gray-50  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500");
+                input.setAttribute("placeholder", "Revised Value");
+                inputRevised.appendChild(input);
+            }else if(tipe == 1)
+            {
+                //make a two radio box input with name value and value ok and ng
+                var input = document.createElement("div");
+                input.setAttribute("class", "flex flex-row");
+                var input1 = document.createElement("input");
+                input1.setAttribute("type", "radio");
+                input1.setAttribute("name", "revised_value");
+                input1.setAttribute("id", "revised_value");
+                input1.setAttribute("value", "ok");
+                var label1 = document.createElement("label");
+                label1.setAttribute("for", "revised_value");
+                label1.setAttribute("class", "block mb-2 text-sm font-medium text-gray-900 dark:text-white");
+                label1.innerHTML = "OK";
+                var input2 = document.createElement("input");
+                input2.setAttribute("type", "radio");
+                input2.setAttribute("name", "revised_value");
+                input2.setAttribute("id", "revised_value");
+                input2.setAttribute("value", "ng");
+                var label2 = document.createElement("label");
+                label2.setAttribute("for", "revised_value");
+                label2.setAttribute("class", "block mb-2 text-sm font-medium text-gray-900 dark:text-white");
+                label2.innerHTML = "NG";
+                inputRevised.appendChild(input);
+                input.appendChild(input1);
+                input.appendChild(label1);
+                input.appendChild(input2);
+                input.appendChild(label2);
+
+
+
+            }
+        }
         closeBtn.addEventListener("click", function() {
             modal.classList.add("hidden");
         });
