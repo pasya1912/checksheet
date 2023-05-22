@@ -122,12 +122,9 @@
                                                     <div>Check Status</div>
                                                     <div
                                                         class="px-1 {{ $check->status == 'DONE-OK' ? 'bg-green-300' : ($check->status == 'DONE-NG' ? 'bg-red-300' : ($check->status == 'PROGRESS-NG' ? 'bg-red-300' : ($check->status == 'NOT-STARTED' ? 'bg-white' : 'bg-yellow-300'))) }} text-gray-800 rounded-sm shadow-sm shadow-black">
-                                                        @if (auth()->user()->role == 'admin')
-                                                            <a
-                                                                href="{{ route('checksheet.data') }}?min_tanggal={{ date('Y-m-d') }}&max_tanggal={{ date('Y-m-d') }}&line={{ $check->line }}&code={{ $check->code }}&checksheet={{ $check->id }}&cell={{ $query->cell }}&shift={{ $query->shift }}&barang={{ $query->barang }}">{{ $check->status == 'DONE-OK' ? 'OK' : ($check->status == 'DONE-NG' || $check->status == 'PROGRESS-NG' ? $check->notgood . ' NG!' : ($check->status == 'PROGRESS-OK' ? 'Proses' : 'Belum Mulai')) }}</a>
-                                                        @else
-                                                            {{ $check->status == 'DONE-OK' ? 'OK' : ($check->status == 'DONE-NG' || $check->status == 'PROGRESS-NG' ? $check->notgood . ' NG!' : ($check->status == 'PROGRESS-OK' ? 'Proses' : 'Belum Mulai')) }}
-                                                        @endif
+                                                        <a
+                                                            href="{{ route('checksheet.data') }}?min_tanggal={{ date('Y-m-d') }}&max_tanggal={{ date('Y-m-d') }}&line={{ $check->line }}&code={{ $check->code }}&checksheet={{ $check->id }}&cell={{ $query->cell }}&shift={{ $query->shift }}&barang={{ $query->barang }}">{{ $check->status == 'DONE-OK' ? 'OK' : ($check->status == 'DONE-NG' || $check->status == 'PROGRESS-NG' ? $check->notgood . ' NG!' : ($check->status == 'PROGRESS-OK' ? 'Proses' : 'Belum Mulai')) }}</a>
+
                                                     </div>
 
                                                 </div>
@@ -223,7 +220,6 @@
             barang.addEventListener('change', function() {
                 formes.submit();
             });
-
         </script>
     @endsection
 </x-app-layout>
