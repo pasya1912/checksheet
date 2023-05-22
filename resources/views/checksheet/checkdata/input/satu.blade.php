@@ -31,7 +31,8 @@
         <span class="text-xs text-start">{!!$area->checkdata->notes!!}</span>
     </div>
     @endif
-    <div class="w-full flex justify-end">
+    <div class="w-full flex justify-between">
+        <span class="text-xs bg-gray-300 shadow-xs shadow-black rounded-lg px-1 py-0.5 mr-3">Revised value: <span class="uppercase">{{$area->checkdata->revised_value}}</span></span>
         <span class="text-xs bg-green-300 rounded-lg px-1 py-0.5 mr-3">Problem Solved</span>
     </div>
 </div>
