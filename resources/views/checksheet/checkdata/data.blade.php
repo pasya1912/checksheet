@@ -107,6 +107,7 @@
 
                     <option value="revised" {{ request()->get('filter') == 'revised' ? 'selected' : '' }}>Revised
                         Only</option>
+                        <option value="complete" {{ request()->get('filter') == 'complete' ? 'selected' : '' }}>Approved by Manager</option>
                 </select>
             </div>
         </div>

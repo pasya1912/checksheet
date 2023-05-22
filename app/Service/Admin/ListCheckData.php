@@ -157,10 +157,13 @@ class ListCheckData
                             $query->where('tt_checkdata.approval', ''.(auth()->user()->jabatan - 1).'');
 
                         }
-                    } else if ($filter = 'revised') {
+                    } else if ($filter == 'revised') {
                         $query->where('mark', '=', '1')
                             //where revised_value not null
                             ->whereNotNull('revised_value');
+                    }
+                    else if($filter == 'complete'){
+                        $query->where('tt_checkdata.approval', '=', '4');
                     }
                 }
             });
