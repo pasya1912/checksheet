@@ -106,9 +106,6 @@ class ListCheckData
             ->leftJoin('users', 'tt_checkdata.user', '=', 'users.npk')
 
             ->where(function ($query) use ($approval, $statusCheck, $revisedCheck, $min_tanggal, $max_tanggal, $barang, $shift, $cell, $area, $checksheet, $code, $line, $filter) {
-                if (auth()->user()->role != 'admin') {
-                    $query->where('tt_checkdata.user', '=', auth()->user()->npk);
-                }
                 if ($min_tanggal != '') {
 
                     $query->whereDate('tt_checkdata.tanggal', '>=', $min_tanggal);
