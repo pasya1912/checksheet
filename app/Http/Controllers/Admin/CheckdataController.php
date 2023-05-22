@@ -145,15 +145,14 @@ class CheckdataController extends Controller
         } else {
             return [];
         }
-
+        $merge = array_merge($timpa,[
+            'filter' => 'need_check',
+            'min_tanggal' => $min_tanggal ?? '',
+            'max_tanggal' => $max_tanggal ?? '',
+        ]);
         $mergeArray = [
             'approval' => $approval,
-            'data' => [
-                ...$timpa,
-                'filter' => 'need_check',
-                'min_tanggal' => $min_tanggal ?? '',
-                'max_tanggal' => $max_tanggal ?? '',
-            ]
+            'data' => $merge
         ];
 
         return $mergeArray;
