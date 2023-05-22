@@ -23,7 +23,7 @@
                                     ?
                                 @elseif(request()->input('checksheet') == null && auth()->user()->jabatan < 3)
                                     ?
-                                @elseif(request()->input('area') == null && request()->input('shift') == null && (auth()->user()->jabatan < 2 && auth()->user()->jabatan > 0))
+                                @elseif( request()->input('shift') == null && (auth()->user()->jabatan < 2 && auth()->user()->jabatan > 0))
                                     ?
                                 @else
                                     {{ $good }}
@@ -46,7 +46,7 @@
                                     ?
                                 @elseif(request()->input('checksheet') == null && auth()->user()->jabatan < 3)
                                     ?
-                                @elseif(request()->input('area') == null && request()->input('shift') == null  && (auth()->user()->jabatan < 2 && auth()->user()->jabatan > 0))
+                                @elseif( request()->input('shift') == null  && (auth()->user()->jabatan < 2 && auth()->user()->jabatan > 0))
                                     ?
                                 @else
                                     {{ $revised }}
@@ -111,17 +111,6 @@
                     @endif
                     @if (auth()->user()->jabatan < 3 && auth()->user()->jabatan > 0)
                         <div class="w-full md:w-5/12 lg:w-4/12">
-                            <label for="area">Area</label>
-                            <select id="area" name="area" class="w-full border-gray-400 p-2 rounded-lg" required>
-                                <option value="" selected>Area</option>
-                                @foreach ($areaList as $area)
-                                    <option value="{{ $area->id }}"
-                                        {{ request()->get('area') == $area->id ? 'selected' : '' }}>
-                                        {{ $area->nama }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="w-full md:w-5/12 lg:w-4/12">
                             <label for="shift">Shift</label>
                             <select id="shift" name="shift" class="w-full border-gray-400 p-2 rounded-lg" required>
                                 <option value="" selected>Shift</option>
@@ -161,10 +150,6 @@
                 @elseif(request()->input('checksheet') == null && auth()->user()->jabatan < 3)
                     <tr>
                         <td colspan="4" class="py-5 text-center">Isi Checksheet Terlebih Dahulu</td>
-                    </tr>
-                @elseif(request()->input('area') == null && (auth()->user()->jabatan < 3 && auth()->user()->jabatan > 0))
-                    <tr>
-                        <td colspan="4" class="py-5 text-center">Isi Area Terlebih Dahulu</td>
                     </tr>
                 @elseif(request()->input('shift') == null &&  (auth()->user()->jabatan < 3 && auth()->user()->jabatan > 0))
 
@@ -342,7 +327,7 @@
 
         @elseif(request()->input('checksheet') == null && auth()->user()->jabatan < 3)
 
-        @elseif(request()->input('area') == null && request()->input('shift') == null && (auth()->user()->jabatan < 3 && auth()->user()->jabatan > 0))
+        @elseif( request()->input('shift') == null && (auth()->user()->jabatan < 3 && auth()->user()->jabatan > 0))
         @else
             <div class="flex justify-end">
                 <form class="my-3" action="{{ url()->full() }}" method="POST">

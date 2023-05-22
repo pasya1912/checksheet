@@ -26,6 +26,7 @@ class CheckdataController extends Controller
 
             $approval = '0';
             $timpa = [
+                'area'=>'',
                 'barang' => '',
                 'cell' => ''
             ];
@@ -42,6 +43,7 @@ class CheckdataController extends Controller
 
             $approval = '1';
             $timpa = [
+                'area'=>'',
                 'barang' => '',
                 'cell' => ''
             ];
