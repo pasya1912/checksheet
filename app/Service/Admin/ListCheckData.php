@@ -25,23 +25,24 @@ class ListCheckData
     {
         $query = $this->getData($request, $approval);
         //update approval
-        $newApproval = "".($approval+1)."";
+        $newApproval = '' . ($approval + 1) .'';
         $data = $query->get();
+
         DB::beginTransaction();
         $update = $query->update([
-            'approval' => $newApproval
+            'tt_checkdata.approval' => $newApproval,
         ]);
 
-        if($update){
+        if ($update) {
 
-            foreach($data as $d){
+            foreach ($data as $d) {
 
                 $update = DB::table('approval_history')->insert([
                     'id_checkdata' => $d->id,
                     'approval' => $newApproval,
                     'approval_history.user' => auth()->user()->npk,
                 ]);
-                if($update <= 0){
+                if ($update <= 0) {
                     DB::rollBack();
                     return false;
                 }
@@ -49,13 +50,13 @@ class ListCheckData
             }
             DB::commit();
             return true;
-        }else{
+        } else {
             DB::rollBack();
             return false;
         }
     }
 
-    function getData($request, $approval = null) : \Illuminate\Database\Query\Builder
+    function getData($request, $approval = null): \Illuminate\Database\Query\Builder
     {
         $filter = ($request->get('filter') == null || $request->get('filter') == '') ? '' : $request->get('filter');
         $min_tanggal = ($request->get('min_tanggal') == null || $request->get('min_tanggal') == '') ? '' : $request->get('min_tanggal');
@@ -77,7 +78,7 @@ class ListCheckData
              END)
         WHEN tm_checkarea.tipe = "2" THEN
         (CASE
-        WHEN (CAST(tt_checkdata.value AS DECIMAL(10,4)) < IFNULL(CAST(tm_checkarea.min AS DECIMAL(10,4)), CAST("-Infinity" AS DECIMAL(10,4)))) OR (CAST(tt_checkdata.value AS DECIMAL(10,4)) > IFNULL(CAST(tm_checkarea.max AS DECIMAL(10,4)), CAST("Infinity" AS DECIMAL(10,4)))) THEN "notgood"
+        WHEN (CAST(tt_checkdata.value AS DECIMAL(10,4)) < IFNULL(CAST(tm_checkarea.min AS DECIMAL(10,4)), CAST("-999999" AS DECIMAL(10,4)))) OR (CAST(tt_checkdata.value AS DECIMAL(10,4)) > IFNULL(CAST(tm_checkarea.max AS DECIMAL(10,4)), CAST("999999" AS DECIMAL(10,4)))) THEN "notgood"
         ELSE "good"
         END)
         WHEN tm_checkarea.tipe = "3" THEN
@@ -92,7 +93,7 @@ class ListCheckData
              END)
         WHEN tm_checkarea.tipe = "2" THEN
             (CASE
-            WHEN (CAST(tt_checkdata.revised_value AS DECIMAL(10,4)) < IFNULL(CAST(tm_checkarea.min AS DECIMAL(10,4)), CAST("-Infinity" AS DECIMAL(10,4)))) OR (CAST(tt_checkdata.revised_value AS DECIMAL(10,4)) > IFNULL(CAST(tm_checkarea.max AS DECIMAL(10,4)), CAST("Infinity" AS DECIMAL(10,4)))) THEN "notgood"
+            WHEN (CAST(tt_checkdata.revised_value AS DECIMAL(10,4)) < IFNULL(CAST(tm_checkarea.min AS DECIMAL(10,4)), CAST("-999999" AS DECIMAL(10,4)))) OR (CAST(tt_checkdata.revised_value AS DECIMAL(10,4)) > IFNULL(CAST(tm_checkarea.max AS DECIMAL(10,4)), CAST("999999" AS DECIMAL(10,4)))) THEN "notgood"
             ELSE "good"
             END)
         WHEN tm_checkarea.tipe = "3" THEN
@@ -147,10 +148,15 @@ class ListCheckData
                         $query->where(function ($query) use ($revisedCheck) {
                             $query->whereIn(DB::raw($revisedCheck), ['good', 'general'])
                                 ->orWhere(function ($query) {
-                                        $query->where('tt_checkdata.mark', '=', '1')
-                                            ->whereNotNull('tt_checkdata.revised_value');
-                                    });
+                                    $query->where('tt_checkdata.mark', '=', '1')
+                                        ->whereNotNull('tt_checkdata.revised_value');
+                                });
                         });
+                        //if jabatan 1 then where approval = 0
+                        if (auth()->user()->role == "admin") {
+                            $query->where('tt_checkdata.approval', ''.(auth()->user()->jabatan - 1).'');
+
+                        }
                     } else if ($filter = 'revised') {
                         $query->where('mark', '=', '1')
                             //where revised_value not null

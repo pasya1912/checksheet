@@ -100,7 +100,7 @@
                 <select id="filter" name="filter" class=" w-full border-gray-400 p-2 rounded-lg" required>
                     <option value="" selected>Display only speciific data</option>
                     <option value="need_check" {{ request()->get('filter') == 'need_check' ? 'selected' : '' }}>
-                        Need Check Only</option>
+                        Need {{auth()->user()->jabatan >0 ?'Your Approval':'Approval'}} Only</option>
                     <option value="good" {{ request()->get('filter') == 'good' ? 'selected' : '' }}>Good only</option>
                     <option value="notgood" {{ request()->get('filter') == 'notgood' ? 'selected' : '' }}>NG Only
                     </option>

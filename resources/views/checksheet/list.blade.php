@@ -148,6 +148,10 @@
                 <tr>
                     <td colspan="4" class="py-5">Isi Code Terlebih Dahulu</td>
                 </tr>
+            @elseif($checkList == 300)
+                <tr>
+                    <td colspan="4" class="py-5">Missing Required Parameter</td>
+                </tr>
             @else
                 <tr>
                     <td colspan="4" class="py-5">Data Kosong</td>
@@ -158,7 +162,7 @@
             </div>
             <div class="flex items-center justify-center space-x-4">
 
-                @if ($checkList != '500' && $checkList != '400')
+                @if (isset($checkList['data']) && count($checkList['data']) > 1)
                     @foreach ($checkList['links'] as $link)
                         @if ($link['url'] == null)
                             @continue

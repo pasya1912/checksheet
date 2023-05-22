@@ -42,7 +42,7 @@ class ChecksheetController extends Controller
         $query->code = $code;
         if ($line == '' && $code == '') {
             $checkList = 500;
-        } else if ($line != '' && $code == '') {
+        }else if ($line != '' && $code == '') {
             $checkList = 400;
         } else {
 
@@ -72,11 +72,12 @@ class ChecksheetController extends Controller
                     ->where('tm_checksheet.id', $value->id)
                     ->whereDate('tanggal', date('Y-m-d'))
                     ->where('tt_checkdata.nama', $cell)
+                    ->where('tt_checkdata.barang', $barang)
                     ->where('tt_checkdata.shift', $shift)
                     ->whereRaw('
                 (CASE
                     WHEN tm_checkarea.tipe = "1" THEN tt_checkdata.value = "ng"
-                    WHEN tm_checkarea.tipe = "2" THEN (CAST(tt_checkdata.value AS DECIMAL(10,4)) < IFNULL(CAST(tm_checkarea.min AS DECIMAL(10,4)), CAST("-Infinity" AS DECIMAL(10,4)))) OR (CAST(tt_checkdata.value AS DECIMAL(10,4)) > IFNULL(CAST(tm_checkarea.max AS DECIMAL(10,4)), CAST("Infinity" AS DECIMAL(10,4))))
+                    WHEN tm_checkarea.tipe = "2" THEN (CAST(tt_checkdata.value AS DECIMAL(10,4)) < IFNULL(CAST(tm_checkarea.min AS DECIMAL(10,4)), CAST("-999999" AS DECIMAL(10,4)))) OR (CAST(tt_checkdata.value AS DECIMAL(10,4)) > IFNULL(CAST(tm_checkarea.max AS DECIMAL(10,4)), CAST("999999" AS DECIMAL(10,4))))
                     WHEN tm_checkarea.tipe = "3" THEN tt_checkdata.value = "xxxxxx"
                     END
                     )')
@@ -87,11 +88,12 @@ class ChecksheetController extends Controller
                     ->where('tt_checkdata.value', DB::raw('tt_checkdata.value'))
                     ->where('tt_checkdata.nama', $cell)
                     ->where('tt_checkdata.shift', $shift)
+                    ->where('tt_checkdata.barang', $barang)
                     ->whereDate('tanggal', date('Y-m-d'))
                     ->whereRaw('
                 (CASE
                     WHEN tm_checkarea.tipe = "1" THEN tt_checkdata.value = "ok"
-                    WHEN tm_checkarea.tipe = "2" THEN (CAST(tt_checkdata.value AS DECIMAL(10,4)) >= IFNULL(CAST(tm_checkarea.min AS DECIMAL(10,4)), CAST("-Infinity" AS DECIMAL(10,4)))) AND (CAST(tt_checkdata.value AS DECIMAL(10,4)) <= IFNULL(CAST(tm_checkarea.max AS DECIMAL(10,4)), CAST("Infinity" AS DECIMAL(10,4))))
+                    WHEN tm_checkarea.tipe = "2" THEN (CAST(tt_checkdata.value AS DECIMAL(10,4)) >= IFNULL(CAST(tm_checkarea.min AS DECIMAL(10,4)), CAST("-999999" AS DECIMAL(10,4)))) AND (CAST(tt_checkdata.value AS DECIMAL(10,4)) <= IFNULL(CAST(tm_checkarea.max AS DECIMAL(10,4)), CAST("999999" AS DECIMAL(10,4))))
                     WHEN tm_checkarea.tipe = "3" THEN tt_checkdata.value = tt_checkdata.value
                     END
                     )')
@@ -103,6 +105,7 @@ class ChecksheetController extends Controller
                     ->where('id_checksheet', $value->id)
                     ->where('tt_checkdata.nama', $cell)
                     ->where('tt_checkdata.shift', $shift)
+                    ->where('tt_checkdata.barang', $barang)
                     ->whereDate('tt_checkdata.tanggal', date('Y-m-d'))
                     ->where('tt_checkdata.approval', '4')
                     ->count();
@@ -113,6 +116,10 @@ class ChecksheetController extends Controller
 
             }
 
+        }
+
+        if($cell == '' || $shift == '' || $barang == '' || $line == '' || $code == ''){
+            $checkList = 300;
         }
         $lineList = $checksheet->getLine();
         $codeList = $checksheet->getCode($request->get('line'));

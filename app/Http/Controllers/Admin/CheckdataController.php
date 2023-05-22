@@ -16,7 +16,7 @@ class CheckdataController extends Controller
 
         if ($jabatan == '1') {
 
-            if ($request->tanggal == null || $request->tanggal == '') {
+            if ($request->tanggal != null || $request->tanggal != '') {
                 $min_tanggal = $request->tanggal;
                 $max_tanggal = $request->tanggal;
             } else {
@@ -33,7 +33,7 @@ class CheckdataController extends Controller
         } elseif ($jabatan == '2') //leader
         {
 
-            if ($request->tanggal == null || $request->tanggal == '') {
+            if ($request->tanggal != null || $request->tanggal != '') {
                 $min_tanggal = $request->tanggal;
                 $max_tanggal = $request->tanggal;
             } else {
@@ -168,7 +168,6 @@ class CheckdataController extends Controller
 
         //merge with request
         $request->merge($mergeArray['data']);
-
 
         $lineList = $checksheetData->getLine();
         $codeList = $checksheetData->getCode($request->get('line'));

@@ -12,7 +12,7 @@ class CheckareaController extends Controller
 
         try {
             //if query cell, shift, code,line,barang not exist return error
-            if (!$request->query('cell') || !$request->query('shift') || !$request->query('code') || !$request->query('line') || !$request->query('barang')) {
+            if (!$request->query('cell') || !$request->query('shift') || !$request->query('barang')) {
                 throw new \Exception('Missing Reqired Parameter');
             }
 
@@ -46,7 +46,7 @@ class CheckareaController extends Controller
                     ->where('tt_checkdata.id_checkarea', $area->id)
                     ->where('tt_checkdata.nama', $request->query('cell'))
                     ->where('tt_checkdata.shift', $request->query('shift'))
-                    //where day today
+                    ->where('tt_checkdata.barang', $request->query('barang'))                    //where day today
                     ->whereDate('tt_checkdata.tanggal', $request->query('tanggal') ?? date('Y-m-d'))
                     ->first();
 
