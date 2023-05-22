@@ -228,6 +228,7 @@ class CheckdataController extends Controller
 
             }
 
+
             //map the data collection to array only id and nama
             $checkdata = $checkdata->map(function ($item, $key) {
                 $replaceNotes = $item->notes ? preg_replace("/<br>(.*?)\)/","",$item->notes) : null;
@@ -239,6 +240,8 @@ class CheckdataController extends Controller
                 }
                 if($item->status == "good"){
                     $status =  "OK";
+                }else{
+                    $status ="Belum Revisi";
                 }
 
                 return [
@@ -266,6 +269,6 @@ class CheckdataController extends Controller
 
             //return Checkdata::find(27)->approvalHistory;
 
-            return Excel::download(new DataExport($checkdata), 'users.xlsx');
+            return Excel::download(new DataExport($checkdata), 'request'.date('Y-m-d-h-i-s').'.xlsx');
     }
 }
