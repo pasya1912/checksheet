@@ -9,6 +9,23 @@ use Illuminate\Http\Request;
 
 class ChecksheetController extends Controller
 {
+    public function getCode(Request $request, \App\Service\ChecksheetData $checksheetData)
+    {
+
+        $codeList = $checksheetData->getCode($request->line);
+        //return json with status success if not empty
+        if (count($codeList)) {
+            return response()->json([
+                'status' => 'success',
+                'data' => $codeList
+            ],200);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'data' => []
+            ],404);
+        }
+    }
     public function list(Request $request, \App\Service\ChecksheetData $checksheet)
     {
         $line = !$request->get('line') ? '' : $request->get('line');

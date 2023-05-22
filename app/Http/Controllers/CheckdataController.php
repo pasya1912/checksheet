@@ -22,6 +22,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class CheckdataController extends Controller
 {
+
     public function list(Request $request,\App\Service\Admin\ListCheckData $listCheckData, \App\Service\ChecksheetData $checksheetData)
     {
 

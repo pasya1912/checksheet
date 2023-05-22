@@ -189,10 +189,41 @@
             var shift = document.getElementById('shift');
             var barang = document.getElementById('barang');
 
+            //if code cell shift barang change then submit form
+            line.addEventListener('change', function(value) {
+                console.log('line change');
+                //call xhr request to checksheet.getCode
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', '{{ route('checksheet.getCode') }}?line=' + line.value);
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        var res = JSON.parse(xhr.responseText);
+                        var option = '<option value="" selected disabled>Model</option>';
+                        for (var i = 0; i < res.data.length; i++) {
+                            option += '<option value="' + res.data[i].code + '">' + res.data[i].code +
+                                '</option>';
+                        }
+                        code.innerHTML = option;
+                    } else {
+                        alert('Request failed.  Returned status of ' + xhr.status);
+                    }
+                };
+                xhr.send();
 
-            formes.addEventListener('change', function() {
+            });
+            code.addEventListener('change', function() {
                 formes.submit();
             });
+            cell.addEventListener('change', function() {
+                formes.submit();
+            });
+            shift.addEventListener('change', function() {
+                formes.submit();
+            });
+            barang.addEventListener('change', function() {
+                formes.submit();
+            });
+
         </script>
     @endsection
 </x-app-layout>
