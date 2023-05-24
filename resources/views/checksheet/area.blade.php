@@ -47,11 +47,17 @@
                                 @if ($area->tipe == 2)
                                 <td class="py-5 w-8/12">
                                     <div>{{ $area->max ? 'Max: ' . $area->max : '' }}</div>
-                                    <span class="w-10/12 md:w-11/12 bg-gray-200 p-5 text-black inline-block text-sm md:text-base">{{ $area->nama }}</span>
+                                    <div><span class="w-10/12 md:w-11/12 bg-gray-200 p-5 text-black inline-block text-sm md:text-base">{{ $area->nama }}</span></div>
                                     <div>{{ $area->min ? 'Min: ' . $area->min : '' }}</div>
+                                    <div>{{ $area->deskripsi ?? '' }}</div>
                                 </td>
                                 @elseif($area->tipe == 1)
-                                <td class="py-5 w-8/12"><span class="w-10/12 md:w-11/12 bg-gray-200 p-5 text-black inline-block text-sm md:text-base">{{ $area->nama }}</span>
+                                <td class="py-5 w-8/12">
+
+                                    <div><span class="w-10/12 md:w-11/12 bg-gray-200 p-5 text-black inline-block text-sm md:text-base">{{ $area->nama }}</span></div>
+                                    <div class="text-xs">
+                                        {{ $area->deskripsi ?? '' }}
+                                    </div>
                                 </td>
                                 @else
                                 <td class="py-5 w-8/12">
@@ -59,7 +65,7 @@
                                         {{ $area->nama }}
                                     </div>
                                     <div class="text-xs">
-                                        {{ $area->deskripsi }}
+                                        {{ $area->deskripsi ?? '' }}
                                     </div>
                                 </td>
                                 @endif
