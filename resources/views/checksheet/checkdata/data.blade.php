@@ -2,6 +2,7 @@
 @section('header')
     {{ __('Checksheet Data List') }}
 @endsection
+@section('title', 'Data')
 @section('content')
     <form action="{{ route('checksheet.data') }}" method="GET" id="search-checksheet" class="text-center">
 

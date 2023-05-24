@@ -2,6 +2,7 @@
 @section('header')
     {{ __('Checksheet Data Approval') }}
 @endsection
+@section('title', 'Approval');
 @section('content')
     <form action="{{ route('checksheet.data.approval_page') }}" method="GET" id="search-checksheet"
         class=" w-full text-center">
