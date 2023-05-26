@@ -35,6 +35,7 @@ class CheckareaController extends Controller
                             ->orWhere('tm_checkarea.deskripsi', 'LIKE', '%' . $term . '%');
                     }
                 })
+                ->orderBy('tm_checkarea.id', 'ASC')
                 ->orderBy('tm_checkarea.nama', 'ASC')
                 ->paginate(100)->appends(request()->query())->toArray();
 

@@ -71,11 +71,14 @@
                             </select>
                         </div>
                         <div class="w-full">
-                            <label for="barang">First/last</label>
+                            <label for="barang">Urutan</label>
                             <select id="barang" name="barang" class="w-full border-gray-400 p-2 rounded-lg"
                                 required>
                                 <option value="first" {{ request()->get('barang') == 'first' ? 'selected' : '' }}>
                                     first
+                                </option>
+                                <option value="middle" {{ request()->get('barang') == 'middle' ? 'selected' : '' }}>
+                                    middle
                                 </option>
                                 <option value="last" {{ request()->get('barang') == 'last' ? 'selected' : '' }}>last
                                 </option>

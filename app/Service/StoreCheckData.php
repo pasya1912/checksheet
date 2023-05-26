@@ -38,7 +38,7 @@ class StoreCheckData
     {
         $array = [];
         $array['nama'] = 'required';
-        $array['barang'] = 'required|in:first,last';
+        $array['barang'] = 'required|in:first,middle,last';
 
         switch($type){
             case 1:

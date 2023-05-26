@@ -11,7 +11,7 @@ class ValidateBarang implements Rule
 
     public function passes($attribute, $value)
     {
-        if ($value == 'first' || $value == 'last') {
+        if ($value == 'first' || $value == 'middle' ||  $value == 'last') {
             return true;
         }
 
