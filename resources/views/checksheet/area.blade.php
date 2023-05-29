@@ -314,7 +314,7 @@
             modal.classList.remove("hidden");
 
             var inputRevised = document.getElementById("inputRevisi");
-            inputRevsed.innerHTML = null;
+            inputRevsed.innerHTML = "";
 
                             //add child input type number append
             var labelInput = document.createElement("label");
