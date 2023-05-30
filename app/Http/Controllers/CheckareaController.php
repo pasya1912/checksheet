@@ -62,6 +62,7 @@ class CheckareaController extends Controller
                         $area->checkdata->is_good = true;
                     }
                 }
+
             }
             return view('checksheet.area', compact('areaList', 'checksheet'));
         } catch (\Exception $e) {

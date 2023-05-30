@@ -178,9 +178,9 @@ class CheckdataController extends Controller
         $revised = 0;
 
         foreach ($checkdata['data'] as $key => $value) {
-            if ($value->status == "good") {
+            if ($value->status == "good" || $value->status == "general") {
                 $good++;
-            } elseif ($value->status == "notgood" && $value->revised_status == "good") {
+            } elseif (($value->status == "notgood" || $value->status == "general") && $value->revised_status == "good") {
                 $revised++;
             }
         }

@@ -64,9 +64,6 @@ class CheckdataController extends Controller
             ->where('tt_checkdata.nama', $request->cell)
             ->whereDate('tt_checkdata.tanggal', date('Y-m-d'))
             ->where('tt_checkdata.barang', $request->barang);
-
-
-
         $check = $check->count();
 
         //if data already exist return status error
@@ -198,6 +195,7 @@ class CheckdataController extends Controller
 
                 $approvalHistory = Checkdata::with('approvalHistory.owner')
                 ->find($value->id)->approvalHistory;
+
                 $checkdata[$key]->jp = false;
                 $checkdata[$key]->leader = false;
                 $checkdata[$key]->spv = false;
@@ -207,21 +205,13 @@ class CheckdataController extends Controller
                     if($approval->approval == 1){
 
                         $checkdata[$key]->jp = $approval->owner->name;
-                    }
-                    if($approval->approval == 2){
-                        $checkdata[$key]->jp = $approval->owner->name;
+                    }else if($approval->approval == 2){
                         $checkdata[$key]->leader = $approval->owner->name;
-                    }
-                    if($approval->approval == 3){
-                        $checkdata[$key]->jp = $approval->owner->name;
-                        $checkdata[$key]->leader = $approval->owner->name;
+                    }else if($approval->approval == 3){
                         $checkdata[$key]->spv = $approval->owner->name;
 
                     }
-                    if($approval->approval == 4){
-                        $checkdata[$key]->jp = $approval->owner->name;
-                        $checkdata[$key]->leader = $approval->owner->name;
-                        $checkdata[$key]->spv = $approval->owner->name;
+                    else if($approval->approval == 4){
                         $checkdata[$key]->manager = $approval->owner->name;
                     }
 
@@ -232,38 +222,39 @@ class CheckdataController extends Controller
 
             //map the data collection to array only id and nama
             $checkdata = $checkdata->map(function ($item, $key) {
+                $status = "";
                 $replaceNotes = $item->notes ? preg_replace("/<br>(.*?)\)/","",$item->notes) : null;
-                if($item->revised_status == 'good'){
+                if($item->status == "notgood" && $item->revised_status == 'good'){
                     $status = "OK (Revised)";
                 }
-                if($item->revised_status == 'notgood'){
-                    $status = "NG (Revised)";
-                }
-                if($item->status == "good"){
+                if($item->status == "good" && $item->revised_value == null){
                     $status =  "OK";
-                }else{
-                    $status ="Belum Revisi";
+                }else if($item->status == "notgood" && $item->revised_value == null){
+                    $status ="NG (Belum Drevisi)";
                 }
 
                 return [
-                    'checker' => $item->name,
+                    'jenis'=> $item->jenis,
+                    'line' => $item->line,
+                    'model' => $item->code,
+                    'nama_checksheet' => $item->nama_checksheet,
+                    'nama_checkarea' => $item->nama_checkarea,
+                    'cell' => $item->nama,
+                    'urutan' => $item->barang,
+                    'shift' => $item->shift,
+                    'tanggal'=> date('d-m-Y',strtotime($item->tanggal)),
+                    'jam'=> date('H:i:s',strtotime($item->tanggal)),
+                    'min' => $item->min,
+                    'max' => $item->max,
                     'value' => $item->value,
                     'status' => $status,
                     'revised_value' => $item->revised_value,
-                    'urutan' => $item->barang,
-                    'cell'=> $item->nama,
-                    'shift' => $item->shift,
-                    'nama_checkarea' => $item->nama_checkarea,
-                    'nama_checksheet' => $item->nama_checksheet,
-                    'model' => $item->code,
-                    'line' => $item->line,
-                    'jenis'=> $item->jenis,
-                    'tanggal'=> $item->tanggal,
+                    'notes' => $replaceNotes,
+                    'checker' => $item->name,
                     'jp_approve' => $item->jp,
                     'leader_approve' => $item->leader,
                     'spv_approve' => $item->spv,
-                    'manager_approve' => $item->manager,
-                    'notes' => $replaceNotes,
+                    'manager_approve' => $item->manager
 
                 ];
             });

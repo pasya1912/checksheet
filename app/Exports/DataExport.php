@@ -28,24 +28,30 @@ class DataExport  implements FromCollection, WithHeadings, ShouldAutoSize, WithS
     public function headings(): array
     {
         return [
-            'Checker',
+            'Product',
+            'Line',
+            'Model',
+            'Checksheet',
+            'Area',
+            'Cell',
+            'First/Last',
+            'Shift',
+            'Tanggal',
+            'Jam',
+            'Minimum',
+            'Maximum',
             'Value',
             'Status',
-            'Value Revisi',
-            'Urutan',
-            'Cell',
-            'Shift',
-            'Nama Area',
-            'Nama Checksheet',
-            'Model',
-            'Line',
-            'Produk',
-            'Tanggal',
-            'JP Approve',
-            'Leader Approve',
-            'Supervisor Approve',
-            'Manager Approve',
-            'Notes'
+            'Revisi Value',
+            'Note',
+            'Checker',
+            'JP Approver',
+            'Leader Approver',
+            'Supervisor Approver',
+            'Manager Approver'
+
+
+
 
         ];
     }
