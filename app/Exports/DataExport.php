@@ -45,10 +45,10 @@ class DataExport  implements FromCollection, WithHeadings, ShouldAutoSize, WithS
             'Revisi Value',
             'Note',
             'Checker',
-            'JP Approver',
-            'Leader Approver',
-            'Supervisor Approver',
-            'Manager Approver'
+            'JP Approve',
+            'Leader Approve',
+            'Supervisor Approve',
+            'Manager Approve'
 
 
 
