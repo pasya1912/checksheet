@@ -18,12 +18,12 @@ class ChecksheetController extends Controller
             return response()->json([
                 'status' => 'success',
                 'data' => $codeList
-            ],200);
+            ], 200);
         } else {
             return response()->json([
                 'status' => 'error',
                 'data' => []
-            ],404);
+            ], 404);
         }
     }
     public function list(Request $request, \App\Service\ChecksheetData $checksheet)
@@ -42,7 +42,7 @@ class ChecksheetController extends Controller
         $query->code = $code;
         if ($line == '' && $code == '') {
             $checkList = 500;
-        }else if ($line != '' && $code == '') {
+        } else if ($line != '' && $code == '') {
             $checkList = 400;
         } else {
 
@@ -63,6 +63,18 @@ class ChecksheetController extends Controller
             foreach ($checkList['data'] as $key => $value) {
                 $checkList['data'][$key]->all = DB::table('tm_checkarea')
                     ->select('id')->where('tm_checkarea.id_checksheet', $value->id)->count();
+
+                $checkList['data'][$key]->jml_revised = DB::table('tt_checkdata')
+                    ->select('tm_checkarea.id', 'tm_checkarea.tipe', 'tt_checkdata.value')
+                    ->leftJoin('tm_checkarea', 'tt_checkdata.id_checkarea', '=', 'tm_checkarea.id')
+                    ->leftJoin('tm_checksheet', 'tm_checkarea.id_checksheet', '=', 'tm_checksheet.id')
+                    ->where('tm_checksheet.id', $value->id)
+                    ->whereDate('tanggal', date('Y-m-d'))
+                    ->where('tt_checkdata.nama', $cell)
+                    ->where('tt_checkdata.barang', $barang)
+                    ->where('tt_checkdata.shift', $shift)
+                    ->whereNotNull('tt_checkdata.revised_value')
+                    ->where('tt_checkdata.mark', '1')->count();
 
                 $checkList['data'][$key]->notgood = DB::table('tt_checkdata')
 
@@ -109,21 +121,20 @@ class ChecksheetController extends Controller
                     ->whereDate('tt_checkdata.tanggal', date('Y-m-d'))
                     ->where('tt_checkdata.approval', '4')
                     ->count();
-
                 $checkList['data'][$key]->status =
-                ($checkList['data'][$key]->all == $checkList['data'][$key]->good ? 'DONE-OK' : ($checkList['data'][$key]->notgood && $checkList['data'][$key]->good + $checkList['data'][$key]->notgood == $checkList['data'][$key]->all ? 'DONE-NG' : ($checkList['data'][$key]->notgood > 0 ? 'PROGRESS-NG' : (($checkList['data'][$key]->notgood == 0 && $checkList['data'][$key]->good >0) ?'PROGRESS-OK':'NOT-STARTED'))));
+                    ($checkList['data'][$key]->all == $checkList['data'][$key]->good || $checkList['data'][$key]->all == $checkList['data'][$key]->good + $checkList['data'][$key]->jml_revised ? 'DONE-OK' : ($checkList['data'][$key]->notgood && $checkList['data'][$key]->good + $checkList['data'][$key]->notgood == $checkList['data'][$key]->all ? 'DONE-NG' : ($checkList['data'][$key]->notgood > 0 && $checkList['data'][$key]->jml_revised - $checkList['data'][$key]->notgood != 0 ? 'PROGRESS-NG' : ((($checkList['data'][$key]->notgood == 0 || $checkList['data'][$key]->jml_revised - $checkList['data'][$key]->notgood == 0) && ($checkList['data'][$key]->good > 0 || $checkList['data'][$key]->jml_revised > 0 )) ? 'PROGRESS-OK' : 'NOT-STARTED'))));
 
 
             }
 
         }
 
-        if($cell == '' || $shift == '' || $barang == '' || $line == '' || $code == ''){
+        if ($cell == '' || $shift == '' || $barang == '' || $line == '' || $code == '') {
             $checkList = 300;
         }
         $lineList = $checksheet->getLine();
         $codeList = $checksheet->getCode($request->get('line'));
         //return view checklist with checklist
-        return view('checksheet.list', compact('checkList', 'lineList', 'codeList','query'));
+        return view('checksheet.list', compact('checkList', 'lineList', 'codeList', 'query'));
     }
 }
