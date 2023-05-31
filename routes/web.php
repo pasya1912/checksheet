@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ChecksheetController;
 use App\Http\Controllers\CheckareaController;
 use App\Http\Controllers\CheckdataController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\CheckdataController as AdminCheckdataController;
 /*
 |--------------------------------------------------------------------------
@@ -23,11 +24,11 @@ Route::get('/', function () {
 });
 
 
-Route::get('/', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+
 
 Route::middleware('auth')->group(function () {
+    Route::get('/', [DashboardController::class,'index'])->name('dashboard');
+    Route::get('/line-status', [DashboardController::class,'getStatus'])->name('profile');
     Route::prefix('checksheet')->group(function () {
         Route::get('/getCode',[ChecksheetController::class,'getCode'])->name('checksheet.getCode');
         Route::get('/',[ChecksheetController::class,'list'])->name('checksheet.list');

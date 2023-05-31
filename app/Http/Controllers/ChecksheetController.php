@@ -90,7 +90,7 @@ class ChecksheetController extends Controller
                 (CASE
                     WHEN tm_checkarea.tipe = "1" THEN tt_checkdata.value = "ng"
                     WHEN tm_checkarea.tipe = "2" THEN (CAST(tt_checkdata.value AS DECIMAL(10,4)) < IFNULL(CAST(tm_checkarea.min AS DECIMAL(10,4)), CAST("-999999" AS DECIMAL(10,4)))) OR (CAST(tt_checkdata.value AS DECIMAL(10,4)) > IFNULL(CAST(tm_checkarea.max AS DECIMAL(10,4)), CAST("999999" AS DECIMAL(10,4))))
-                    WHEN tm_checkarea.tipe = "3" THEN tt_checkdata.value = "xxxxxx"
+                    WHEN tm_checkarea.tipe = "3" THEN 1 = 2
                     END
                     )')
                     ->count();
