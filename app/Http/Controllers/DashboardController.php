@@ -10,19 +10,19 @@ class DashboardController extends Controller
     public function index(ChecksheetData $checksheetData)
     {
         //class object empty
-        $arr = [];
+        $datas = [];
         $line = $checksheetData->getLine();
 
         foreach ($line as $key => $value) {
-            $arr[$key]['line'] = $value->line;
-            $arr[$key]['model'] = array_map(function ($object) use ($checksheetData,$value) {
+            $datas[$key]['line'] = $value->line;
+            $datas[$key]['model'] = array_map(function ($object) use ($checksheetData,$value) {
                 $ya = [];
                 $ya['model'] = $object->code;
                 $ya['status'] = $checksheetData->getStatus($value->line,$object->code);
                 return $ya;
             }, $checksheetData->getCode($value->line)->values()->toArray());
         }
-        return view('dashboard',['datas' => $arr,'lines' => $line]);
+        return view('dashboard',compact('datas'));
     }
     public function getStatus(Request $request, ChecksheetData $checksheetData)
     {
