@@ -322,7 +322,17 @@
             labelInput.setAttribute("class", "block mb-2 text-sm font-medium text-gray-900 dark:text-white");
             labelInput.innerHTML = "Revised Value";
             inputRevised.appendChild(labelInput);
-            if (tipe == 2 || tipe == 3) {
+            if (tipe == 2) {
+                var input = document.createElement("input");
+                input.setAttribute("type", "number");
+                input.setAttribute("name", "revised_value");
+                input.setAttribute("id", "revised_value");
+                input.setAttribute("step","0.01");
+                input.setAttribute("class", "bg-gray-50  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500");
+                input.setAttribute("placeholder", "Revised Value");
+                inputRevised.appendChild(input);
+            }
+            else if (tipe == 3) {
                 var input = document.createElement("input");
                 input.setAttribute("type", "text");
                 input.setAttribute("name", "revised_value");
