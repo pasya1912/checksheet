@@ -15,11 +15,13 @@ class DashboardController extends Controller
 
         foreach ($line as $key => $value) {
             $arr[$key]['line'] = $value->line;
-            $arr[$key]['model'] = array_map(function ($object) {
-                return $object->code;
+            $arr[$key]['model'] = array_map(function ($object) use ($checksheetData,$value) {
+                $ya = [];
+                $ya['model'] = $object->code;
+                $ya['status'] = $checksheetData->getStatus($value->line,$object->code);
+                return $ya;
             }, $checksheetData->getCode($value->line)->values()->toArray());
         }
-
         return view('dashboard',['datas' => $arr,'lines' => $line]);
     }
     public function getStatus(Request $request, ChecksheetData $checksheetData)

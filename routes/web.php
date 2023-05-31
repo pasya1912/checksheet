@@ -28,7 +28,7 @@ Route::get('/', function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/', [DashboardController::class,'index'])->name('dashboard');
-    Route::get('/line-status', [DashboardController::class,'getStatus'])->name('profile');
+    Route::post('/line-status', [DashboardController::class,'getStatus'])->name('getStatus');
     Route::prefix('checksheet')->group(function () {
         Route::get('/getCode',[ChecksheetController::class,'getCode'])->name('checksheet.getCode');
         Route::get('/',[ChecksheetController::class,'list'])->name('checksheet.list');

@@ -20,7 +20,7 @@
                             </div>
                             <div class="body-card my-2 w-full">
                                 @foreach($data['model'] as $model)
-                                <div class="my-1 w-full flex justify-between"><span>{{$model}}</span> <div class="flex w-full gap-2 justify-end"><span class=" bg-green-300 px-2 py-0.5 rounded-md" id="good-{{$model}}">1</span><span class=" bg-red-300 px-2 py-0.5 rounded-md" id="ng-{{$model}}">0</span><span class=" bg bg-gray-300 px-2 py-0.5 rounded-md" id="revisi-{{$model}}">1</span></div></div>
+                                <div class="my-1 w-full flex justify-between" id="status-{{$model['model']}}" ><span>{{$model['model']}}</span> <div class="flex w-full gap-2 justify-end"><span class=" bg-green-300 px-2 py-0.5 rounded-md" id="good-{{$model['model']}}">{{$model['status']['good']}}</span><span class=" bg-red-300 px-2 py-0.5 rounded-md" id="ng-{{$model['model']}}">{{$model['status']['notgood']}}</span><span class=" bg bg-gray-300 px-2 py-0.5 rounded-md" id="revisi-{{$model['model']}}">{{$model['status']['revisi']}}</span></div></div>
                                 @endforeach
                             </div>
                         </div>
@@ -30,4 +30,6 @@
             </div>
         </div>
     </div>
+
 </x-app-layout>
+
