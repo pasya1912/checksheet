@@ -18,6 +18,7 @@
  --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
+    @yield('top-script')
 </head>
 
 <body class="font-sans antialiased">

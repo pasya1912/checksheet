@@ -14,15 +14,34 @@ class DashboardController extends Controller
         $line = $checksheetData->getLine();
 
         foreach ($line as $key => $value) {
-            $daget[$key]['line'] = $value->line;
-            $daget[$key]['model'] = array_map(function ($object) use ($checksheetData,$value) {
-                $ya = [];
-                $ya['model'] = $object->code;
-                $ya['status'] = $checksheetData->getStatus($value->line,$object->code);
-                return $ya;
-            }, $checksheetData->getCode($value->line)->values()->toArray());
+            foreach($checksheetData->getCode($value->line) as $key2 => $value2){
+                $daget[$key]['line'] = $value->line;
+                $daget[$key]['model'] = array_map(function ($item) {
+                    return $item->code;
+                }, $checksheetData->getCode($value->line)->toArray());
+                $daget[$key]['status']['ok'][] = $checksheetData->getGood($value->line,$value2->code);
+                $daget[$key]['status']['ng'][] = $checksheetData->getBad($value->line,$value2->code);
+                $daget[$key]['status']['revised'][] = $checksheetData->getRevised($value->line,$value2->code);
+
+            }
         }
-        return view('dashboard',compact('daget'));
+
+        $allArray = [];
+
+        $allArray['line'] = array_map(function ($item) {
+            return $item->line;
+        }, $line->toArray());
+        foreach($allArray['line'] as $key => $value){
+            $allArray['status']['ok'][] = $checksheetData->getGood($value);
+            $allArray['status']['ng'][] = $checksheetData->getBad($value);
+            $allArray['status']['revised'][] = $checksheetData->getRevised($value);
+        }
+
+
+
+
+
+        return view('dashboard',compact('daget','allArray'));
     }
     public function getStatus(Request $request, ChecksheetData $checksheetData)
     {

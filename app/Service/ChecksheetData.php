@@ -56,66 +56,110 @@ class ChecksheetData
         });
         return $area;
     }
-    public function getStatus($line,$model)
+    public function getAll($line = null,$model = null,$tanggal = null)
     {
-
         $all = DB::table('tt_checkdata')
         ->select('id')
         ->leftJoin('tm_checkarea', 'tt_checkdata.id_checkarea', '=', 'tm_checkarea.id')
         ->leftJoin('tm_checksheet', 'tm_checkarea.id_checksheet', '=', 'tm_checksheet.id')
-        ->where('tt_checkdata.value', DB::raw('tt_checkdata.value'))
-        ->where('tm_checksheet.line',$line)
-        ->where('tm_checksheet.code',$model)
-        ->whereDate('tanggal', date('Y-m-d'))->count();
+        ->where('tt_checkdata.value', DB::raw('tt_checkdata.value'));
+        if($line != null){
+            $all->where('tm_checksheet.line',$line);
+        }
+        if($model != null){
+            $all->where('tm_checksheet.code',$model);
+        }
+        if($tanggal != null){
+            $all->whereDate('tanggal', $tanggal);
+        }else
+        {
+            $all->whereDate('tanggal', date('Y-m-d'));
+        }
+        return $all->count();
+
+    }
+    public function getGood($line = null,$model = null,$tanggal = null)
+    {
 
         $good = DB::table('tt_checkdata')
         ->select('id')
         ->leftJoin('tm_checkarea', 'tt_checkdata.id_checkarea', '=', 'tm_checkarea.id')
         ->leftJoin('tm_checksheet', 'tm_checkarea.id_checksheet', '=', 'tm_checksheet.id')
-        ->where('tt_checkdata.value', DB::raw('tt_checkdata.value'))
-        ->where('tm_checksheet.line',$line)
-        ->where('tm_checksheet.code',$model)
-        ->whereDate('tanggal', date('Y-m-d'))
-        ->whereRaw('
+        ->where('tt_checkdata.value', DB::raw('tt_checkdata.value'));
+        if($line != null){
+            $good->where('tm_checksheet.line',$line);
+        }
+        if($model != null){
+            $good->where('tm_checksheet.code',$model);
+        }
+        if($tanggal != null){
+            $good->whereDate('tanggal', $tanggal);
+        }else
+        {
+            $good->whereDate('tanggal', date('Y-m-d'));
+        }
+        $good->whereRaw('
         (CASE
             WHEN tm_checkarea.tipe = "1" THEN tt_checkdata.value = "ok"
             WHEN tm_checkarea.tipe = "2" THEN (CAST(tt_checkdata.value AS DECIMAL(10,4)) >= IFNULL(CAST(tm_checkarea.min AS DECIMAL(10,4)), CAST("-999999" AS DECIMAL(10,4)))) AND (CAST(tt_checkdata.value AS DECIMAL(10,4)) <= IFNULL(CAST(tm_checkarea.max AS DECIMAL(10,4)), CAST("999999" AS DECIMAL(10,4))))
             WHEN tm_checkarea.tipe = "3" THEN tt_checkdata.value = tt_checkdata.value
             END
-            )')
-        ->count();
+            )');
+        return $good->count();
+    }
+
+    public function getBad($line = null,$model = null,$tanggal = null)
+    {
         $notgood = DB::table('tt_checkdata')
         ->select('id')
         ->leftJoin('tm_checkarea', 'tt_checkdata.id_checkarea', '=', 'tm_checkarea.id')
         ->leftJoin('tm_checksheet', 'tm_checkarea.id_checksheet', '=', 'tm_checksheet.id')
-        ->where('tt_checkdata.value', DB::raw('tt_checkdata.value'))
-        ->where('tm_checksheet.line',$line)
-        ->where('tm_checksheet.code',$model)
-        ->whereDate('tanggal', date('Y-m-d'))
-        ->whereRaw('
+        ->where('tt_checkdata.value', DB::raw('tt_checkdata.value'));
+        if($line != null){
+            $notgood->where('tm_checksheet.line',$line);
+        }
+        if($model != null){
+            $notgood->where('tm_checksheet.code',$model);
+        }
+        if($tanggal != null){
+            $notgood->whereDate('tanggal', $tanggal);
+        }else
+        {
+            $notgood->whereDate('tanggal', date('Y-m-d'));
+        }
+        $notgood->whereRaw('
         (CASE
             WHEN tm_checkarea.tipe = "1" THEN tt_checkdata.value = "ng"
             WHEN tm_checkarea.tipe = "2" THEN (CAST(tt_checkdata.value AS DECIMAL(10,4)) < IFNULL(CAST(tm_checkarea.min AS DECIMAL(10,4)), CAST("-999999" AS DECIMAL(10,4)))) OR (CAST(tt_checkdata.value AS DECIMAL(10,4)) > IFNULL(CAST(tm_checkarea.max AS DECIMAL(10,4)), CAST("999999" AS DECIMAL(10,4))))
             WHEN tm_checkarea.tipe = "3" THEN 1 = 2
             END
-            )')
-        ->count();
+            )');
+
+        return $notgood->count();
+
+    }
+    public function getRevised($line = null,$model = null,$tanggal = null)
+    {
         $revisi = DB::table('tt_checkdata')
         ->select('id')
         ->leftJoin('tm_checkarea', 'tt_checkdata.id_checkarea', '=', 'tm_checkarea.id')
         ->leftJoin('tm_checksheet', 'tm_checkarea.id_checksheet', '=', 'tm_checksheet.id')
-        ->where('tt_checkdata.value', DB::raw('tt_checkdata.value'))
-        ->where('tm_checksheet.line',$line)
-        ->where('tm_checksheet.code',$model)
-        ->whereDate('tanggal', date('Y-m-d'))
-        ->whereNotNull('tt_checkdata.revised_value')
-        ->where('tt_checkdata.mark', '1')->count();
-        $arr = [
-            'good' => $good,
-            'notgood' => $notgood,
-            'revisi' => $revisi
-        ];
-        return $arr;
+        ->where('tt_checkdata.value', DB::raw('tt_checkdata.value'));
+        if($line != null){
+            $revisi->where('tm_checksheet.line',$line);
+        }
+        if($model != null){
+            $revisi->where('tm_checksheet.code',$model);
+        }
+        if($tanggal != null){
+            $revisi->whereDate('tanggal', $tanggal);
+        }else
+        {
+            $revisi->whereDate('tanggal', date('Y-m-d'));
+        }
+        $revisi->whereNotNull('tt_checkdata.revised_value')
+        ->where('tt_checkdata.mark', '1');
+        return $revisi->count();
 
     }
 }
