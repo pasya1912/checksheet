@@ -69,7 +69,8 @@ class ChecksheetController extends Controller
                     ->leftJoin('tm_checkarea', 'tt_checkdata.id_checkarea', '=', 'tm_checkarea.id')
                     ->leftJoin('tm_checksheet', 'tm_checkarea.id_checksheet', '=', 'tm_checksheet.id')
                     ->where('tm_checksheet.id', $value->id)
-                    ->whereDate('tanggal', date('Y-m-d'))
+                    ->where('tanggal', '>=', startOfDay())
+                    ->where('tanggal', '<', endOfDay())
                     ->where('tt_checkdata.nama', $cell)
                     ->where('tt_checkdata.barang', $barang)
                     ->where('tt_checkdata.shift', $shift)
@@ -82,7 +83,8 @@ class ChecksheetController extends Controller
                     ->leftJoin('tm_checkarea', 'tt_checkdata.id_checkarea', '=', 'tm_checkarea.id')
                     ->leftJoin('tm_checksheet', 'tm_checkarea.id_checksheet', '=', 'tm_checksheet.id')
                     ->where('tm_checksheet.id', $value->id)
-                    ->whereDate('tanggal', date('Y-m-d'))
+                    ->where('tanggal', '>=', startOfDay())
+                    ->where('tanggal', '<', endOfDay())
                     ->where('tt_checkdata.nama', $cell)
                     ->where('tt_checkdata.barang', $barang)
                     ->where('tt_checkdata.shift', $shift)
@@ -101,7 +103,8 @@ class ChecksheetController extends Controller
                     ->where('tt_checkdata.nama', $cell)
                     ->where('tt_checkdata.shift', $shift)
                     ->where('tt_checkdata.barang', $barang)
-                    ->whereDate('tanggal', date('Y-m-d'))
+                    ->where('tt_checkdata.tanggal', '>=', startOfDay())
+                    ->where('tt_checkdata.tanggal', '<', endOfDay())
                     ->whereRaw('
                 (CASE
                     WHEN tm_checkarea.tipe = "1" THEN tt_checkdata.value = "ok"
@@ -118,7 +121,8 @@ class ChecksheetController extends Controller
                     ->where('tt_checkdata.nama', $cell)
                     ->where('tt_checkdata.shift', $shift)
                     ->where('tt_checkdata.barang', $barang)
-                    ->whereDate('tt_checkdata.tanggal', date('Y-m-d'))
+                    ->where('tt_checkdata.tanggal', '>=', startOfDay())
+                    ->where('tt_checkdata.tanggal', '<', endOfDay())
                     ->where('tt_checkdata.approval', '4')
                     ->count();
                 $checkList['data'][$key]->status =

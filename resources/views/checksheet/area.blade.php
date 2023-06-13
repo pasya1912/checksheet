@@ -82,6 +82,10 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="py-5 text-lg">
+                    <span class="hover:bg-blue-200 border border-blue-400 px-3 py-2"><a href="{{ route('checksheet.list') }}?{{ request()->getQueryString() }}">&laquo;
+                            Back</a></span>
+                </div>
 
                 <div class="flex items-center justify-center space-x-4">
                     @foreach ($areaList['links'] as $link)
@@ -93,9 +97,6 @@
                     </a>
                     @endforeach
                 </div>
-
-
-
             </div>
         </div>
     </div>

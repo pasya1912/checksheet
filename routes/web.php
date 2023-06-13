@@ -27,16 +27,16 @@ Route::get('/', function () {
 
 
 Route::middleware('auth')->group(function () {
-    Route::get('/', [DashboardController::class,'index'])->name('dashboard');
+    Route::get('/', [DashboardController::class,'index'])->middleware('checkNotgood')->name('dashboard');
     Route::post('/line-status', [DashboardController::class,'getStatus'])->name('getStatus');
     Route::prefix('checksheet')->group(function () {
-        Route::get('/getCode',[ChecksheetController::class,'getCode'])->name('checksheet.getCode');
-        Route::get('/',[ChecksheetController::class,'list'])->name('checksheet.list');
+        Route::get('/getCode',[ChecksheetController::class,'getCode'])->middleware('checkNotgood')->name('checksheet.getCode');
+        Route::get('/',[ChecksheetController::class,'list'])->middleware('checkNotgood')->name('checksheet.list');
         Route::get('/{id}',[CheckareaController::class,'list'])->where('id', '[0-9]+')->name('checksheet.area');
         Route::post('/{idchecksheet}/checkarea/{idcheckarea}',[CheckdataController::class,'store'])->where('id', '[0-9]+')->where('idcheckarea', '[0-9]+')->name('checksheet.data.store');
         Route::post('/{idchecksheet}/checkarea/{idcheckarea}/notes',[CheckdataController::class,'updateNotes'])->where('id', '[0-9]+')->where('idcheckarea', '[0-9]+')->name('checksheet.data.updateNotes');
-        Route::get('/{idchecksheet}/checkarea/{idcheckarea}',[CheckdataController::class,'get'])->where('id', '[0-9]+')->where('idcheckarea', '[0-9]+')->name('checksheet.data.get');
-        Route::get('/data',[CheckdataController::class,'list'])->name('checksheet.data');
+        Route::get('/{idchecksheet}/checkarea/{idcheckarea}',[CheckdataController::class,'get'])->middleware('checkNotgood')->where('id', '[0-9]+')->where('idcheckarea', '[0-9]+')->name('checksheet.data.get');
+        Route::get('/data',[CheckdataController::class,'list'])->middleware('checkNotgood')->name('checksheet.data');
         Route::get('/data/export',[CheckdataController::class,'export'])->name('checksheet.data.export');
 
 
@@ -44,7 +44,7 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('admin')->group(function () {
         Route::prefix('checksheet')->group(function () {
-            Route::get('/data/approval',[AdminCheckdataController::class,'approval_page'])->name('checksheet.data.approval_page');
+            Route::get('/data/approval',[AdminCheckdataController::class,'approval_page'])->middleware('checkNotgood')->name('checksheet.data.approval_page');
             Route::post('/data/approval',[AdminCheckdataController::class,'approval'])->name('checksheet.data.approval');
             Route::post('/data/{id}/status',[AdminCheckdataController::class,'updateStatus'])->where('id', '[0-9]+')->name('checksheet.data.changeStatus');
         });

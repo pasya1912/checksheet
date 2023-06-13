@@ -126,10 +126,10 @@ class ListCheckData
             ->where(function ($query) use ($approval, $statusCheck, $revisedCheck, $min_tanggal, $max_tanggal, $barang, $shift, $cell, $area, $checksheet, $code, $line, $filter) {
                 if ($min_tanggal != '') {
 
-                    $query->whereDate('tt_checkdata.tanggal', '>=', $min_tanggal);
+                    $query->where('tt_checkdata.tanggal', '>=', startOfDay($min_tanggal));
                 }
                 if ($max_tanggal != '') {
-                    $query->whereDate('tt_checkdata.tanggal', '<=', $max_tanggal);
+                    $query->where('tt_checkdata.tanggal', '<=', endOfDay($max_tanggal));
                 }
                 if ($barang != '') {
 
