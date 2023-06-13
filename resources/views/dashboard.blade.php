@@ -19,7 +19,7 @@
                             <span>Resume Chart</span>
                         </div>
                         <div class=" w-full">
-                            <div class="w-6/12 h-6/12 m-auto p-0">
+                            <div class="w-6/12 lg:w-4/12 h-6/12 m-auto p-0">
                                 <canvas id="chart"></canvas>
                             </div>
                         </div>
