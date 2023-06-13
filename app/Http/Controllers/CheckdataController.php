@@ -62,7 +62,8 @@ class CheckdataController extends Controller
             ->where('tm_checksheet.line', $request->line)
             ->where('tt_checkdata.shift', $request->shift)
             ->where('tt_checkdata.nama', $request->cell)
-            ->whereDate('tt_checkdata.tanggal', date('Y-m-d'))
+            ->where('tt_checkdata.tanggal', '>=', startOfDay())
+            ->where('tt_checkdata.tanggal', '<', endOfDay())
             ->where('tt_checkdata.barang', $request->barang);
         $check = $check->count();
 
@@ -157,14 +158,10 @@ class CheckdataController extends Controller
                 $find->mark = "1";
 
             }
-            if ($find->save()) {
-                return redirect()->back()->with('success', 'Notes berhasil ditambahkan');
-
-            } else {
-                return redirect()->back()->with('error', 'Notes gagal ditambahkan');
-            }
+            $find->save();
+            return redirect()->back()->with('success', 'Revisi/Notes berhasil ditambahkan');
         } else {
-            return redirect()->back()->with('error', 'Notes gagal ditambahkan');
+            return redirect()->back()->with('error', 'Revisi/Notes gagal ditambahkan');
         }
     }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Service\ChecksheetData;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -14,33 +15,40 @@ class DashboardController extends Controller
         $line = $checksheetData->getLine();
 
         foreach ($line as $key => $value) {
+            $daget[$key]['status']['ok'] = 0;
+            $daget[$key]['status']['ng'] = 0;
+            $daget[$key]['status']['revised'] = 0;
             foreach($checksheetData->getCode($value->line) as $key2 => $value2){
                 $daget[$key]['line'] = $value->line;
-                $daget[$key]['model'] = array_map(function ($item) {
-                    return $item->code;
-                }, $checksheetData->getCode($value->line)->toArray());
-                $daget[$key]['status']['ok'][] = $checksheetData->getGood($value->line,$value2->code);
-                $daget[$key]['status']['ng'][] = $checksheetData->getBad($value->line,$value2->code);
-                $daget[$key]['status']['revised'][] = $checksheetData->getRevised($value->line,$value2->code);
+
+                $daget[$key]['status']['ok']     += $checksheetData->getGood($value->line,$value2->code);
+                $daget[$key]['status']['ng'] += $checksheetData->getBad($value->line,$value2->code);
+                if($checksheetData->getRevised($value->line,$value2->code) > 0)
+                {
+                    $daget[$key]['status']['ng'] -= $checksheetData->getRevised($value->line,$value2->code);
+                }
+                $daget[$key]['status']['revised'] += $checksheetData->getRevised($value->line,$value2->code);
 
             }
         }
 
         $allArray = [];
 
-        $allArray['line'] = array_map(function ($item) {
+        $line = array_map(function ($item) {
             return $item->line;
         }, $line->toArray());
-        foreach($allArray['line'] as $key => $value){
-            $allArray['status']['ok'][] = $checksheetData->getGood($value);
-            $allArray['status']['ng'][] = $checksheetData->getBad($value);
-            $allArray['status']['revised'][] = $checksheetData->getRevised($value);
+        $allArray['status']['ok'] = 0;
+        $allArray['status']['ng'] = 0;
+        $allArray['status']['revised'] = 0;
+        foreach($line as $key => $value){
+            $allArray['status']['ok'] += $checksheetData->getGood($value);
+            $allArray['status']['ng'] += $checksheetData->getBad($value);
+            if($checksheetData->getRevised($value) > 0)
+            {
+                $allArray['status']['ng'] -= $checksheetData->getRevised($value);
+            }
+            $allArray['status']['revised'] += $checksheetData->getRevised($value);
         }
-
-
-
-
-
         return view('dashboard',compact('daget','allArray'));
     }
     public function getStatus(Request $request, ChecksheetData $checksheetData)

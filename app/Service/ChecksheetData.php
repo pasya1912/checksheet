@@ -70,10 +70,12 @@ class ChecksheetData
             $all->where('tm_checksheet.code',$model);
         }
         if($tanggal != null){
-            $all->whereDate('tanggal', $tanggal);
+            $all->where('tanggal', '>=', startOfDay($tanggal))
+            ->where('tanggal', '<', endOfDay($tanggal));
         }else
         {
-            $all->whereDate('tanggal', date('Y-m-d'));
+            $all->where('tanggal', '>=', startOfDay())
+            ->where('tanggal', '<', endOfDay());
         }
         return $all->count();
 
@@ -82,7 +84,7 @@ class ChecksheetData
     {
 
         $good = DB::table('tt_checkdata')
-        ->select('id')
+        ->select('tm_checkdata.id')
         ->leftJoin('tm_checkarea', 'tt_checkdata.id_checkarea', '=', 'tm_checkarea.id')
         ->leftJoin('tm_checksheet', 'tm_checkarea.id_checksheet', '=', 'tm_checksheet.id')
         ->where('tt_checkdata.value', DB::raw('tt_checkdata.value'));
@@ -93,10 +95,12 @@ class ChecksheetData
             $good->where('tm_checksheet.code',$model);
         }
         if($tanggal != null){
-            $good->whereDate('tanggal', $tanggal);
+            $good->where('tanggal', '>=', startOfDay($tanggal))
+            ->where('tanggal', '<', endOfDay($tanggal));
         }else
         {
-            $good->whereDate('tanggal', date('Y-m-d'));
+            $good->where('tanggal', '>=', startOfDay())
+            ->where('tanggal', '<', endOfDay());
         }
         $good->whereRaw('
         (CASE
@@ -105,11 +109,13 @@ class ChecksheetData
             WHEN tm_checkarea.tipe = "3" THEN tt_checkdata.value = tt_checkdata.value
             END
             )');
+
         return $good->count();
     }
 
     public function getBad($line = null,$model = null,$tanggal = null)
     {
+
         $notgood = DB::table('tt_checkdata')
         ->select('id')
         ->leftJoin('tm_checkarea', 'tt_checkdata.id_checkarea', '=', 'tm_checkarea.id')
@@ -122,10 +128,12 @@ class ChecksheetData
             $notgood->where('tm_checksheet.code',$model);
         }
         if($tanggal != null){
-            $notgood->whereDate('tanggal', $tanggal);
+            $notgood->where('tanggal', '>=', startOfDay($tanggal))
+            ->where('tanggal', '<', endOfDay($tanggal));
         }else
         {
-            $notgood->whereDate('tanggal', date('Y-m-d'));
+            $notgood->where('tanggal', '>=', startOfDay())
+            ->where('tanggal', '<', endOfDay());
         }
         $notgood->whereRaw('
         (CASE
@@ -152,10 +160,13 @@ class ChecksheetData
             $revisi->where('tm_checksheet.code',$model);
         }
         if($tanggal != null){
-            $revisi->whereDate('tanggal', $tanggal);
+            $revisi->where('tanggal', '>=', startOfDay($tanggal))
+            ->where('tanggal', '<', endOfDay($tanggal));
+
         }else
         {
-            $revisi->whereDate('tanggal', date('Y-m-d'));
+            $revisi->where('tanggal', '>=', startOfDay())
+            ->where('tanggal', '<', endOfDay());
         }
         $revisi->whereNotNull('tt_checkdata.revised_value')
         ->where('tt_checkdata.mark', '1');

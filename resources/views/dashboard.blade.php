@@ -1,8 +1,7 @@
 @section('title', 'Dashboard')
 <x-app-layout>
     @section('top-script')
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts@latest/dist/apexcharts.min.css">
-        <script src="https://cdn.jsdelivr.net/npm/apexcharts@latest/dist/apexcharts.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     @endsection
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -14,23 +13,26 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <h1 class="text-4xl font-bold text-center">AIIA</h1>
-                    <h2>*Status berikut merupakan data dihari ini</h2>
-                    <div class="w-full h-max-7xl flex flex-col justify-center">
+                    <h2 class="text-xs sm:text-sm lg:text-md">*Data berikut ini merupakan data dari tanggal {{startOfDay()}} sampai {{endOfDay()}}</h2>
+                    <div class="w-full h-max-7xl flex flex-col justify-center  my-5">
                         <div class="text-xl text-center font-bold">
-                            <span>Overall Chart</span>
+                            <span>Resume Chart</span>
                         </div>
-
-                        <div class="w-11/12 md:w-6/12" id="chart"></div>
+                        <div class=" w-full">
+                            <div class="w-6/12 h-6/12 m-auto p-0">
+                                <canvas id="chart"></canvas>
+                            </div>
+                        </div>
                     </div>
                     <div class="w-full h-max-7xl flex lg:justify-between justify-center flex-wrap my-1">
 
                         @foreach ($daget as $key => $data)
-                            <div class="w-6/12 lg:w-3/12 card border my-1 p-2">
+                            <div class="w-6/12 lg:w-3/12 border card my-1 p-2">
                                 <div class="header-card text-xl text-center font-bold">
                                     <span>{{ $data['line'] }}</span>
                                 </div>
                                 <div class="body-card my-2 w-full">
-                                    <div id="chart{{ $key }}"></div>
+                                    <canvas class="w-8/12 mx-auto" id="chart{{ $key }}"></canvas>
                                 </div>
                             </div>
                         @endforeach
@@ -41,121 +43,70 @@
     </div>
     @section('script')
         <script>
-            var options = {
-                series: [{
-                    name: 'Good',
-                    data: {!! json_encode($allArray['status']['ok']) !!},
-                    color: '#81C784'
-                }, {
-                    name: 'NG',
-                    data: {!! json_encode($allArray['status']['ng']) !!},
-                    color: '#E57373'
-                }, {
-                    name: 'Revised  ',
-                    data: {!! json_encode($allArray['status']['revised']) !!},
-                    color: '#E0E0E0'
-                }],
-                chart: {
-                    type: 'bar',
-                    height: 350
-                },
-                plotOptions: {
-                    bar: {
-                        horizontal: false,
-                        columnWidth: '55%',
-                        endingShape: 'rounded'
-                    },
-                },
-                dataLabels: {
-                    enabled: false
-                },
-                stroke: {
-                    show: true,
-                    width: 2,
-                    colors: ['transparent']
-                },
-                xaxis: {
-                    categories: {!! json_encode($allArray['line']) !!},
-                },
-                yaxis: {
-                    title: {
-                        text: 'Semua Line'
-                    }
-                },
-                fill: {
-                    opacity: 1
-                },
-                tooltip: {
-                    y: {
-                        formatter: function(val) {
-                            return val + " Data"
-                        }
-                    }
-                }
+            var data = {
+                labels: ['OK', 'NG', 'Solved'],
+                datasets: [{
+                    data: [{{ $allArray['status']['ok'] }}, {{ $allArray['status']['ng'] }},
+                        {{ $allArray['status']['revised'] }}
+                    ],
+                    backgroundColor: ['#4CAF50', 'red', 'blue'], // Set the colors of the pie slices
+                }]
             };
 
-            var chart = new ApexCharts(document.querySelector("#chart"), options);
-            chart.render();
+            // Configure the options for the pie chart
 
-            @foreach ($daget as $key => $datass)
+            // Create the pie chart
+            var ctx = document.getElementById('chart').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'pie',
+                data: data,
+                options: {
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
 
-                var options = {
-                    series: [{
-                        name: 'Good',
-                        data: {!! json_encode($daget[$key]['status']['ok']) !!},
-                        color: '#81C784'
-                    }, {
-                        name: 'NG',
-                        data: {!! json_encode($daget[$key]['status']['ng']) !!},
-                        color: '#E57373'
-                    }, {
-                        name: 'Revised  ',
-                        data: {!! json_encode($daget[$key]['status']['revised']) !!},
-                        color: '#E0E0E0'
-                    }],
-                    chart: {
-                        type: 'bar',
-                        height: 350
-                    },
-                    plotOptions: {
-                        bar: {
-                            horizontal: false,
-                            columnWidth: '55%',
-                            endingShape: 'rounded'
-                        },
-                    },
-                    dataLabels: {
-                        enabled: false
-                    },
-                    stroke: {
-                        show: true,
-                        width: 2,
-                        colors: ['transparent']
-                    },
-                    xaxis: {
-                        categories: {!! json_encode($daget[$key]['model']) !!},
-                    },
-                    yaxis: {
-                        title: {
-                            text: '{{ $daget[$key]['line'] }}'
-                        }
-                    },
-                    fill: {
-                        opacity: 1
-                    },
-                    tooltip: {
-                        y: {
-                            formatter: function(val) {
-                                return val + " Data"
+                                labelTextColor: function(context) {
+                                    return '#FFFFFF';
+                                }
                             }
                         }
                     }
+                }
+            });
+        </script>
+        <script>
+            @foreach ($daget as $key => $data)
+                var data = {
+                    labels: ['OK', 'NG', 'Solved'],
+                    datasets: [{
+                        data: [{{ $data['status']['ok'] }}, {{ $data['status']['ng'] }},
+                            {{ $data['status']['revised'] }}
+                        ],
+                        backgroundColor: ['#4CAF50', 'red', 'blue'], // Set the colors of the pie slices
+                    }]
                 };
 
-                var chart = new ApexCharts(document.querySelector("#chart{{ $key }}"), options);
-                chart.render();
+                // Configure the options for the pie chart
+
+                // Create the pie chart
+                var ctx = document.getElementById('chart{{$key}}').getContext('2d');
+                var myChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: data,
+                    options: {
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+
+                                    labelTextColor: function(context) {
+                                        return '#FFFFFF';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
             @endforeach
         </script>
     @endsection
-
 </x-app-layout>

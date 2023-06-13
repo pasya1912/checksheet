@@ -43,22 +43,21 @@ class CheckareaController extends Controller
                 $area->checkdata = DB::table('tt_checkdata')
                     ->leftJoin('tm_checkarea', 'tt_checkdata.id_checkarea', '=', 'tm_checkarea.id')
 
-                    ->select('tt_checkdata.*','tm_checkarea.id as area_id','tm_checkarea.tipe','tt_checkdata.notes')
+                    ->select('tt_checkdata.*', 'tm_checkarea.id as area_id', 'tm_checkarea.tipe', 'tt_checkdata.notes')
                     ->where('tt_checkdata.id_checkarea', $area->id)
                     ->where('tt_checkdata.nama', $request->query('cell'))
                     ->where('tt_checkdata.shift', $request->query('shift'))
-                    ->where('tt_checkdata.barang', $request->query('barang'))                    //where day today
-                    ->whereDate('tt_checkdata.tanggal', $request->query('tanggal') ?? date('Y-m-d'))
+                    ->where('tt_checkdata.barang', $request->query('barang')) //where day today
+                    ->where('tt_checkdata.tanggal', '>=', startOfDay($request->query('tanggal')))
+                    ->where('tt_checkdata.tanggal', '<', endOfDay($request->query('tanggal')))
                     ->first();
 
                 if ($area->checkdata) {
                     if ($area->checkdata->tipe == 2) {
                         $area->checkdata->is_good = $area->checkdata->value >= $area->min && $area->checkdata->value <= $area->max;
-                    }
-                    elseif($area->checkdata->tipe == 1){
+                    } elseif ($area->checkdata->tipe == 1) {
                         $area->checkdata->is_good = $area->checkdata->value == "ok";
-                    }
-                    elseif($area->checkdata->tipe == 3){
+                    } elseif ($area->checkdata->tipe == 3) {
                         $area->checkdata->is_good = true;
                     }
                 }
