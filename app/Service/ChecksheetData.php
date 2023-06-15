@@ -148,6 +148,7 @@ class ChecksheetData
     }
     public function getRevised($line = null,$model = null,$tanggal = null)
     {
+
         $revisi = DB::table('tt_checkdata')
         ->select('id')
         ->leftJoin('tm_checkarea', 'tt_checkdata.id_checkarea', '=', 'tm_checkarea.id')

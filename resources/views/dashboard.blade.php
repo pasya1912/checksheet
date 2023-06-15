@@ -2,6 +2,7 @@
 <x-app-layout>
     @section('top-script')
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
     @endsection
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -13,7 +14,18 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <h1 class="text-4xl font-bold text-center">AIIA</h1>
-                    <h2 class="text-xs sm:text-sm lg:text-md">*Data berikut ini merupakan data dari tanggal {{startOfDay()}} sampai {{endOfDay()}}</h2>
+                    <div class="flex w-full max-h-56 justify-between">
+                        <div class=" w-8/12 flex items-center">
+                            <h2 class="text-xs sm:text-sm lg:text-md">*Data berikut ini merupakan data dari tanggal
+                                {{ startOfDay() }} sampai {{ endOfDay() }}</h2>
+                        </div>
+                        <form class="w-full md:w-5/12 lg:w-2/12" action="{{ url()->current() }}" method="GET"
+                            id="formTanggal">
+                            <label for="tanggal">Tanggal</label>
+                            <input type="date" id="tanggal" name="tanggal" class="form-input block w-full"
+                                max="{{ date('Y-m-d') }}" value="{{ request()->get('tanggal') }}">
+                        </form>
+                    </div>
                     <div class="w-full h-max-7xl flex flex-col justify-center  my-5">
                         <div class="text-xl text-center font-bold">
                             <span>Resume Chart</span>
@@ -43,6 +55,13 @@
     </div>
     @section('script')
         <script>
+            Chart.register(ChartDataLabels);
+
+            let tggl = document.getElementById('tanggal');
+            //onchange submit
+            tggl.addEventListener('change', function() {
+                document.getElementById('formTanggal').submit();
+            });
             var data = {
                 labels: ['OK', 'NG', 'Solved'],
                 datasets: [{
@@ -53,23 +72,69 @@
                 }]
             };
 
+
             // Configure the options for the pie chart
 
             // Create the pie chart
             var ctx = document.getElementById('chart').getContext('2d');
-            var myChart = new Chart(ctx, {
+            var allChart = new Chart(ctx, {
                 type: 'pie',
                 data: data,
                 options: {
                     plugins: {
-                        tooltip: {
-                            callbacks: {
+                        datalabels: {
+                                formatter: (value, context) => {
+                                    var hiddens = context.chart._hiddenIndices;
+                                    var total = 0;
+                                    var datapoints = context.dataset.data;
+                                    datapoints.forEach((val, i) => {
+                                        if (hiddens[i] != undefined) {
+                                            if (!hiddens[i]) {
+                                                total += val;
+                                            }
+                                        } else {
+                                            total += val;
+                                        }
+                                    });
+                                    var percent = (value / total * 100).toFixed(2);
+                                    var percentage = percent + '%';
+                                    if (percentage == 'NaN%' || percentage == '0.00%' || percent < 5) {
+                                        percentage = '';
+                                    }
+                                    return percentage;
+                                },
+                                //set bold
+                                font: {
+                                    weight: 'bold',
+                                    size: 14,
+                                },
+                                color: '#fff',
+                            },
+                            tooltip: {
 
-                                labelTextColor: function(context) {
-                                    return '#FFFFFF';
+                                callbacks: {
+                                    label: function(context) {
+                                        var hiddens = context.chart._hiddenIndices;
+                                        var total = 0;
+                                        var datapoints = context.dataset.data;
+                                        datapoints.forEach((val, i) => {
+                                            if (hiddens[i] != undefined) {
+                                                if (!hiddens[i]) {
+                                                    total += val;
+                                                }
+                                            } else {
+                                                total += val;
+                                            }
+                                        });
+                                        var percent = ((context.raw / total) * 100.0).toFixed(2);
+                                        var percentage = percent + '%';
+                                        return " " + context.raw + " ( " + percentage + " )";
+                                    },
+                                    labelTextColor: function(context) {
+                                        return '#FFFFFF';
+                                    }
                                 }
                             }
-                        }
                     }
                 }
             });
@@ -89,15 +154,60 @@
                 // Configure the options for the pie chart
 
                 // Create the pie chart
-                var ctx = document.getElementById('chart{{$key}}').getContext('2d');
-                var myChart = new Chart(ctx, {
+                var ctx = document.getElementById('chart{{ $key }}').getContext('2d');
+                var charter = new Chart(ctx, {
                     type: 'pie',
                     data: data,
                     options: {
                         plugins: {
+                            datalabels: {
+                                formatter: (value, context) => {
+                                    var hiddens = context.chart._hiddenIndices;
+                                    var total = 0;
+                                    var datapoints = context.dataset.data;
+                                    datapoints.forEach((val, i) => {
+                                        if (hiddens[i] != undefined) {
+                                            if (!hiddens[i]) {
+                                                total += val;
+                                            }
+                                        } else {
+                                            total += val;
+                                        }
+                                    });
+                                    var percent = (value / total * 100).toFixed(2);
+                                    var percentage = percent + '%';
+                                    if (percentage == 'NaN%' || percentage == '0.00%' || percent < 5) {
+                                        percentage = '';
+                                    }
+                                    return percentage;
+                                },
+                                //set bold
+                                font: {
+                                    weight: 'bold',
+                                    size: 14,
+                                },
+                                color: '#fff',
+                            },
                             tooltip: {
-                                callbacks: {
 
+                                callbacks: {
+                                    label: function(context) {
+                                        var hiddens = context.chart._hiddenIndices;
+                                        var total = 0;
+                                        var datapoints = context.dataset.data;
+                                        datapoints.forEach((val, i) => {
+                                            if (hiddens[i] != undefined) {
+                                                if (!hiddens[i]) {
+                                                    total += val;
+                                                }
+                                            } else {
+                                                total += val;
+                                            }
+                                        });
+                                        var percent = ((context.raw / total) * 100.0).toFixed(2);
+                                        var percentage = percent + '%';
+                                        return " " + context.raw + " ( " + percentage + " )";
+                                    },
                                     labelTextColor: function(context) {
                                         return '#FFFFFF';
                                     }

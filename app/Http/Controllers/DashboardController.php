@@ -10,7 +10,9 @@ class DashboardController extends Controller
 {
     public function index(ChecksheetData $checksheetData)
     {
-        //class object empty
+
+        //tanggal from get query
+        $tanggal = request()->get('tanggal') ?? date('Y-m-d');
         $daget = [];
         $line = $checksheetData->getLine();
 
@@ -21,13 +23,13 @@ class DashboardController extends Controller
             foreach($checksheetData->getCode($value->line) as $key2 => $value2){
                 $daget[$key]['line'] = $value->line;
 
-                $daget[$key]['status']['ok']     += $checksheetData->getGood($value->line,$value2->code);
-                $daget[$key]['status']['ng'] += $checksheetData->getBad($value->line,$value2->code);
-                if($checksheetData->getRevised($value->line,$value2->code) > 0)
+                $daget[$key]['status']['ok']     += $checksheetData->getGood($value->line,$value2->code,$tanggal);
+                $daget[$key]['status']['ng'] += $checksheetData->getBad($value->line,$value2->code,$tanggal);
+                if($checksheetData->getRevised($value->line,$value2->code,$tanggal) > 0)
                 {
-                    $daget[$key]['status']['ng'] -= $checksheetData->getRevised($value->line,$value2->code);
+                    $daget[$key]['status']['ng'] -= $checksheetData->getRevised($value->line,$value2->code,$tanggal);
                 }
-                $daget[$key]['status']['revised'] += $checksheetData->getRevised($value->line,$value2->code);
+                $daget[$key]['status']['revised'] += $checksheetData->getRevised($value->line,$value2->code,$tanggal);
 
             }
         }
@@ -41,26 +43,14 @@ class DashboardController extends Controller
         $allArray['status']['ng'] = 0;
         $allArray['status']['revised'] = 0;
         foreach($line as $key => $value){
-            $allArray['status']['ok'] += $checksheetData->getGood($value);
-            $allArray['status']['ng'] += $checksheetData->getBad($value);
-            if($checksheetData->getRevised($value) > 0)
+            $allArray['status']['ok'] += $checksheetData->getGood($value,null,$tanggal);
+            $allArray['status']['ng'] += $checksheetData->getBad($value,null,$tanggal);
+            if($checksheetData->getRevised($value,null,$tanggal) > 0)
             {
-                $allArray['status']['ng'] -= $checksheetData->getRevised($value);
+                $allArray['status']['ng'] -= $checksheetData->getRevised($value,null,$tanggal);
             }
-            $allArray['status']['revised'] += $checksheetData->getRevised($value);
+            $allArray['status']['revised'] += $checksheetData->getRevised($value,null,$tanggal);
         }
         return view('dashboard',compact('daget','allArray'));
-    }
-    public function getStatus(Request $request, ChecksheetData $checksheetData)
-    {
-        $arr = [];
-        $model = $checksheetData->getCode($request->line);
-        foreach($model as $key => $value){
-            $arr[$key]['model'] = $value->code;
-            $arr[$key]['status'] = $checksheetData->getStatus($request->line,$value->code);
-        }
-
-
-        return $arr;
     }
 }
