@@ -9,7 +9,6 @@ class CheckareaController extends Controller
 {
     public function list($id, Request $request)
     {
-
         try {
             //if query cell, shift, code,line,barang not exist return error
             if (!$request->query('cell') || !$request->query('shift') || !$request->query('barang')) {
@@ -51,7 +50,6 @@ class CheckareaController extends Controller
                     ->where('tt_checkdata.tanggal', '>=', startOfDay($request->query('tanggal')))
                     ->where('tt_checkdata.tanggal', '<', endOfDay($request->query('tanggal')))
                     ->first();
-
                 if ($area->checkdata) {
                     if ($area->checkdata->tipe == 2) {
                         $area->checkdata->is_good = $area->checkdata->value >= $area->min && $area->checkdata->value <= $area->max;
