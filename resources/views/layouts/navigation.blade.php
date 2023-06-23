@@ -33,6 +33,7 @@
                         {{ __('Checksheet Setting') }}
 
                     </x-nav-link>
+                    @endif
 
                 </div>
             </div>
