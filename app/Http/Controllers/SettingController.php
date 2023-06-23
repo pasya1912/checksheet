@@ -129,7 +129,8 @@ class SettingController extends Controller
             if(!$update){
                 throw new \Exception('Tidak ada data yang diperbaharui');
             }
-            return redirect()->route('checksheet.setting.area',[$idchecksheet])->with('success','Data updated successfully');
+            //return to setting area
+            return redirect()->route('checksheet.setting.area',['id'=>$idchecksheet])->with('success','Data berhasil diperbaharui');
         }catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }

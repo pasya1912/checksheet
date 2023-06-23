@@ -26,16 +26,13 @@
                     @if(auth()->user()->role == 'admin')
 
                     <x-nav-link :href="route('checksheet.data.approval')" :active="request()->routeIs('checksheet.data.approval')">
-                        {{ __('Approve  Checksheet') }}
+                        {{ __('Approve Checksheet') }}
 
                     </x-nav-link>
-                    @props(['active'])
-                    <div class="flex items-center">
-                        <a  class="h-full inline-flex items-center px-1 pt-1 border-b-2 {{url()->current() == route('checksheet.setting') ? 'border-indigo-400':'border-transparent'}}  text-sm font-medium leading-5 {{url()->current() == route('checksheet.data.approval') ? 'text-gray-900':'text-gray-500'}} focus:outline-none {{url()->current() == route('checksheet.data.approval') ? 'focus:border-indigo-700':'hover:border-gray-300 focus:border-gray-300'}}  transition duration-150 ease-in-ou" href="{{route('checksheet.setting')}}" >
-                            {{ __('Checksheet Setting')}}
-                        </a>
-                    </div>
-                    @endif
+                    <x-nav-link :href="route('checksheet.setting')" :active="request()->routeIs('checksheet.setting')">
+                        {{ __('Checksheet Setting') }}
+
+                    </x-nav-link>
 
                 </div>
             </div>
@@ -103,6 +100,10 @@
             </x-responsive-nav-link>
             @if(auth()->user()->role == 'admin')
             <x-responsive-nav-link :href="route('checksheet.data.approval')" :active="request()->routeIs('checksheet.data.approval')">
+                {{ __('Approve Checksheet') }}
+
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('checksheet.setting')" :active="request()->routeIs('checksheet.setting')">
                 {{ __('Approve Checksheet') }}
 
             </x-responsive-nav-link>
