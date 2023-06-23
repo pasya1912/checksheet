@@ -48,21 +48,27 @@
                                 @if ($area->tipe == 2)
                                 <td class="py-5 w-8/12">
                                     <div>{{ $area->max ? 'Max: ' . $area->max : '' }}</div>
-                                    <div><span class="w-10/12 md:w-11/12 bg-gray-200 p-5 text-black inline-block text-sm md:text-base">{{ $area->nama }}</span></div>
+                                    <div>
+                                        <div class="w-10/12 md:w-11/12 bg-gray-200 p-5 text-black flex m-auto text-center justify-center flex-col">
+                                            <span class="text-sm md:text-base font-bold">{{ $area->nama }}</span>
+                                            <span class="text-xs">({{($area->min > 0 && $area->max >0) && ($area->tengah) ? 'Nilai Tengah: '.$area->tengah: ''}})</span>
+                                        </div>
+
+                                    </div>
                                     <div>{{ $area->min ? 'Min: ' . $area->min : '' }}</div>
                                     <div>{{ $area->deskripsi ?? '' }}</div>
                                 </td>
                                 @elseif($area->tipe == 1)
                                 <td class="py-5 w-8/12">
 
-                                    <div><span class="w-10/12 md:w-11/12 bg-gray-200 p-5 text-black inline-block text-sm md:text-base">{{ $area->nama }}</span></div>
+                                    <div><span class="w-10/12 md:w-11/12 bg-gray-200 p-5 text-black inline-block text-sm md:text-base font-bold">{{ $area->nama }}</span></div>
                                     <div class="text-xs">
                                         {{ $area->deskripsi ?? '' }}
                                     </div>
                                 </td>
                                 @else
                                 <td class="py-5 w-8/12">
-                                    <div class="w-10/12 md:w-11/12 bg-gray-200 p-5 text-black inline-block text-sm md:text-base">
+                                    <div class="w-10/12 md:w-11/12 bg-gray-200 p-5 text-black inline-block text-sm md:text-base font-bold">
                                         {{ $area->nama }}
                                     </div>
                                     <div class="text-xs">

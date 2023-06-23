@@ -25,7 +25,7 @@ class CheckareaController extends Controller
                 throw new \Exception('Checksheet not found');
             }
             $areaList = DB::table('tm_checkarea')
-                ->select('tm_checkarea.deskripsi', 'tm_checkarea.min', 'tm_checkarea.max', 'tm_checkarea.tipe', 'tm_checkarea.id as id', DB::raw('COALESCE(tm_checkarea.nama,tm_checksheet.nama) as nama'))
+                ->select('tm_checkarea.deskripsi', 'tm_checkarea.min', 'tm_checkarea.max', 'tm_checkarea.tipe', 'tm_checkarea.id as id','tm_checkarea.tengah', DB::raw('COALESCE(tm_checkarea.nama,tm_checksheet.nama) as nama'))
                 ->leftJoin('tm_checksheet', 'tm_checkarea.id_checksheet', '=', 'tm_checksheet.id')
                 ->where('tm_checkarea.id_checksheet', $id)
                 //search in all columns
