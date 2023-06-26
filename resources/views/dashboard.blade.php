@@ -22,7 +22,7 @@
                             id="formTanggal">
                             <label for="tanggal">Tanggal</label>
                             <input type="date" id="tanggal" name="tanggal" class="form-input block w-full"
-                                max="{{ date('Y-m-d') }}" value="{{ request()->get('tanggal') }}">
+                                max="{{ date('d-m-Y') }}" value="{{ request()->get('tanggal') }}">
                         </form>
                     </div>
                     <div class="w-full h-max-7xl flex flex-col justify-center  my-5">

@@ -79,7 +79,7 @@ class CheckdataController extends Controller
                 'id_checkarea' => $idcheckarea,
                 'nama' => $request->cell,
                 'barang' => $request->barang,
-                'tanggal' => date('Y-m-d H:i:s'),
+                'tanggal' => date('d-m-Y H:i:s'),
                 'user' => $request->user()->npk,
                 'value' => $request->value,
                 'approval' => '0',
@@ -258,6 +258,6 @@ class CheckdataController extends Controller
 
             //return Checkdata::find(27)->approvalHistory;
 
-            return Excel::download(new DataExport($checkdata), 'request'.date('Y-m-d-h-i-s').'.xlsx');
+            return Excel::download(new DataExport($checkdata), 'request'.date('d-m-Y-h-i-s').'.xlsx');
     }
 }

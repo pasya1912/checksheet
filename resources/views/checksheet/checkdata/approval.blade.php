@@ -395,7 +395,7 @@
 
         flatpickr(monthInput, {
             mode: 'single',
-            dateFormat: 'Y-m-d',
+            dateFormat: 'd-m-Y',
             showMonths: 1,
             @if(auth()->user()->jabatan == 1 || auth()->user()->jabatan == 2)
 
