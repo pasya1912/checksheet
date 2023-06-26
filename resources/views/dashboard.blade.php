@@ -13,7 +13,6 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <h1 class="text-4xl font-bold text-center">AIIA</h1>
                     <div class="flex w-full max-h-56 justify-between">
                         <div class=" w-8/12 flex items-center">
                             <h2 class="text-xs sm:text-sm lg:text-md">*Data berikut ini merupakan data dari tanggal
