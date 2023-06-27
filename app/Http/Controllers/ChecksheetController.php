@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 //use db
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 use Illuminate\Http\Request;
@@ -33,7 +34,6 @@ class ChecksheetController extends Controller
         $cell = !$request->get('cell') ? '' : $request->get('cell');
         $shift = !$request->get('shift') ? '' : $request->get('shift');
         $barang = !$request->get('barang') ? '' : $request->get('barang');
-
         $query = new \stdClass();
         $query->cell = $cell;
         $query->shift = $shift;
@@ -44,9 +44,8 @@ class ChecksheetController extends Controller
             $checkList = 500;
         } else if ($line != '' && $code == '') {
             $checkList = 400;
-        } else {
-
-
+        }
+         else {
             //get checksheet from db based on search parameter if exist with like paginate every 10
             $checkList = DB::table('tm_checksheet')
                 ->select('tm_checksheet.*')
@@ -136,9 +135,38 @@ class ChecksheetController extends Controller
         if ($cell == '' || $shift == '' || $barang == '' || $line == '' || $code == '') {
             $checkList = 300;
         }
+        if(session('jp') == null){
+
+            $checkList = 700;
+
+        }
+
+        $user = User::where('npk', session('jp'))->where('role', 'admin')->where('jabatan', '1')->first();
+        if(!$user)
+        {
+            $checkList = 705;
+
+        }
+
+
         $lineList = $checksheet->getLine();
         $codeList = $checksheet->getCode($request->get('line'));
+        $jpies = User::where('role','admin')->where('jabatan', '1')->get();
         //return view checklist with checklist
-        return view('checksheet.list', compact('checkList', 'lineList', 'codeList', 'query'));
+        return view('checksheet.list', compact('checkList', 'lineList', 'codeList', 'query','jpies'));
+    }
+    public function setJP(Request $request)
+    {
+       $request->validate([
+        'jp' => 'required|numeric|exists:users,id',
+       ]);
+       $user = User::where('npk',$request->jp)->first();
+        //if user has role admin and jabatan 1 then set jp in session
+         if ($user->role == 'admin' && $user->jabatan == '1') {
+            session(['jp' => $request->jp]);
+            return redirect()->back()->with('success', 'JP berhasil di set');
+        }else{
+            return redirect()->back()->with('error', 'JP gagal di set');
+        }
     }
 }

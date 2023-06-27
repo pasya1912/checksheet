@@ -1,8 +1,8 @@
-@section('title', 'Setting')
+@section('title', 'Input')
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Checksheet Setting') }}
+            {{ __('Checksheet Input') }}
         </h2>
     </x-slot>
 
@@ -11,81 +11,103 @@
 
             <div class="p-6 bg-white shadow-sm sm:rounded-lg w-full ">
                 <div class="w-full  my-5">
-
-                    <form action="{{ route('checksheet.list') }}" method="GET" id="search-checksheet"
-                        class="flex gap-3 w-full">
+                    <form class="flex gap-3 flex-col md:flex-row justify-center md:justify-end mb-5 w-full ml-auto  md:w-4/12" id="setJP" method="POST" action="{{route('checksheet.setJP')}}">
+                        @csrf
                         <div class="w-full">
-                            <label for="line">Line</label>
-                            <select id="line" name="line" class=" w-full border-gray-400 p-2 rounded-lg"
+                            <label for="jp">PIC JP</label>
+                            <select id="jp" name="jp" class=" w-full border-gray-400 p-2 rounded-lg"
                                 required>
-                                <option value="" selected>Line</option>
-                                @foreach ($lineList as $line)
-                                    <option value="{{ $line->line }}"
-                                        {{ request()->get('line') == $line->line ? 'selected' : '' }}>
-                                        {{ $line->line }}
+                                <option value="" selected>JP</option>
+                                @foreach ($jpies as $jp)
+                                    <option value="{{ $jp->npk }}"
+                                        {{ $jp->npk == request()->session()->get('jp') ? 'selected' : '' }}>
+                                        {{ $jp->name }}
                                     </option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="w-full">
-                            <label for="code">Model</label>
-                            <select id="code" name="code" class="w-full border-gray-400 p-2 rounded-lg"
-                                required>
-                                <option value="" selected>Model</option>
-                                @foreach ($codeList as $code)
-                                    <option value="{{ $code->code }}"
-                                        {{ request()->get('code') == $code->code ? 'selected' : '' }}>
-                                        {{ $code->code }}
-                                    </option>
-                                @endforeach
-
-                            </select>
-                        </div>
-                        <div class="w-full">
-                            <label for="cell">Cell</label>
-                            <select id="cell" name="cell" class="w-full border-gray-400 p-2 rounded-lg"
-                                required>
-                                <option value="m1" {{ request()->get('cell') == 'm1' ? 'selected' : '' }}>m1
-                                </option>
-                                <option value="m2" {{ request()->get('cell') == 'm2' ? 'selected' : '' }}>m2
-                                </option>
-                            </select>
-                        </div>
-                        <div class="w-full">
-                            <label for="shift">Shift</label>
-                            <select id="shift" name="shift" class="w-full border-gray-400 p-2 rounded-lg"
-                                required>
-                                <option value="1" {{ request()->get('shift') == '1' ? 'selected' : '' }}>1
-                                </option>
-                                <option value="2" {{ request()->get('shift') == '2' ? 'selected' : '' }}>2
-                                </option>
-                                <option value="3" {{ request()->get('shift') == '3' ? 'selected' : '' }}>3
-                                </option>
-                                <option value="1-long" {{ request()->get('shift') == '1-long' ? 'selected' : '' }}>
-                                    1-long
-                                </option>
-                                <option value="3-long" {{ request()->get('shift') == '3-long' ? 'selected' : '' }}>
-                                    3-long
-                                </option>
-
-                            </select>
-                        </div>
-                        <div class="w-full">
-                            <label for="barang">Urutan</label>
-                            <select id="barang" name="barang" class="w-full border-gray-400 p-2 rounded-lg"
-                                required>
-                                <option value="first" {{ request()->get('barang') == 'first' ? 'selected' : '' }}>
-                                    first
-                                </option>
-                                <option value="middle" {{ request()->get('barang') == 'middle' ? 'selected' : '' }}>
-                                    middle
-                                </option>
-                                <option value="last" {{ request()->get('barang') == 'last' ? 'selected' : '' }}>last
-                                </option>
-                            </select>
+                        <div class="w-full md:w-3/12 flex items-end">
+                            <input type="submit" value="Submit" class="w-6/12 md:w-full mx-auto cursor-pointer bg-gray-400 text-white bg-opacity-90 p-2 rounded-lg">
                         </div>
                     </form>
+                    <hr>
+                    <form action="{{ route('checksheet.list') }}" method="GET" id="search-checksheet"
+                        class=" w-full">
+                        <div class="flex gap-3 flex-col md:flex-row">
+                            <div class="w-full">
+                                <label for="line">Line</label>
+                                <select id="line" name="line" class=" w-full border-gray-400 p-2 rounded-lg"
+                                    required>
+                                    <option value="" selected>Line</option>
+                                    @foreach ($lineList as $line)
+                                        <option value="{{ $line->line }}"
+                                            {{ request()->get('line') == $line->line ? 'selected' : '' }}>
+                                            {{ $line->line }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="w-full">
+                                <label for="code">Model</label>
+                                <select id="code" name="code" class="w-full border-gray-400 p-2 rounded-lg"
+                                    required>
+                                    <option value="" selected>Model</option>
+                                    @foreach ($codeList as $code)
+                                        <option value="{{ $code->code }}"
+                                            {{ request()->get('code') == $code->code ? 'selected' : '' }}>
+                                            {{ $code->code }}
+                                        </option>
+                                    @endforeach
 
+                                </select>
+                            </div>
+                            <div class="w-full">
+                                <label for="cell">Cell</label>
+                                <select id="cell" name="cell" class="w-full border-gray-400 p-2 rounded-lg"
+                                    required>
+                                    <option value="m1" {{ request()->get('cell') == 'm1' ? 'selected' : '' }}>m1
+                                    </option>
+                                    <option value="m2" {{ request()->get('cell') == 'm2' ? 'selected' : '' }}>m2
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="w-full">
+                                <label for="shift">Shift</label>
+                                <select id="shift" name="shift" class="w-full border-gray-400 p-2 rounded-lg"
+                                    required>
+                                    <option value="1" {{ request()->get('shift') == '1' ? 'selected' : '' }}>1
+                                    </option>
+                                    <option value="2" {{ request()->get('shift') == '2' ? 'selected' : '' }}>2
+                                    </option>
+                                    <option value="3" {{ request()->get('shift') == '3' ? 'selected' : '' }}>3
+                                    </option>
+                                    <option value="1-long" {{ request()->get('shift') == '1-long' ? 'selected' : '' }}>
+                                        1-long
+                                    </option>
+                                    <option value="3-long" {{ request()->get('shift') == '3-long' ? 'selected' : '' }}>
+                                        3-long
+                                    </option>
+
+                                </select>
+                            </div>
+                            <div class="w-full">
+                                <label for="barang">Urutan</label>
+                                <select id="barang" name="barang" class="w-full border-gray-400 p-2 rounded-lg"
+                                    required>
+                                    <option value="first" {{ request()->get('barang') == 'first' ? 'selected' : '' }}>
+                                        first
+                                    </option>
+                                    <option value="middle"
+                                        {{ request()->get('barang') == 'middle' ? 'selected' : '' }}>
+                                        middle
+                                    </option>
+                                    <option value="last" {{ request()->get('barang') == 'last' ? 'selected' : '' }}>
+                                        last
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
                 </div>
                 <div class="w-full overflow-scroll">
                     <table class="table-auto w-full  border border-red-500 text-center">
@@ -144,7 +166,16 @@
 
                                     </tr>
                                 @endforeach
-                            @elseif($checkList == '500')
+
+                                @elseif($checkList == '700')
+                                <tr>
+                                    <td colspan="4" class="py-5">Tentukan JP Terlebih dahulu</td>
+                                </tr>
+                                @elseif($checkList == '705')
+                                <tr>
+                                    <td colspan="4" class="py-5">JP Tidak valid silahkan pilih ulang</td>
+                                </tr>
+                                @elseif($checkList == '500')
                                 <tr>
                                     <td colspan="4" class="py-5">Isi Line Terlebih Dahulu</td>
                                 </tr>
@@ -187,12 +218,15 @@
     @section('script')
         <script>
             var formes = document.getElementById('search-checksheet');
+            var setJP = document.getElementById('setJP');
             //get selected value from selected option form then build a query string
             var line = document.getElementById('line');
             var code = document.getElementById('code');
             var cell = document.getElementById('cell');
             var shift = document.getElementById('shift');
             var barang = document.getElementById('barang');
+
+            var jp = document.getElementById('jp');
 
             //if code cell shift barang change then submit form
             line.addEventListener('change', function(value) {

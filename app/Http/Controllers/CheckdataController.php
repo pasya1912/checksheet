@@ -52,6 +52,7 @@ class CheckdataController extends Controller
         }
 
 
+
         //check if data already exist
         $check = DB::table('tt_checkdata')
             ->leftJoin('tm_checkarea', 'tt_checkdata.id_checkarea', '=', 'tm_checkarea.id')
@@ -84,7 +85,8 @@ class CheckdataController extends Controller
                 'value' => $request->value,
                 'approval' => '0',
                 'mark' => '0',
-                'shift' => $request->shift
+                'shift' => $request->shift,
+                'jp' => session('jp')
             ]
         );
 

@@ -174,6 +174,7 @@ class ListCheckData
                             $query->where('tt_checkdata.approval', ''.(auth()->user()->jabatan - 1).'');
 
                         }
+                        $query->where('tt_checkdata.jp', '=', auth()->user()->npk);
                     } else if ($filter == 'revised') {
                         $query->where('mark', '=', '1')
                             //where revised_value not null
