@@ -20,8 +20,8 @@ class CheckdataController extends Controller
                 $min_tanggal = $request->tanggal;
                 $max_tanggal = $request->tanggal;
             } else {
-                $min_tanggal = date("d-m-Y");
-                $max_tanggal = date("d-m-Y");
+                $min_tanggal = date("Y-m-d");
+                $max_tanggal = date("Y-m-d");
             }
 
             $approval = '0';
@@ -37,8 +37,8 @@ class CheckdataController extends Controller
                 $min_tanggal = $request->tanggal;
                 $max_tanggal = $request->tanggal;
             } else {
-                $min_tanggal = date("d-m-Y", strtotime("-1 day"));
-                $max_tanggal = date("d-m-Y");
+                $min_tanggal = date("Y-m-d", strtotime("-1 day"));
+                $max_tanggal = date("Y-m-d");
             }
 
             $approval = '1';
@@ -58,30 +58,30 @@ class CheckdataController extends Controller
                 $carbonDate->startOfWeek();
 
                 // Get the first day of the week
-                $min_tanggal = $carbonDate->format('d-m-Y');
+                $min_tanggal = $carbonDate->format('Y-m-d');
 
                 // Set the Carbon instance to the end of the week
                 $carbonDate->endOfWeek();
 
                 // Get the last day of the week
-                $max_tanggal = $carbonDate->format('d-m-Y');
+                $max_tanggal = $carbonDate->format('Y-m-d');
 
             } else {
 
-                $date = date("d-m-Y");
+                $date = date("Y-m-d");
                 $carbonDate = Carbon::parse($date);
 
                 // Set the Carbon instance to the start of the week
                 $carbonDate->startOfWeek();
 
                 // Get the first day of the week
-                $min_tanggal = $carbonDate->format('d-m-Y');
+                $min_tanggal = $carbonDate->format('Y-m-d');
 
                 // Set the Carbon instance to the end of the week
                 $carbonDate->endOfWeek();
 
                 // Get the last day of the week
-                $max_tanggal = $carbonDate->format('d-m-Y');
+                $max_tanggal = $carbonDate->format('Y-m-d');
             }
 
 
@@ -105,29 +105,29 @@ class CheckdataController extends Controller
                 $carbonDate->startOfMonth();
 
                 // Get the first day of the month
-                $min_tanggal = $carbonDate->format('d-m-Y');
+                $min_tanggal = $carbonDate->format('Y-m-d');
 
                 // Set the Carbon instance to the end of the month
                 $carbonDate->endOfMonth();
 
                 // Get the last day of the month
-                $max_tanggal = $carbonDate->format('d-m-Y');
+                $max_tanggal = $carbonDate->format('Y-m-d');
             } else {
                 //get first day of the month using carbon
-                $date = date("d-m-Y");
+                $date = date("Y-m-d");
                 $carbonDate = Carbon::parse($date);
 
                 // Set the Carbon instance to the start of the month
                 $carbonDate->startOfMonth();
 
                 // Get the first day of the month
-                $min_tanggal = $carbonDate->format('d-m-Y');
+                $min_tanggal = $carbonDate->format('Y-m-d');
 
                 // Set the Carbon instance to the end of the month
                 $carbonDate->endOfMonth();
 
                 // Get the last day of the month
-                $max_tanggal = $carbonDate->format('d-m-Y');
+                $max_tanggal = $carbonDate->format('Y-m-d');
             }
 
 
@@ -204,6 +204,7 @@ class CheckdataController extends Controller
 
         $checkdata = $listCheckData->approve($request, $approval);
         if ($checkdata) {
+            //back to checksheet data with request parameter
             return redirect()->route('checksheet.data')->with('success', 'Berhasil Approve');
         } else {
             return redirect()->back()->with('error', 'Gagal Approve');

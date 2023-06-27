@@ -1,1 +1,1 @@
-<img src="{{asset('image/logo-new.png')}}"{{$attributes}}>
+<img class="rounded-md" src="{{asset('image/logo-new.png')}}"{{$attributes}}>

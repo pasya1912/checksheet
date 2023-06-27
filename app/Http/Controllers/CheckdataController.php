@@ -79,7 +79,7 @@ class CheckdataController extends Controller
                 'id_checkarea' => $idcheckarea,
                 'nama' => $request->cell,
                 'barang' => $request->barang,
-                'tanggal' => date('d-m-Y H:i:s'),
+                'tanggal' => date('Y-m-d H:i:s'),
                 'user' => $request->user()->npk,
                 'value' => $request->value,
                 'approval' => '0',
@@ -147,7 +147,7 @@ class CheckdataController extends Controller
 
         }
         $find = $find->first();
-        $notes = $request->notes . "<br>- " . auth()->user()->name . " (" . date('d-m-Y H:i:s') . ")";
+        $notes = $request->notes . "<br>- " . auth()->user()->name . " (" . date('Y-m-d H:i:s') . ")";
 
         if ($find && $find->mark != 1) {
             $find->notes = $notes;
@@ -239,7 +239,7 @@ class CheckdataController extends Controller
                     'cell' => $item->nama,
                     'urutan' => $item->barang,
                     'shift' => $item->shift,
-                    'tanggal'=> date('d-m-Y',strtotime($item->tanggal)),
+                    'tanggal'=> date('Y-m-d',strtotime($item->tanggal)),
                     'jam'=> date('H:i:s',strtotime($item->tanggal)),
                     'min' => $item->min,
                     'max' => $item->max,
@@ -258,6 +258,6 @@ class CheckdataController extends Controller
 
             //return Checkdata::find(27)->approvalHistory;
 
-            return Excel::download(new DataExport($checkdata), 'request'.date('d-m-Y-h-i-s').'.xlsx');
+            return Excel::download(new DataExport($checkdata), 'request'.date('Y-m-d-h-i-s').'.xlsx');
     }
 }

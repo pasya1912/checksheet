@@ -18,7 +18,7 @@ class StoreCheckData
             'id_checkarea' => (int)$idcheckarea,
             'nama' => $request->nama,
             'barang' => $request->barang,
-            'tanggal' => date('d-m-Y H:i:s'),
+            'tanggal' => date('Y-m-d H:i:s'),
             'user' => Auth::user()->name,
             'value' => $request->value,
         ];

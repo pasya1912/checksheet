@@ -12,7 +12,7 @@ class DashboardController extends Controller
     {
 
         //tanggal from get query
-        $tanggal = request()->get('tanggal') ?? date('d-m-Y');
+        $tanggal = request()->get('tanggal') ?? date('Y-m-d');
         $daget = [];
         $line = $checksheetData->getLine();
 
