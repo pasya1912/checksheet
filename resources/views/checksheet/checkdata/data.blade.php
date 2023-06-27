@@ -107,8 +107,7 @@
                     <option value="notgood" {{ request()->get('filter') == 'notgood' ? 'selected' : '' }}>NG Only
                     </option>
 
-                    <option value="revised" {{ request()->get('filter') == 'revised' ? 'selected' : '' }}>Revised
-                        Only</option>
+                    <option value="revised" {{ request()->get('filter') == 'revised' ? 'selected' : '' }}>Solved Only</option>
                         <option value="complete" {{ request()->get('filter') == 'complete' ? 'selected' : '' }}>Approved by Manager</option>
                 </select>
             </div>
