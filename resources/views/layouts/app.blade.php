@@ -40,13 +40,13 @@
         </main>
     </div>
 
-    @if (session()->has('error'))
+    @if (session()->has('error') || $errors->any())
         <div id="notification" class="fixed top-0 right-0 mt-5 mr-5">
             <div class="bg-red-500 text-white font-bold rounded-t px-4 py-2">
                 Error
             </div>
             <div class="border border-t-0 border-red-400 rounded-b bg-green-100 px-4 py-3 text-red-700">
-                <p>{{ session('error') }}</p>
+                <p>{{ session('error') ?? $errors->first() }}</p>
             </div>
         </div>
     @endif
@@ -89,11 +89,7 @@
         <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
 
     @yield('script')
-    @if ($errors->any())
-        <script>
-            alert("{{ $errors->first() }}");
-        </script>
-    @endif
+        
 
 
 </body>

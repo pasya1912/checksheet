@@ -28,10 +28,12 @@
                         {{ __('Approve Checksheet') }}
 
                     </x-nav-link>
+                    @if(auth()->user()->jabatan > 1 && auth()->user()->jabatan < 5 )
                     <x-nav-link :href="route('checksheet.setting')" :active="request()->routeIs('checksheet.setting')">
                         {{ __('Checksheet Setting') }}
 
                     </x-nav-link>
+                    @endif
                     @endif
 
                 </div>
@@ -99,14 +101,17 @@
 
             </x-responsive-nav-link>
             @if(auth()->user()->role == 'admin')
-            <x-responsive-nav-link :href="route('checksheet.data.approval')" :active="request()->routeIs('checksheet.data.approval')">
-                {{ __('Approve Checksheet') }}
+                <x-responsive-nav-link :href="route('checksheet.data.approval')" :active="request()->routeIs('checksheet.data.approval')">
+                    {{ __('Approve Checksheet') }}
 
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('checksheet.setting')" :active="request()->routeIs('checksheet.setting')">
-                {{ __('Approve Checksheet') }}
+                </x-responsive-nav-link>
 
-            </x-responsive-nav-link>
+                @if(auth()->user()->jabatan > 1 && auth()->user()->jabatan < 5 )
+                    <x-responsive-nav-link :href="route('checksheet.setting')" :active="request()->routeIs('checksheet.setting')">
+                        {{ __('Checksheet Setting') }}
+
+                    </x-responsive-nav-link>
+                @endif
             @endif
         </div>
 

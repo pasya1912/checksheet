@@ -158,7 +158,7 @@ class ChecksheetController extends Controller
     public function setJP(Request $request)
     {
        $request->validate([
-        'jp' => 'required|numeric|exists:users,id',
+        'jp' => 'required|numeric|exists:users,npk',
        ]);
        $user = User::where('npk',$request->jp)->first();
         //if user has role admin and jabatan 1 then set jp in session

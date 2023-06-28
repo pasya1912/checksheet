@@ -16,7 +16,8 @@ class ApprovalHistory extends Model
         'approval',
         'user'
     ];
-    public $timestamps = false;
+    public $timestamps = true;
+
     //relation to user with NPK
     public function owner()
     {

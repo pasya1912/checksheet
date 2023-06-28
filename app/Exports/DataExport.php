@@ -59,6 +59,6 @@ class DataExport  implements FromCollection, WithHeadings, ShouldAutoSize, WithS
     public function styles(Worksheet $sheet)
     {
         // Define your styles here
-        $sheet->getStyle('A1:R1')->getFont()->setBold(true);
+        $sheet->getStyle('A1:U1')->getFont()->setBold(true);
     }
 }

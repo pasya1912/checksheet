@@ -24,7 +24,7 @@
                                     ?
                                 @elseif(request()->input('checksheet') == null && auth()->user()->jabatan < 3)
                                     ?
-                                @elseif( request()->input('shift') == null && (auth()->user()->jabatan < 2 && auth()->user()->jabatan > 0))
+                                @elseif(request()->input('shift') == null && (auth()->user()->jabatan < 2 && auth()->user()->jabatan > 0))
                                     ?
                                 @else
                                     {{ $good }}
@@ -47,7 +47,7 @@
                                     ?
                                 @elseif(request()->input('checksheet') == null && auth()->user()->jabatan < 3)
                                     ?
-                                @elseif( request()->input('shift') == null  && (auth()->user()->jabatan < 2 && auth()->user()->jabatan > 0))
+                                @elseif(request()->input('shift') == null && (auth()->user()->jabatan < 2 && auth()->user()->jabatan > 0))
                                     ?
                                 @else
                                     {{ $revised }}
@@ -65,8 +65,7 @@
                 <div class="w-full flex gap-2 justify-center md:justify-end">
                     <div class="w-full md:w-5/12 lg:w-2/12">
                         <label for="tanggal">Tanggal</label>
-                        <input type="text" id="tanggal" name="tanggal" class="form-input block w-full"
-                            value="{{ request()->get('tanggal') }}">
+                        <input type="text" id="tanggal" name="tanggal" class="form-input block w-full" value="{{ request()->get('tanggal')  }}">
                     </div>
                 </div>
                 <div class="w-full  gap-2 flex justify-center md:justify-end ">
@@ -118,8 +117,10 @@
                                 <option value="1" {{ request()->get('shift') == '1' ? 'selected' : '' }}>1</option>
                                 <option value="2" {{ request()->get('shift') == '2' ? 'selected' : '' }}>2</option>
                                 <option value="3" {{ request()->get('shift') == '3' ? 'selected' : '' }}>3</option>
-                                <option value="1-long" {{ request()->get('shift') == '1-long' ? 'selected' : '' }}>1-long</option>
-                                <option value="3-long" {{ request()->get('shift') == '3-long' ? 'selected' : '' }}>3-long</option>
+                                <option value="1-long" {{ request()->get('shift') == '1-long' ? 'selected' : '' }}>1-long
+                                </option>
+                                <option value="3-long" {{ request()->get('shift') == '3-long' ? 'selected' : '' }}>3-long
+                                </option>
 
                             </select>
                         </div>
@@ -152,12 +153,10 @@
                     <tr>
                         <td colspan="4" class="py-5 text-center">Isi Checksheet Terlebih Dahulu</td>
                     </tr>
-                @elseif(request()->input('shift') == null &&  (auth()->user()->jabatan < 3 && auth()->user()->jabatan > 0))
-
+                @elseif(request()->input('shift') == null && (auth()->user()->jabatan < 3 && auth()->user()->jabatan > 0))
                     <tr>
                         <td colspan="4" class="py-5 text-center">Isi Shift Terlebih Dahulu</td>
                     </tr>
-
                 @elseif($checkdata['total'] > 0)
                     @foreach ($checkdata['data'] as $data)
                         <tr class="relative border border-gray-300">
@@ -328,14 +327,27 @@
 
         @elseif(request()->input('checksheet') == null && auth()->user()->jabatan < 3)
 
-        @elseif( request()->input('shift') == null && (auth()->user()->jabatan < 3 && auth()->user()->jabatan > 0))
+        @elseif(request()->input('shift') == null && (auth()->user()->jabatan < 3 && auth()->user()->jabatan > 0))
         @else
-            <div class="flex justify-end">
-                <form class="my-3" action="{{ url()->full() }}" method="POST">
+            <div class="flex justify-end ">
+                <form class="my-3 w-full text-end" action="{{ url()->full() }}" method="POST">
                     @csrf
-                    <input class="bg-green-500 py-1 cursor-pointer px-3 my-3" type="submit" value="Approve">
+                    @if (auth()->user()->jabatan == 1)
+                        <div>
+                            <select name="leader" id="leader" class="">
+                                <option>Pilih Leader</option>
+                                @foreach ($leader as $data)
+                                    <option value="{{ $data->npk }}">{{ $data->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    @endif
+                    <div class="w-full">
+                        <input class="bg-green-500 text-end py-1 cursor-pointer px-3 my-3" type="submit"
+                            value="Approve">
+                    </div>
                 </form>
-            </div>s
+            </div>
         @endif
     @endif
 @endsection
@@ -350,43 +362,6 @@
         });
 
         //================================================
-        @if (auth()->user()->role == 'admin')
-
-
-            function changeStatus(element) {
-                var id = element.getAttribute('data-id');
-                var status = element.value;
-                var url = "{{ route('checksheet.data.changeStatus', ':id') }}";
-                url = url.replace(':id', id);
-                var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                var data = {
-                    status: status,
-                    _token: token
-                };
-                fetch(url, {
-                        method: 'POST',
-                        body: JSON.stringify(data),
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                            'X-CSRF-TOKEN': token,
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log(data);
-                        if (data.status == 'success') {
-                            alert('Status berhasil diubah');
-                            location.reload();
-                        } else {
-                            alert('Status gagal diubah');
-                        }
-                    })
-                    .catch((error) => {
-                        console.error('Error:', error);
-                    });
-            }
-        @endif
         //================================================
         var monthInput = document.getElementById('tanggal');
         //set value to this month
@@ -397,22 +372,21 @@
             mode: 'single',
             dateFormat: 'd-m-Y',
             showMonths: 1,
-            @if(auth()->user()->jabatan == 1 || auth()->user()->jabatan == 2)
-
-            @elseif(auth()->user()->jabatan == 3)
-            enable: [
-                function(date) {
-                    // Enable only the first day of each month
-                    return date.getDay() === 1;
-                }
-            ],
-            @elseif(auth()->user()->jabatan == 4)
-            enable: [
-                function(date) {
-                    // Enable only the first day of each month
-                    return date.getDate() === 1;
-                }
-            ],
+            @if (auth()->user()->jabatan == 1 || auth()->user()->jabatan == 2)
+            @elseif (auth()->user()->jabatan == 3)
+                enable: [
+                        function(date) {
+                            // Enable only the first day of each month
+                            return date.getDay() === 1;
+                        }
+                    ],
+            @elseif (auth()->user()->jabatan == 4)
+                enable: [
+                        function(date) {
+                            // Enable only the first day of each month
+                            return date.getDate() === 1;
+                        }
+                    ],
             @endif
 
             onChange: function(selectedDates) {
@@ -420,5 +394,5 @@
                 console.log(selectedDates[0]);
             }
         });
-        </script>
+    </script>
 @endsection

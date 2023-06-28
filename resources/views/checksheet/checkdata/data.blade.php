@@ -95,20 +95,27 @@
         </div>
         <div class="flex flex-wrap gap-2 w-full    justify-between  my-5">
             <div class="w-full md:w-4/12    items-end flex justify-center">
-                <a class="w-1/3  p-2 bg-gray-400 text-green-300 shadow-md shadow-black" href="{{route('checksheet.data.export')}}">Export</a>
+                <a class="w-1/3  p-2 bg-gray-400 text-green-300 shadow-md shadow-black"
+                    href="{{ route('checksheet.data.export') }}?{{ http_build_query(request()->all()) }}">Export</a>
             </div>
             <div class="w-full md:w-4/12    ">
                 <label for="max_tanggal">Filter</label>
                 <select id="filter" name="filter" class=" w-full border-gray-400 p-2 rounded-lg" required>
                     <option value="" selected>Display only speciific data</option>
                     <option value="need_check" {{ request()->get('filter') == 'need_check' ? 'selected' : '' }}>
-                        Need {{auth()->user()->jabatan >0 ?'Your Approval':'Approval'}} Only</option>
+                        Need {{ auth()->user()->jabatan > 0 ? 'Your Approval' : 'Approval' }} Only</option>
+                    @if(auth()->user()->jabatan > 0)
+                    <option value="approved" {{ request()->get('filter') == 'approved' ? 'selected' : '' }}>
+                        Approved by you only</option>
+                    @endif
                     <option value="good" {{ request()->get('filter') == 'good' ? 'selected' : '' }}>Good only</option>
                     <option value="notgood" {{ request()->get('filter') == 'notgood' ? 'selected' : '' }}>NG Only
                     </option>
 
-                    <option value="revised" {{ request()->get('filter') == 'revised' ? 'selected' : '' }}>Solved Only</option>
-                        <option value="complete" {{ request()->get('filter') == 'complete' ? 'selected' : '' }}>Approved by Manager</option>
+                    <option value="revised" {{ request()->get('filter') == 'revised' ? 'selected' : '' }}>Solved Only
+                    </option>
+                    <option value="complete" {{ request()->get('filter') == 'complete' ? 'selected' : '' }}>Approved by
+                        Manager</option>
                 </select>
             </div>
         </div>
@@ -174,10 +181,10 @@
                                 </div>
                             </div>
                         </td>
-                        @if($data->mark == 1)
+                        @if ($data->mark == 1)
                             <?php
                             //if $data->notes not exist then explode will assign ""
-                            $data->notes = $data->notes ?? "";
+                            $data->notes = $data->notes ?? '';
                             $data->notes = explode('<br>', $data->notes)[0];
                             $data->notes = htmlspecialchars($data->notes);
 
@@ -295,43 +302,5 @@
         min.addEventListener('change', function() {
             formes.submit();
         });
-        //================================================
-        @if(auth()->user()->role == 'admin')
-
-
-            function changeStatus(element) {
-                var id = element.getAttribute('data-id');
-                var status = element.value;
-                var url = "{{ route('checksheet.data.changeStatus', ':id') }}";
-                url = url.replace(':id', id);
-                var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                var data = {
-                    status: status,
-                    _token: token
-                };
-                fetch(url, {
-                        method: 'POST',
-                        body: JSON.stringify(data),
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                            'X-CSRF-TOKEN': token,
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log(data);
-                        if (data.status == 'success') {
-                            alert('Status berhasil diubah');
-                            location.reload();
-                        } else {
-                            alert('Status gagal diubah');
-                        }
-                    })
-                    .catch((error) => {
-                        console.error('Error:', error);
-                    });
-            }
-        @endif
     </script>
 @endsection

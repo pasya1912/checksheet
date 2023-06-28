@@ -11,7 +11,7 @@
 
             <div class="p-6 bg-white shadow-sm sm:rounded-lg w-full ">
                 <div class="py-5 text-lg">
-                    <span class="hover:bg-blue-200 border border-blue-400 px-3 py-2"><a href="{{ route('checksheet.list') }}?{{ request()->getQueryString() }}">&laquo;
+                    <span class="hover:bg-blue-200 border border-blue-400 px-3 py-2"><a href="{{ route('checksheet.setting') }}?{{ request()->getQueryString() }}">&laquo;
                             Back</a></span>
                 </div>
                 <div class="flex justify-between">
@@ -76,7 +76,7 @@
                     </table>
                 </div>
                 <div class="py-5 text-lg">
-                    <span class="hover:bg-blue-200 border border-blue-400 px-3 py-2"><a href="{{ route('checksheet.list') }}?{{ request()->getQueryString() }}">&laquo;
+                    <span class="hover:bg-blue-200 border border-blue-400 px-3 py-2"><a href="{{ route('checksheet.setting') }}?{{ request()->getQueryString() }}">&laquo;
                             Back</a></span>
                 </div>
 

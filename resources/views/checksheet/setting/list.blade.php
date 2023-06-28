@@ -10,8 +10,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             <div class="p-6 bg-white shadow-sm sm:rounded-lg w-full ">
-                <div class="w-full  my-5">
-
+                <div class="w-full  my-5 flex flex-wrap md:flex-nowrap">
                     <form action="{{ route('checksheet.setting') }}" method="GET" id="search-checksheet"
                         class="flex gap-3 w-full md:w-6/12">
                         <div class="w-full">
@@ -38,11 +37,12 @@
                                         {{ $code->code }}
                                     </option>
                                 @endforeach
-
                             </select>
                         </div>
                     </form>
-
+                    <div class="w-full justify-end flex items-end">
+                        <a href="{{route('checksheet.setting.approval')}}" class="py-2 px-3 border-gray-400 bg-gray-50 hover:bg-gray-200 rounded-md border">Approval</a>
+                    </div>
                 </div>
                 <div class="w-full overflow-scroll">
                     <table class="table-auto w-full  border border-red-500 text-center">

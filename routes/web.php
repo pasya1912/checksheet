@@ -2,12 +2,12 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\SettingController;
 use App\Http\Controllers\CheckareaController;
 use App\Http\Controllers\CheckdataController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ChecksheetController;
 use App\Http\Controllers\Admin\CheckdataController as AdminCheckdataController;
+use App\Http\Controllers\Admin\SettingController as AdminSettingController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -51,13 +51,18 @@ Route::middleware('auth')->group(function () {
         Route::prefix('checksheet')->group(function () {
             Route::get('/data/approval',[AdminCheckdataController::class,'approval_page'])->middleware('checkNotgood')->name('checksheet.data.approval_page');
             Route::post('/data/approval',[AdminCheckdataController::class,'approval'])->name('checksheet.data.approval');
-            Route::post('/data/{id}/status',[AdminCheckdataController::class,'updateStatus'])->where('id', '[0-9]+')->name('checksheet.data.changeStatus');
+            Route::group(['middleware' => ['editSetting']], function () {
+                Route::get('/setting',[AdminSettingController::class,'index'])->name('checksheet.setting');
+                Route::get('/setting/{id}',[AdminSettingController::class,'area'])->where('id', '[0-9]+')->name('checksheet.setting.area');
+                Route::get('/setting/{idchecksheet}/checkarea/{idcheckarea}',[AdminSettingController::class,'areaEdit'])->where('id', '[0-9]+')->where('idcheckarea', '[0-9]+')->name('checksheet.setting.area.edit');
+                Route::post('/setting/{idchecksheet}/checkarea/{idcheckarea}',[AdminSettingController::class,'areaEditAction'])->where('id', '[0-9]+')->where('idcheckarea', '[0-9]+')->name('checksheet.setting.area.editAction');
 
-            Route::get('/setting',[SettingController::class,'index'])->name('checksheet.setting');
-            Route::get('/setting/{id}',[SettingController::class,'area'])->where('id', '[0-9]+')->name('checksheet.setting.area');
-            Route::get('/setting/{idchecksheet}/checkarea/{idcheckarea}',[SettingController::class,'areaEdit'])->where('id', '[0-9]+')->where('idcheckarea', '[0-9]+')->name('checksheet.setting.area.edit');
-            Route::post('/setting/{idchecksheet}/checkarea/{idcheckarea}',[SettingController::class,'areaEditAction'])->where('id', '[0-9]+')->where('idcheckarea', '[0-9]+')->name('checksheet.setting.area.editAction');
 
+                Route::get('/setting/approval',[AdminSettingController::class,'approvalList'])->name('checksheet.setting.approval');
+                Route::get('/setting/approval/{id}',[AdminSettingController::class,'approvalDetail'])->whereNumber('id')->name('checksheet.setting.approval.detail');
+                Route::post('/setting/approval/{id}',[AdminSettingController::class,'approvalAction'])->whereNumber('id')->name('checksheet.setting.approval.action');
+
+            });
 
         });
 

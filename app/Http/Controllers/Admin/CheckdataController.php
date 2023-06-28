@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Rules\ValidateLine;
 use App\Rules\ValidateCode;
 use Carbon\Carbon;
@@ -163,6 +164,8 @@ class CheckdataController extends Controller
         if (empty($mergeArray)) {
             return redirect()->back()->with('error', 'Anda tidak memiliki akses');
         }
+
+        //validate request to have leader if jabatan is jp / 1
         $approval = $mergeArray['approval'];
 
         //merge with request
@@ -185,12 +188,24 @@ class CheckdataController extends Controller
             }
         }
 
+        //get leader
+        $leader = User::where('role','admin')->where('jabatan', '2')->get();
+
+
         //return approval blade
-        return view('checksheet.checkdata.approval', compact('checkdata', 'lineList', 'codeList', 'checkList', 'areaList', 'good', 'revised'));
+        return view('checksheet.checkdata.approval', compact('checkdata', 'lineList', 'codeList', 'checkList', 'areaList', 'good', 'revised','leader'));
     }
     public function approval(Request $request, \App\Service\Admin\ListCheckData $listCheckData)
     {
-
+        if (auth()->user()->jabatan == '1') {
+            $request->validate([
+                'leader' => 'numeric|exists:users,npk'
+            ]);
+            $user = User::where('npk',$request->leader)->first();
+            if ($user->jabatan != '2') {
+                return redirect()->back()->with('error', 'JP TIDAK VALID');
+            }
+        }
 
         $user_jabatan = auth()->user()->jabatan;
 
@@ -204,40 +219,13 @@ class CheckdataController extends Controller
 
         $checkdata = $listCheckData->approve($request, $approval);
         if ($checkdata) {
-            //back to checksheet data with request parameter
-            return redirect()->route('checksheet.data')->with('success', 'Berhasil Approve');
+            //array without csrf token from $request and ignore empty
+            $arr = array_filter($request->except('_token','filter','tanggal'));
+            $arr['filter'] = 'approved';
+            return redirect()->route('checksheet.data', $arr)->with('success', 'Berhasil Approve');
         } else {
             return redirect()->back()->with('error', 'Gagal Approve');
         }
-    }
-    public function updateStatus($id, Request $request)
-    {
-        //validate request->status only allow approved rejected or wait
-        $request->validate([
-            'status' => 'required|in:1,2,3,4'
-        ]);
-        $user_jabatan = auth()->user()->jabatan;
-        if ($user_jabatan == '1') {
-            $approval = '1';
-        } elseif ($user_jabatan == '2') {
-            $approval = '2';
-
-        } elseif ($user_jabatan == '3') {
-            $approval = '3';
-
-        } elseif ($user_jabatan == '4') {
-            $approval = '4';
-
-        }
-        try {
-            $checkdata = Checkdata::find($id);
-            $checkdata->approval = $approval;
-            $checkdata->save();
-        } catch (\Exception $e) {
-            return response()->json(['status' => 'gagal', 'message' => $e->getMessage()], 500);
-        }
-
-        return response()->json(['status' => 'success', 'message' => 'Status berhasil diubah'], 200);
     }
 
 

@@ -2,6 +2,7 @@
 
 namespace App\Service\Admin;
 
+use App\Models\ApprovalHistory;
 use Illuminate\Support\Facades\DB;
 
 class ListCheckData
@@ -24,24 +25,26 @@ class ListCheckData
     {
         $query = $this->getData($request, $approval);
         //update approval
-        $newApproval = '' . ($approval + 1) .'';
+        $newApproval = '' . ($approval + 1) . '';
         $data = $query->get();
 
         DB::beginTransaction();
         $update = $query->update([
             'tt_checkdata.approval' => $newApproval,
+            'tt_checkdata.leader' => $request->leader,
         ]);
 
         if ($update) {
 
             foreach ($data as $d) {
 
-                $update = DB::table('approval_history')->insert([
+                $update = ApprovalHistory::create([
                     'id_checkdata' => $d->id,
                     'approval' => $newApproval,
-                    'approval_history.user' => auth()->user()->npk,
+                    'user' => auth()->user()->npk,
                 ]);
-                if ($update <= 0) {
+
+                if (!$update) {
                     DB::rollBack();
                     return false;
                 }
@@ -57,6 +60,7 @@ class ListCheckData
 
     function getData($request, $approval = null): \Illuminate\Database\Query\Builder
     {
+
         $filter = ($request->get('filter') == null || $request->get('filter') == '') ? '' : $request->get('filter');
         $min_tanggal = ($request->get('min_tanggal') == null || $request->get('min_tanggal') == '') ? '' : $request->get('min_tanggal');
         $max_tanggal = ($request->get('max_tanggal') == null || $request->get('max_tanggal') == '') ? '' : $request->get('max_tanggal');
@@ -117,12 +121,14 @@ class ListCheckData
 
 
         $revisedStatus = DB::raw($revisedCheck . ' as revised_status');
-        return DB::table('tt_checkdata')
+        $result =  DB::table('tt_checkdata')
             ->select('tt_checkdata.*', 'tm_checkarea.min', 'tm_checkarea.max', 'tm_checkarea.tipe', 'tm_checksheet.nama as nama_checksheet', 'tm_checkarea.nama as nama_checkarea', 'tm_checksheet.line', 'tm_checksheet.code', 'tm_checksheet.jenis', 'users.name as name', 'users.npk', $isStandar, $revisedStatus)
             ->leftJoin('tm_checkarea', 'tt_checkdata.id_checkarea', '=', 'tm_checkarea.id')
-            ->leftJoin('tm_checksheet', 'tm_checkarea.id_checksheet', '=', 'tm_checksheet.id')
-            ->leftJoin('users', 'tt_checkdata.user', '=', 'users.npk')
-
+            ->leftJoin('tm_checksheet', 'tm_checkarea.id_checksheet', '=', 'tm_checksheet.id');
+            if($filter =='approved'){
+            $result->leftJoin('approval_history', 'tt_checkdata.id', '=', 'approval_history.id_checkdata');
+            }
+            $result->leftJoin('users', 'tt_checkdata.user', '=', 'users.npk')
             ->where(function ($query) use ($approval, $statusCheck, $revisedCheck, $min_tanggal, $max_tanggal, $barang, $shift, $cell, $area, $checksheet, $code, $line, $filter) {
                 if ($min_tanggal != '') {
 
@@ -171,19 +177,29 @@ class ListCheckData
                         });
                         //if jabatan 1 then where approval = 0
                         if (auth()->user()->role == "admin") {
-                            $query->where('tt_checkdata.approval', ''.(auth()->user()->jabatan - 1).'');
+                            $query->where('tt_checkdata.approval', '' . (auth()->user()->jabatan - 1) . '');
 
                         }
-                        $query->where('tt_checkdata.jp', '=', auth()->user()->npk);
-                    } else if ($filter == 'revised') {
+                        if (auth()->user()->jabatan == 1) {
+                            $query->where('tt_checkdata.jp', '=', auth()->user()->npk);
+                        } else if (auth()->user()->jabatan == 2) {
+                            $query->where('tt_checkdata.leader', '=', auth()->user()->npk);
+                        }
+
+                    } else if($filter == 'approved'){
+                        //check if data approved by current user or not by conditioning to approval_history and checkdata
+                        $query->where(function ($query) {
+                            $query->where('approval_history.user', '=', auth()->user()->npk);
+                        });
+                    }else if ($filter == 'revised') {
                         $query->where('mark', '=', '1')
                             //where revised_value not null
                             ->whereNotNull('revised_value');
-                    }
-                    else if($filter == 'complete'){
+                    } else if ($filter == 'complete') {
                         $query->where('tt_checkdata.approval', '=', '4');
                     }
                 }
             });
+            return $result;
     }
 }

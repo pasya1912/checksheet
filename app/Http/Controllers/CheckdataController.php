@@ -189,11 +189,11 @@ class CheckdataController extends Controller
     {
             $checkdata = $listCheckData->getData($request)->get();
 
+
             foreach($checkdata as $key => $value){
 
 
-                $approvalHistory = Checkdata::with('approvalHistory.owner')
-                ->find($value->id)->approvalHistory;
+                $approvalHistory = Checkdata::find($value->id)->approvalHistory;
 
                 $checkdata[$key]->jp = false;
                 $checkdata[$key]->leader = false;
@@ -241,7 +241,7 @@ class CheckdataController extends Controller
                     'cell' => $item->nama,
                     'urutan' => $item->barang,
                     'shift' => $item->shift,
-                    'tanggal'=> date('Y-m-d',strtotime($item->tanggal)),
+                    'tanggal'=> date('d-m-Y',strtotime($item->tanggal)),
                     'jam'=> date('H:i:s',strtotime($item->tanggal)),
                     'min' => $item->min,
                     'max' => $item->max,
@@ -257,7 +257,6 @@ class CheckdataController extends Controller
 
                 ];
             });
-
             //return Checkdata::find(27)->approvalHistory;
 
             return Excel::download(new DataExport($checkdata), 'request'.date('Y-m-d-h-i-s').'.xlsx');

@@ -18,4 +18,7 @@ class Checkarea extends Model
     public function checkdata(){
         return $this->hasMany(Checkdata::class,'id_checkarea','id');
     }
+    public function updateCheckarea(){
+        return $this->hasMany(UpdateCheckarea::class,'id_checkarea','id');
+    }
 }
