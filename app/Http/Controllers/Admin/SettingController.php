@@ -110,9 +110,6 @@ class SettingController extends Controller
         $request->validate([
             'nama' => 'required',
             'tipe' => 'required',
-            'min' => 'required_if:tipe,2',
-            'max' => 'required_if:tipe,2',
-            'tengah' => 'required_if:tipe,2',
         ]);
         $checkarea = DB::table('tm_checkarea')->where('id', $idcheckarea)->first();
         //if old data and new data same dont update
