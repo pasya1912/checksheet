@@ -16,7 +16,7 @@
                     <div class="flex w-full max-h-56 justify-between">
                         <div class=" w-8/12 flex items-center">
                             <h2 class="text-xs sm:text-sm lg:text-md">*Data berikut ini merupakan data dari tanggal
-                                {{ date('d-m-Y H:i:s',strtotime(startOfDay())) }} sampai {{ date('d-m-Y H:i:s',strtotime(endOfDay())) }}</h2>
+                                {{ date('d-m-Y H:i:s',strtotime(startOfDay(request()->get('tanggal') ?? null))) }} sampai {{ date('d-m-Y H:i:s',strtotime(endOfDay(request()->get('tanggal') ?? null))) }}</h2>
                         </div>
                         <form class="w-full md:w-5/12 lg:w-2/12" action="{{ url()->current() }}" method="GET"
                             id="formTanggal">
