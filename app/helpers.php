@@ -43,3 +43,53 @@ if(!function_exists('endOfDay')){
     }
 
 }
+
+if(!function_exists('startOfWeek')){
+    function startOfWeek($tanggal = null)
+    {
+        if (!$tanggal) {
+            $tanggal = date('Y-m-d'); // Use current date if not provided
+        }
+
+        $startOfWeek = date('d-m-Y 06:00:00', strtotime($tanggal . ' -' . (date('w', strtotime($tanggal)) - 1) . ' days'));
+        return startOfDay($startOfWeek);
+    }
+}
+
+if(!function_exists('endOfWeek')){
+    function endOfWeek($tanggal = null)
+    {
+        if (!$tanggal) {
+            $date = date('Y-m-d'); // Use current date if not provided
+        }
+
+        $endOfWeek = date('d-m-Y 06:00:00', strtotime($tanggal . ' +' . (7 - date('w', strtotime($tanggal))) . ' days'));
+
+        return endOfDay($endOfWeek);
+    }
+}
+
+if(!function_exists('startOfMonth')){
+    function startOfMonth($tanggal = null)
+    {
+        if (!$tanggal) {
+            $tanggal = date('Y-m-d'); // Use current date if not provided
+        }
+
+        $startOfMonth = date('d-m-Y 06:00:00', strtotime($tanggal . ' -' . (date('d', strtotime($tanggal)) - 1) . ' days'));
+        return startOfDay($startOfMonth);
+    }
+}
+
+if(!function_exists('endOfMonth')){
+    function endOfMonth($tanggal = null)
+    {
+        if (!$tanggal) {
+            $tanggal = date('Y-m-d'); // Use current date if not provided
+        }
+
+        $endOfMonth = date('d-m-Y 06:00:00', strtotime($tanggal . ' +' . (date('t', strtotime($tanggal)) - date('d', strtotime($tanggal))) . ' days'));
+
+        return endOfDay($endOfMonth);
+    }
+}

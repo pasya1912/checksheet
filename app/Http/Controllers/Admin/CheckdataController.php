@@ -178,7 +178,34 @@ class CheckdataController extends Controller
 
         $checkdata = $listCheckData->get($request, $approval);
         $good = 0;
+
         $revised = 0;
+        $reqTemp = $request;
+        if(auth()->user()->jabatan <= 2 && auth()->user()->jabatan > 0){
+            //yesterday from min_tanggal
+            $reqTemp->merge([
+                'min_tanggal' => null,
+                'max_tanggal' => date("Y-m-d", strtotime("-1 day", strtotime($request->max_tanggal))),
+                'filter' => 'need_check'
+            ]);
+        }
+        else if(auth()->user()->jabatan == 3){
+
+            $reqTemp->merge([
+                'min_tanggal' => null,
+                'max_tanggal' => date("Y-m-d", strtotime("-1 week", strtotime($request->max_tanggal))),
+                'filter' => 'need_check'
+            ]);
+        }
+        else if(auth()->user()->jabatan == 4){
+            $reqTemp->merge([
+                'min_tanggal' => null,
+                'max_tanggal' => date("Y-m-d", strtotime("-1 month", strtotime($request->max_tanggal))),
+                'filter' => 'need_check'
+            ]);
+        }
+
+        $needApproval = $listCheckData->getData($reqTemp, $approval)->get();
 
         foreach ($checkdata['data'] as $key => $value) {
             if ($value->status == "good" || $value->status == "general") {
@@ -191,9 +218,8 @@ class CheckdataController extends Controller
         //get leader
         $leader = User::where('role','admin')->where('jabatan', '2')->get();
 
-
         //return approval blade
-        return view('checksheet.checkdata.approval', compact('checkdata', 'lineList', 'codeList', 'checkList', 'areaList', 'good', 'revised','leader'));
+        return view('checksheet.checkdata.approval', compact('checkdata', 'lineList', 'codeList', 'checkList', 'areaList', 'good', 'revised','leader','needApproval'));
     }
     public function approval(Request $request, \App\Service\Admin\ListCheckData $listCheckData)
     {

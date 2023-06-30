@@ -121,14 +121,14 @@ class ListCheckData
 
 
         $revisedStatus = DB::raw($revisedCheck . ' as revised_status');
-        $result =  DB::table('tt_checkdata')
+        $result = DB::table('tt_checkdata')
             ->select('tt_checkdata.*', 'tm_checkarea.min', 'tm_checkarea.max', 'tm_checkarea.tipe', 'tm_checksheet.nama as nama_checksheet', 'tm_checkarea.nama as nama_checkarea', 'tm_checksheet.line', 'tm_checksheet.code', 'tm_checksheet.jenis', 'users.name as name', 'users.npk', $isStandar, $revisedStatus)
             ->leftJoin('tm_checkarea', 'tt_checkdata.id_checkarea', '=', 'tm_checkarea.id')
             ->leftJoin('tm_checksheet', 'tm_checkarea.id_checksheet', '=', 'tm_checksheet.id');
-            if($filter =='approved'){
+        if ($filter == 'approved') {
             $result->leftJoin('approval_history', 'tt_checkdata.id', '=', 'approval_history.id_checkdata');
-            }
-            $result->leftJoin('users', 'tt_checkdata.user', '=', 'users.npk')
+        }
+        $result->leftJoin('users', 'tt_checkdata.user', '=', 'users.npk')
             ->where(function ($query) use ($approval, $statusCheck, $revisedCheck, $min_tanggal, $max_tanggal, $barang, $shift, $cell, $area, $checksheet, $code, $line, $filter) {
                 if ($min_tanggal != '') {
 
@@ -186,12 +186,12 @@ class ListCheckData
                             $query->where('tt_checkdata.leader', '=', auth()->user()->npk);
                         }
 
-                    } else if($filter == 'approved'){
+                    } else if ($filter == 'approved') {
                         //check if data approved by current user or not by conditioning to approval_history and checkdata
                         $query->where(function ($query) {
                             $query->where('approval_history.user', '=', auth()->user()->npk);
                         });
-                    }else if ($filter == 'revised') {
+                    } else if ($filter == 'revised') {
                         $query->where('mark', '=', '1')
                             //where revised_value not null
                             ->whereNotNull('revised_value');
@@ -200,6 +200,6 @@ class ListCheckData
                     }
                 }
             });
-            return $result;
+        return $result;
     }
 }

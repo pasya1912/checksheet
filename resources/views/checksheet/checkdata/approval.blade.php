@@ -57,15 +57,60 @@
                     </div>
                 </div>
                 <div class="text-md lg:text-xs">
-                    Hanya menampilkan data yang membutuhkan approval
+                    Hanya menampilkan data yang membutuhkan approval pada hari
+                    @if (auth()->user()->jabatan <= 2 && auth()->user()->jabatan > 0)
+                        {{ date('d-m-Y', strtotime(startOfDay(request()->get('tanggal') ?? date('d-m-Y', strtotime(startOfDay()))))) }}
+                    @else
+                        {{ date('d-m-Y H:i:s', strtotime(startOfWeek(request()->get('tanggal') ?? date('d-m-Y H:i:s', strtotime(startOfDay()))))) }}
+                        sampai
+                        {{ date('d-m-Y H:i:s', strtotime(endOfWeek(request()->get('tanggal') ?? date('d-m-Y H:i:s', strtotime(startOfDay()))))) }}
+                    @endif
                 </div>
             </div>
 
             <div class="flex flex-wrap gap-2 w-full   justify-end">
-                <div class="w-full flex gap-2 justify-center md:justify-end">
+                <div class="w-full flex gap-2 justify-center md:justify-between">
+                    <div class="w-full flex items-center ">
+                        @if (request()->input('line') == null)
+                        @elseif(request()->input('code') == null && auth()->user()->jabatan < 4)
+
+                        @elseif(request()->input('checksheet') == null && auth()->user()->jabatan < 3)
+
+                        @elseif(request()->input('shift') == null && (auth()->user()->jabatan < 2 && auth()->user()->jabatan > 0))
+                        @else
+                            @if (count($needApproval) > 0)
+                                <div class="p-3 border border-red-600 bg-red-300 text-black bg-opacity-50">[!]
+                                    @if (auth()->user()->jabatan <= 2 && auth()->user()->jabatan > 0)
+                                        Terdapat data pada tanggal
+                                        {{ date('d-m-Y', strtotime(startOfDay($needApproval[0]->tanggal))) }} yang belum
+                                        anda
+                                        approve
+                                    @elseif(auth()->user()->jabatan == 3)
+                                        Terdapat data pada minggu
+                                        {{ date('d-m-Y', strtotime(startOfWeek($needApproval[0]->tanggal))) }} yang belum anda
+                                        approve
+                                    @elseif(auth()->user()->jabatan == 4)
+                                        Terdapat data pada bulan
+                                        {{ date('M-Y', strtotime(startOfMonth($needApproval[0]->tanggal))) }} yang belum
+                                        anda
+                                        approve
+                                    @endif
+                                    [!]
+                                </div>
+                            @endif
+                        @endif
+                    </div>
                     <div class="w-full md:w-5/12 lg:w-2/12">
-                        <label for="tanggal">Tanggal</label>
-                        <input type="text" id="tanggal" name="tanggal" class="form-input block w-full" value="{{ request()->get('tanggal')  }}">
+                        @if (auth()->user()->jabatan <= 2 && auth()->user()->jabatan > 0)
+                            <label for="tanggal">Tanggal</label>
+                        @elseif(auth()->user()->jabatan == 3)
+                            <label for="tanggal">First Day of week</label>
+                        @elseif(auth()->user()->jabatan == 4)
+                            <label for="tanggal">First Day of Month</label>
+                        @endif
+
+                        <input type="text" id="tanggal" name="tanggal" class="form-input block w-full"
+                            value="{{ request()->get('tanggal') ?? date('d-m-Y', strtotime(startOfDay())) }}">
                     </div>
                 </div>
                 <div class="w-full  gap-2 flex justify-center md:justify-end ">
