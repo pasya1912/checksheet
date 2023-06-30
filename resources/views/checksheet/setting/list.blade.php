@@ -40,9 +40,11 @@
                             </select>
                         </div>
                     </form>
+                    @if(auth()->user()->jabatan >=3 && auth()->user()->jabatan <=4)
                     <div class="w-full justify-end flex items-end">
                         <a href="{{route('checksheet.setting.approval')}}" class="py-2 px-3 border-gray-400 bg-gray-50 hover:bg-gray-200 rounded-md border">Approval</a>
                     </div>
+                    @endif
                 </div>
                 <div class="w-full overflow-scroll">
                     <table class="table-auto w-full  border border-red-500 text-center">

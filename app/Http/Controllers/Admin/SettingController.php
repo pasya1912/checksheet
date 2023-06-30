@@ -192,7 +192,7 @@ class SettingController extends Controller
         $list = $list->appends(request()->query())->toArray();
         foreach($list['data'] as $key => $value){
             $list['data'][$key]->nama_user = DB::table('users')->where('npk', $value->user)->first()->name;
-            $list['data'][$key]->nama_approver = DB::table('users')->where('npk', $value->approver)->first()->name;
+            $list['data'][$key]->nama_approver = DB::table('users')->where('npk', $value->approver)->first()?->name;
 
         }
 

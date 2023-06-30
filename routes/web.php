@@ -57,10 +57,12 @@ Route::middleware('auth')->group(function () {
                 Route::get('/setting/{idchecksheet}/checkarea/{idcheckarea}',[AdminSettingController::class,'areaEdit'])->where('id', '[0-9]+')->where('idcheckarea', '[0-9]+')->name('checksheet.setting.area.edit');
                 Route::post('/setting/{idchecksheet}/checkarea/{idcheckarea}',[AdminSettingController::class,'areaEditAction'])->where('id', '[0-9]+')->where('idcheckarea', '[0-9]+')->name('checksheet.setting.area.editAction');
 
-
-                Route::get('/setting/approval',[AdminSettingController::class,'approvalList'])->name('checksheet.setting.approval');
+                Route::middleware('approveSetting')->group(function () {
+                    Route::get('/setting/approval',[AdminSettingController::class,'approvalList'])->name('checksheet.setting.approval');
                 Route::get('/setting/approval/{id}',[AdminSettingController::class,'approvalDetail'])->whereNumber('id')->name('checksheet.setting.approval.detail');
                 Route::post('/setting/approval/{id}',[AdminSettingController::class,'approvalAction'])->whereNumber('id')->name('checksheet.setting.approval.action');
+                });
+
 
             });
 
