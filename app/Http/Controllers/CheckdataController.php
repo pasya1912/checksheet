@@ -227,7 +227,7 @@ class CheckdataController extends Controller
             if ($item->status == "good" && $item->revised_value == null) {
                 $status = "OK";
             } else if ($item->status == "notgood" && $item->revised_value == null) {
-                $status = "NG (Belum Drevisi)";
+                $status = "NG (Belum Direvisi)";
             }
 
             return [
