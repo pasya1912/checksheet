@@ -40,9 +40,7 @@ class CheckareaController extends Controller
 
             foreach ($areaList['data'] as $key => $area) {
                 $area->checkdata = DB::table('tt_checkdata')
-                    ->leftJoin('tm_checkarea', 'tt_checkdata.id_checkarea', '=', 'tm_checkarea.id')
-
-                    ->select('tt_checkdata.*', 'tm_checkarea.id as area_id', 'tm_checkarea.tipe', 'tt_checkdata.notes')
+                    ->select('tt_checkdata.*' ,'tt_checkdata.notes')
                     ->where('tt_checkdata.id_checkarea', $area->id)
                     ->where('tt_checkdata.nama', $request->query('cell'))
                     ->where('tt_checkdata.shift', $request->query('shift'))
@@ -52,7 +50,7 @@ class CheckareaController extends Controller
                     ->first();
                 if ($area->checkdata) {
                     if ($area->checkdata->tipe == 2) {
-                        $area->checkdata->is_good = $area->checkdata->value >= $area->min && $area->checkdata->value <= $area->max;
+                        $area->checkdata->is_good = $area->checkdata->value >= $area->checkdata->min && $area->checkdata->value <= $area->checkdata->max;
                     } elseif ($area->checkdata->tipe == 1) {
                         $area->checkdata->is_good = $area->checkdata->value == "ok";
                     } elseif ($area->checkdata->tipe == 3) {
@@ -60,7 +58,10 @@ class CheckareaController extends Controller
                     }
                 }
 
+
+
             }
+
             return view('checksheet.area', compact('areaList', 'checksheet'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());

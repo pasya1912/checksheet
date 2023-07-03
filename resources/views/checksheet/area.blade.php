@@ -47,15 +47,16 @@
                             <tr class="border border-y-gray-200 border-x-red-300">
                                 @if ($area->tipe == 2)
                                 <td class="py-5 w-8/12">
-                                    <div>{{ $area->max ? 'Max: ' . $area->max : '' }}</div>
+
+                                    <div>{{ $area->max ? 'Max: ' . $area->max : '' }} {{isset($area->checkdata) && $area->checkdata->max != $area->max  ? "(Old Max: ".$area->checkdata->max.")": ''}}</div>
                                     <div>
                                         <div class="w-10/12 md:w-11/12 bg-gray-200 p-5 text-black flex m-auto text-center justify-center flex-col">
                                             <span class="text-sm md:text-base font-bold">{{ $area->nama }}</span>
-                                            <span class="text-xs">({{($area->min > 0 && $area->max >0) && ($area->tengah) ? 'Nilai Tengah: '.$area->tengah: ''}})</span>
+                                            <span class="text-xs">({{($area->min > 0 && $area->max >0) && ($area->tengah) ? 'Nilai Tengah: '.$area->tengah: ''}}) {{isset($area->checkdata) && $area->checkdata->tengah != $area->tengah  ? "(Old Tengah: ".$area->checkdata->tengah.")" : ''}}</span>
                                         </div>
 
                                     </div>
-                                    <div>{{ $area->min ? 'Min: ' . $area->min : '' }}</div>
+                                    <div>{{ $area->min ? 'Min: ' . $area->min : '' }} {{isset($area->checkdata) && $area->checkdata->min != $area->min ? "(Old Min: ".$area->checkdata->min.")": ''}}</div>
                                     <div>{{ $area->deskripsi ?? '' }}</div>
                                 </td>
                                 @elseif($area->tipe == 1)

@@ -74,23 +74,23 @@ class ListCheckData
 
         //get corresponding checkdata with id_checkarea from $checkarea
         $statusCheck = '
-        (CASE WHEN tm_checkarea.tipe = "1" THEN
+        (CASE WHEN tt_checkdata.tipe = "1" THEN
             (CASE
             WHEN tt_checkdata.value = "ok" THEN "good"
             WHEN tt_checkdata.value = "ng" THEN "notgood"
              END)
-        WHEN tm_checkarea.tipe = "2" THEN
+        WHEN tt_checkdata.tipe = "2" THEN
         (CASE
-        WHEN (CAST(tt_checkdata.value AS DECIMAL(10,4)) < IFNULL(CAST(tm_checkarea.min AS DECIMAL(10,4)), CAST("-999999" AS DECIMAL(10,4)))) OR (CAST(tt_checkdata.value AS DECIMAL(10,4)) > IFNULL(CAST(tm_checkarea.max AS DECIMAL(10,4)), CAST("999999" AS DECIMAL(10,4)))) THEN "notgood"
+        WHEN (CAST(tt_checkdata.value AS DECIMAL(10,4)) < IFNULL(CAST(tt_checkdata.min AS DECIMAL(10,4)), CAST("-999999" AS DECIMAL(10,4)))) OR (CAST(tt_checkdata.value AS DECIMAL(10,4)) > IFNULL(CAST(tt_checkdata.max AS DECIMAL(10,4)), CAST("999999" AS DECIMAL(10,4)))) THEN "notgood"
         ELSE "good"
         END)
-        WHEN tm_checkarea.tipe = "3" THEN
+        WHEN tt_checkdata.tipe = "3" THEN
             "general"
         END)';
         $isStandar = DB::raw($statusCheck . ' as status');
         $revisedCheck = '
         (CASE
-            WHEN tm_checkarea.tipe = "1" THEN
+            WHEN tt_checkdata.tipe = "1" THEN
                 (CASE
                     WHEN tt_checkdata.revised_value IS NULL THEN "notgood"
                     ELSE (CASE
@@ -98,31 +98,31 @@ class ListCheckData
                         WHEN tt_checkdata.revised_value = "ng" THEN "notgood"
                     END)
                 END)
-            WHEN tm_checkarea.tipe = "2" THEN
+            WHEN tt_checkdata.tipe = "2" THEN
                 (CASE
                     WHEN (CASE
-                        WHEN (CAST(tt_checkdata.value AS DECIMAL(10,4)) < IFNULL(CAST(tm_checkarea.min AS DECIMAL(10,4)), CAST("-999999" AS DECIMAL(10,4)))) OR (CAST(tt_checkdata.value AS DECIMAL(10,4)) > IFNULL(CAST(tm_checkarea.max AS DECIMAL(10,4)), CAST("999999" AS DECIMAL(10,4)))) THEN "notgood"
+                        WHEN (CAST(tt_checkdata.value AS DECIMAL(10,4)) < IFNULL(CAST(tt_checkdata.min AS DECIMAL(10,4)), CAST("-999999" AS DECIMAL(10,4)))) OR (CAST(tt_checkdata.value AS DECIMAL(10,4)) > IFNULL(CAST(tt_checkdata.max AS DECIMAL(10,4)), CAST("999999" AS DECIMAL(10,4)))) THEN "notgood"
                         ELSE "good"
                     END) = "good" THEN "good"
                     ELSE (CASE
                         WHEN tt_checkdata.revised_value IS NULL THEN "notgood"
                         ELSE
                             (CASE
-                                WHEN (CAST(tt_checkdata.revised_value AS DECIMAL(10,4)) < IFNULL(CAST(tm_checkarea.min AS DECIMAL(10,4)), CAST("-999999" AS DECIMAL(10,4)))) OR (CAST(tt_checkdata.revised_value AS DECIMAL(10,4)) > IFNULL(CAST(tm_checkarea.max AS DECIMAL(10,4)), CAST("999999" AS DECIMAL(10,4)))) THEN "notgood"
+                                WHEN (CAST(tt_checkdata.revised_value AS DECIMAL(10,4)) < IFNULL(CAST(tt_checkdata.min AS DECIMAL(10,4)), CAST("-999999" AS DECIMAL(10,4)))) OR (CAST(tt_checkdata.revised_value AS DECIMAL(10,4)) > IFNULL(CAST(tm_checkarea.max AS DECIMAL(10,4)), CAST("999999" AS DECIMAL(10,4)))) THEN "notgood"
                                 ELSE "good"
                             END)
                         END
                     )
                 END
             )
-            WHEN tm_checkarea.tipe = "3" THEN
+            WHEN tt_checkdata.tipe = "3" THEN
                 "general"
         END)';
 
 
         $revisedStatus = DB::raw($revisedCheck . ' as revised_status');
         $result = DB::table('tt_checkdata')
-            ->select('tt_checkdata.*', 'tm_checkarea.min', 'tm_checkarea.max', 'tm_checkarea.tipe', 'tm_checksheet.nama as nama_checksheet', 'tm_checkarea.nama as nama_checkarea', 'tm_checksheet.line', 'tm_checksheet.code', 'tm_checksheet.jenis', 'users.name as name', 'users.npk', $isStandar, $revisedStatus)
+            ->select('tt_checkdata.*', 'tt_checkdata.min', 'tt_checkdata.max', 'tt_checkdata.tipe', 'tm_checksheet.nama as nama_checksheet', 'tm_checkarea.nama as nama_checkarea', 'tm_checksheet.line', 'tm_checksheet.code', 'tm_checksheet.jenis', 'users.name as name', 'users.npk', $isStandar, $revisedStatus)
             ->leftJoin('tm_checkarea', 'tt_checkdata.id_checkarea', '=', 'tm_checkarea.id')
             ->leftJoin('tm_checksheet', 'tm_checkarea.id_checksheet', '=', 'tm_checksheet.id');
         if ($filter == 'approved') {

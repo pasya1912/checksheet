@@ -13,7 +13,7 @@ class Checkdata extends Model
     //updated_at false
     public $timestamps = false;
     //set fillable
-    protected $fillable=['id_checkarea','tanggal','shift','nama','barang','value','approval','mark','user','notes','revised_value'];
+    protected $fillable=['id_checkarea','tanggal','shift','nama','barang','value','approval','mark','user','notes','revised_value','min','max','tengah','tipe'];
 
     public function approvalHistory(){
         return $this->hasMany(ApprovalHistory::class,'id_checkdata','id');

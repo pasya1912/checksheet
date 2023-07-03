@@ -104,9 +104,9 @@ class ChecksheetData
         }
         $good->whereRaw('
         (CASE
-            WHEN tm_checkarea.tipe = "1" THEN tt_checkdata.value = "ok"
-            WHEN tm_checkarea.tipe = "2" THEN (CAST(tt_checkdata.value AS DECIMAL(10,4)) >= IFNULL(CAST(tm_checkarea.min AS DECIMAL(10,4)), CAST("-999999" AS DECIMAL(10,4)))) AND (CAST(tt_checkdata.value AS DECIMAL(10,4)) <= IFNULL(CAST(tm_checkarea.max AS DECIMAL(10,4)), CAST("999999" AS DECIMAL(10,4))))
-            WHEN tm_checkarea.tipe = "3" THEN tt_checkdata.value = tt_checkdata.value
+            WHEN tt_checkdata.tipe = "1" THEN tt_checkdata.value = "ok"
+            WHEN tt_checkdata.tipe = "2" THEN (CAST(tt_checkdata.value AS DECIMAL(10,4)) >= IFNULL(CAST(tt_checkdata.min AS DECIMAL(10,4)), CAST("-999999" AS DECIMAL(10,4)))) AND (CAST(tt_checkdata.value AS DECIMAL(10,4)) <= IFNULL(CAST(tt_checkdata.max AS DECIMAL(10,4)), CAST("999999" AS DECIMAL(10,4))))
+            WHEN tt_checkdata.tipe = "3" THEN tt_checkdata.value = tt_checkdata.value
             END
             )');
 
@@ -137,9 +137,9 @@ class ChecksheetData
         }
         $notgood->whereRaw('
         (CASE
-            WHEN tm_checkarea.tipe = "1" THEN tt_checkdata.value = "ng"
-            WHEN tm_checkarea.tipe = "2" THEN (CAST(tt_checkdata.value AS DECIMAL(10,4)) < IFNULL(CAST(tm_checkarea.min AS DECIMAL(10,4)), CAST("-999999" AS DECIMAL(10,4)))) OR (CAST(tt_checkdata.value AS DECIMAL(10,4)) > IFNULL(CAST(tm_checkarea.max AS DECIMAL(10,4)), CAST("999999" AS DECIMAL(10,4))))
-            WHEN tm_checkarea.tipe = "3" THEN 1 = 2
+            WHEN tt_checkdata.tipe = "1" THEN tt_checkdata.value = "ng"
+            WHEN tt_checkdata.tipe = "2" THEN (CAST(tt_checkdata.value AS DECIMAL(10,4)) < IFNULL(CAST(tt_checkdata.min AS DECIMAL(10,4)), CAST("-999999" AS DECIMAL(10,4)))) OR (CAST(tt_checkdata.value AS DECIMAL(10,4)) > IFNULL(CAST(tt_checkdata.max AS DECIMAL(10,4)), CAST("999999" AS DECIMAL(10,4))))
+            WHEN tt_checkdata.tipe = "3" THEN 1 = 2
             END
             )');
 

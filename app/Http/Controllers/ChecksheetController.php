@@ -64,7 +64,7 @@ class ChecksheetController extends Controller
                     ->select('id')->where('tm_checkarea.id_checksheet', $value->id)->count();
 
                 $checkList['data'][$key]->jml_revised = DB::table('tt_checkdata')
-                    ->select('tm_checkarea.id', 'tm_checkarea.tipe', 'tt_checkdata.value')
+                    ->select('tm_checkarea.id', 'tt_checkdata.tipe', 'tt_checkdata.value')
                     ->leftJoin('tm_checkarea', 'tt_checkdata.id_checkarea', '=', 'tm_checkarea.id')
                     ->leftJoin('tm_checksheet', 'tm_checkarea.id_checksheet', '=', 'tm_checksheet.id')
                     ->where('tm_checksheet.id', $value->id)
@@ -78,7 +78,7 @@ class ChecksheetController extends Controller
 
                 $checkList['data'][$key]->notgood = DB::table('tt_checkdata')
 
-                    ->select('tm_checkarea.id', 'tm_checkarea.tipe', 'tt_checkdata.value')
+                    ->select('tm_checkarea.id', 'tt_checkdata.tipe', 'tt_checkdata.value')
                     ->leftJoin('tm_checkarea', 'tt_checkdata.id_checkarea', '=', 'tm_checkarea.id')
                     ->leftJoin('tm_checksheet', 'tm_checkarea.id_checksheet', '=', 'tm_checksheet.id')
                     ->where('tm_checksheet.id', $value->id)
@@ -89,14 +89,14 @@ class ChecksheetController extends Controller
                     ->where('tt_checkdata.shift', $shift)
                     ->whereRaw('
                 (CASE
-                    WHEN tm_checkarea.tipe = "1" THEN tt_checkdata.value = "ng"
-                    WHEN tm_checkarea.tipe = "2" THEN (CAST(tt_checkdata.value AS DECIMAL(10,4)) < IFNULL(CAST(tm_checkarea.min AS DECIMAL(10,4)), CAST("-999999" AS DECIMAL(10,4)))) OR (CAST(tt_checkdata.value AS DECIMAL(10,4)) > IFNULL(CAST(tm_checkarea.max AS DECIMAL(10,4)), CAST("999999" AS DECIMAL(10,4))))
-                    WHEN tm_checkarea.tipe = "3" THEN 1 = 2
+                    WHEN tt_checkdata.tipe = "1" THEN tt_checkdata.value = "ng"
+                    WHEN tt_checkdata.tipe = "2" THEN (CAST(tt_checkdata.value AS DECIMAL(10,4)) < IFNULL(CAST(tt_checkdata.min AS DECIMAL(10,4)), CAST("-999999" AS DECIMAL(10,4)))) OR (CAST(tt_checkdata.value AS DECIMAL(10,4)) > IFNULL(CAST(tt_checkdata.max AS DECIMAL(10,4)), CAST("999999" AS DECIMAL(10,4))))
+                    WHEN tt_checkdata.tipe = "3" THEN 1 = 2
                     END
                     )')
                     ->count();
                 $checkList['data'][$key]->good = DB::table('tm_checkarea')
-                    ->select('tm_checkarea.id', 'tm_checkarea.tipe', 'tt_checkdata.value')->where('tm_checkarea.id_checksheet', $value->id)
+                    ->select('tm_checkarea.id', 'tt_checkdata.tipe', 'tt_checkdata.value')->where('tm_checkarea.id_checksheet', $value->id)
                     ->leftJoin('tt_checkdata', 'tt_checkdata.id_checkarea', '=', 'tm_checkarea.id')
                     ->where('tt_checkdata.value', DB::raw('tt_checkdata.value'))
                     ->where('tt_checkdata.nama', $cell)
@@ -106,9 +106,9 @@ class ChecksheetController extends Controller
                     ->where('tt_checkdata.tanggal', '<', endOfDay())
                     ->whereRaw('
                 (CASE
-                    WHEN tm_checkarea.tipe = "1" THEN tt_checkdata.value = "ok"
-                    WHEN tm_checkarea.tipe = "2" THEN (CAST(tt_checkdata.value AS DECIMAL(10,4)) >= IFNULL(CAST(tm_checkarea.min AS DECIMAL(10,4)), CAST("-999999" AS DECIMAL(10,4)))) AND (CAST(tt_checkdata.value AS DECIMAL(10,4)) <= IFNULL(CAST(tm_checkarea.max AS DECIMAL(10,4)), CAST("999999" AS DECIMAL(10,4))))
-                    WHEN tm_checkarea.tipe = "3" THEN tt_checkdata.value = tt_checkdata.value
+                    WHEN tt_checkdata.tipe = "1" THEN tt_checkdata.value = "ok"
+                    WHEN tt_checkdata.tipe = "2" THEN (CAST(tt_checkdata.value AS DECIMAL(10,4)) >= IFNULL(CAST(tt_checkdata.min AS DECIMAL(10,4)), CAST("-999999" AS DECIMAL(10,4)))) AND (CAST(tt_checkdata.value AS DECIMAL(10,4)) <= IFNULL(CAST(tt_checkdata.max AS DECIMAL(10,4)), CAST("999999" AS DECIMAL(10,4))))
+                    WHEN tt_checkdata.tipe = "3" THEN tt_checkdata.value = tt_checkdata.value
                     END
                     )')
                     ->count();
