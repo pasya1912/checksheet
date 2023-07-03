@@ -76,6 +76,18 @@ class CheckdataController extends Controller
         $area = DB::table('tm_checkarea')
             ->where('id', $idcheckarea)
             ->first();
+        //if min / max / tengah is null return then assing ""
+        if ($area->min == null) {
+            $area->min = "";
+        }
+        if ($area->max == null) {
+            $area->max = "";
+        }
+        if ($area->tengah == null) {
+            $area->tengah = "";
+        }
+        //convert float to string min max tengah
+
 
         $db = Checkdata::create(
             [
@@ -85,10 +97,10 @@ class CheckdataController extends Controller
                 'tanggal' => date('Y-m-d H:i:s'),
                 'user' => $request->user()->npk,
                 'value' => $request->value,
-                'tipe' =>  "".$area->tipe."",
-                'min' => "". $area->min."",
-                'max' =>  "".$area->max."",
-                'tengah' =>  "".$area->tengah."",
+                'tipe' =>  $area->tipe,
+                'min' => ($area->min == null || $area->min == "") ? null : "".$area->min."",
+                'max' =>  ($area->max == null || $area->max == "") ? null : "".$area->max."",
+                'tengah' =>  ($area->tengah == null || $area->tengah == "") ? null : "".$area->tengah."",
                 'approval' => '0',
                 'mark' => '0',
                 'shift' => $request->shift,
@@ -141,13 +153,13 @@ class CheckdataController extends Controller
             'revised_value' => ['sometimes', new ValidateRevised($idcheckarea, $request->marked ?? "")]
         ]);
         $request->notes = htmlspecialchars($request->notes);
-
         $find = Checkdata::where('id', $request->id_checkdata);
         if (auth()->user()->role != 'admin') {
             $find->where('user', auth()->user()->npk);
 
         }
         $find = $find->first();
+
         $notes = $request->notes . "<br>- " . auth()->user()->name . " (" . date('Y-m-d H:i:s') . ")";
 
         if ($find && $find->mark != 1) {
@@ -159,6 +171,18 @@ class CheckdataController extends Controller
                 $find->mark = "1";
 
             }
+            $area = DB::table('tm_checkarea')
+            ->where('id', $idcheckarea)
+            ->first();
+            dd($area);
+            $find->tipe =  $area->tipe;
+            if($area->tipe == 2)
+            {
+                $find->min = "". $area->min."";
+                $find->max =  "".$area->max."";
+                $find->tengah =  "".$area->tengah."";
+            }
+
             $find->save();
             return redirect()->back()->with('success', 'Revisi/Notes berhasil ditambahkan');
         } else {
