@@ -174,7 +174,6 @@ class CheckdataController extends Controller
             $area = DB::table('tm_checkarea')
             ->where('id', $idcheckarea)
             ->first();
-            dd($area);
             $find->tipe =  $area->tipe;
             if($area->tipe == 2)
             {
