@@ -174,12 +174,13 @@ class CheckdataController extends Controller
             $area = DB::table('tm_checkarea')
             ->where('id', $idcheckarea)
             ->first();
-            $find->tipe =  $area->tipe;
+
+            $find->tipe =  ($area->tipe == null || $area->tipe == "") ? null : "".$area->tipe."";
             if($area->tipe == 2)
             {
-                $find->min = "". $area->min."";
-                $find->max =  "".$area->max."";
-                $find->tengah =  "".$area->tengah."";
+                $find->min = ($area->min == null || $area->min == "") ? null : "".$area->min."";
+                $find->max =  ($area->max == null || $area->max == "") ? null : "".$area->max."";
+                $find->tengah =  ($area->tengah == null || $area->tengah == "") ? null : "".$area->tengah."";
             }
 
             $find->save();
